@@ -265,6 +265,11 @@ async def get_messages(chat_id: str, current_user: UserResponse = Depends(get_cu
     
     messages = await db.messages.find({"chat_id": chat_id}).sort("timestamp", 1).to_list(1000)
     
+    # Remove MongoDB ObjectId from messages
+    for message in messages:
+        if "_id" in message:
+            del message["_id"]
+    
     # Mark messages as read
     await db.messages.update_many(
         {"chat_id": chat_id, "sender_id": {"$ne": current_user.id}},
