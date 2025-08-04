@@ -281,6 +281,47 @@ async def get_messages(chat_id: str, current_user: UserResponse = Depends(get_cu
     
     return messages
 
+@api_router.post("/messages")
+async def send_message(message_data: MessageCreate, current_user: UserResponse = Depends(get_current_user)):
+    # Verify user is participant in the chat
+    chat = await db.chats.find_one({"id": message_data.chat_id, "participants": current_user.id})
+    if not chat:
+        raise HTTPException(status_code=404, detail="Chat not found")
+    
+    # Create message
+    message = Message(
+        chat_id=message_data.chat_id,
+        sender_id=current_user.id,
+        content=message_data.content,
+        message_type=message_data.message_type,
+        replied_to=message_data.replied_to
+    )
+    
+    # Save to database
+    await db.messages.insert_one(message.dict())
+    
+    # Update chat last message time
+    await db.chats.update_one(
+        {"id": message.chat_id},
+        {"$set": {"last_message_at": datetime.utcnow()}}
+    )
+    
+    # Try to send via WebSocket to other participants (if connected)
+    for participant_id in chat["participants"]:
+        if participant_id != current_user.id:
+            await manager.send_personal_message({
+                "type": "new_message",
+                "message": message.dict()
+            }, participant_id)
+    
+    # Remove MongoDB ObjectId
+    message_dict = message.dict()
+    if "_id" in message_dict:
+        del message_dict["_id"]
+    
+    return message_dict
+
+# User search functionality
 @api_router.get("/users/search")
 async def search_users(q: str, current_user: UserResponse = Depends(get_current_user)):
     users = await db.users.find({
