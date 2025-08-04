@@ -175,18 +175,42 @@ function App() {
     await loadMessages(chat.id);
   };
 
-  const sendMessage = () => {
-    if (!newMessage.trim() || !ws || !selectedChat) return;
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedChat) return;
     
-    const messageData = {
-      type: 'send_message',
-      chat_id: selectedChat.id,
-      content: newMessage.trim(),
-      message_type: 'text'
-    };
-    
-    ws.send(JSON.stringify(messageData));
-    setNewMessage('');
+    try {
+      // Try WebSocket first (for real-time)
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const messageData = {
+          type: 'send_message',
+          chat_id: selectedChat.id,
+          content: newMessage.trim(),
+          message_type: 'text'
+        };
+        
+        ws.send(JSON.stringify(messageData));
+        setNewMessage('');
+      } else {
+        // Fallback to HTTP API if WebSocket is not available
+        const messageData = {
+          chat_id: selectedChat.id,
+          content: newMessage.trim(),
+          message_type: 'text'
+        };
+        
+        const response = await axios.post(`${API}/messages`, messageData);
+        
+        // Add message to local state immediately
+        setMessages(prev => [...prev, response.data]);
+        setNewMessage('');
+        
+        // Refresh chats to update last message
+        loadChats();
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      alert('فشل في إرسال الرسالة');
+    }
   };
 
   const handleKeyPress = (e) => {
