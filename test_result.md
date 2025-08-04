@@ -101,3 +101,35 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "تفعيل زر النقر بعد كتابة الدردشة - Enable/activate the send button only when user has typed content in the chat input"
+
+frontend:
+  - task: "Enable send button only when chat input has content"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "User reported that send button should only be enabled when there is text in the input. Currently button is always enabled regardless of input content."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Enable send button only when chat input has content"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "User wants send button to be disabled when input is empty and enabled only when user types content. Need to add disabled state logic to the send button."
