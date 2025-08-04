@@ -211,6 +211,10 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
     
     # Populate chat info
     for chat in chats:
+        # Remove MongoDB ObjectId
+        if "_id" in chat:
+            del chat["_id"]
+            
         # Get other participants
         other_participants = [p for p in chat["participants"] if p != current_user.id]
         if other_participants:
@@ -229,6 +233,9 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
             sort=[("timestamp", -1)]
         )
         if last_message:
+            # Remove MongoDB ObjectId from message
+            if "_id" in last_message:
+                del last_message["_id"]
             chat["last_message"] = last_message
     
     return chats
