@@ -490,7 +490,15 @@ function App() {
                   onKeyPress={handleKeyPress}
                   className="flex-1 text-right"
                 />
-                <Button onClick={sendMessage} className="bg-emerald-600 hover:bg-emerald-700">
+                <Button 
+                  onClick={sendMessage} 
+                  disabled={!newMessage.trim()}
+                  className={`transition-all ${
+                    newMessage.trim() 
+                      ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer' 
+                      : 'bg-gray-300 cursor-not-allowed opacity-50'
+                  }`}
+                >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
