@@ -249,6 +249,9 @@ async def create_chat(other_user_id: str, current_user: UserResponse = Depends(g
     })
     
     if existing_chat:
+        # Remove MongoDB ObjectId
+        if "_id" in existing_chat:
+            del existing_chat["_id"]
         return existing_chat
     
     # Create new chat
