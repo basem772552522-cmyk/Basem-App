@@ -190,7 +190,8 @@ metadata:
 test_plan:
   current_focus:
     - "Enable send button only when chat input has content"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "WebSocket real-time messaging"
   test_all: false
   test_priority: "high_first"
 
