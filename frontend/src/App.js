@@ -64,11 +64,13 @@ function App() {
   const connectWebSocket = () => {
     if (!user) return;
     
+    setWsStatus('connecting');
     const websocket = new WebSocket(`${WS_URL}/ws/${user.id}`);
     
     websocket.onopen = () => {
       console.log('WebSocket connected');
       setWs(websocket);
+      setWsStatus('connected');
     };
     
     websocket.onmessage = (event) => {
@@ -86,8 +88,16 @@ function App() {
     websocket.onclose = () => {
       console.log('WebSocket disconnected');
       setWs(null);
-      // Reconnect after 3 seconds
-      setTimeout(connectWebSocket, 3000);
+      setWsStatus('disconnected');
+      // Try to reconnect after 5 seconds
+      setTimeout(() => {
+        if (user) connectWebSocket();
+      }, 5000);
+    };
+    
+    websocket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      setWsStatus('disconnected');
     };
   };
 
