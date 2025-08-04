@@ -106,8 +106,8 @@ user_problem_statement: "تفعيل زر النقر بعد كتابة الدرد
 
 frontend:
   - task: "Enable send button only when chat input has content"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -116,6 +116,9 @@ frontend:
         - working: false
           agent: "main"
           comment: "User reported that send button should only be enabled when there is text in the input. Currently button is always enabled regardless of input content."
+        - working: true
+          agent: "main" 
+          comment: "Added disabled state to send button. Button is now disabled when newMessage.trim() is empty and enabled with proper styling when user types content. Added visual feedback with different colors for enabled/disabled states."
 
 metadata:
   created_by: "main_agent"
