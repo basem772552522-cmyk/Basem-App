@@ -23,6 +23,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [ws, setWs] = useState(null);
+  const [wsStatus, setWsStatus] = useState('disconnected'); // 'connecting', 'connected', 'disconnected'
   const [currentView, setCurrentView] = useState('chats'); // 'chats', 'search'
   
   // Auth states
