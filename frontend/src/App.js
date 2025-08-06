@@ -323,10 +323,36 @@ function App() {
   };
 
   const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString('ar', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const date = new Date(timestamp);
+    const now = new Date();
+    
+    // Check if message is from today
+    const isToday = date.toDateString() === now.toDateString();
+    
+    if (isToday) {
+      // Show only time for today's messages
+      return date.toLocaleTimeString('ar', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } else {
+      // Show date and time for older messages
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (date.toDateString() === yesterday.toDateString()) {
+        return 'أمس ' + date.toLocaleTimeString('ar', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } else {
+        return date.toLocaleDateString('ar') + ' ' + date.toLocaleTimeString('ar', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    }
   };
 
   // Message status icon component
