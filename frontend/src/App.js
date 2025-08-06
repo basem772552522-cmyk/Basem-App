@@ -1005,6 +1005,12 @@ function App() {
                   <span className="text-xs text-gray-500">
                     {wsStatus === 'connected' ? 'متصل' : wsStatus === 'connecting' ? 'اتصال...' : 'غير متصل'}
                   </span>
+                  {isOfflineMode && (
+                    <div className="flex items-center space-x-1 space-x-reverse">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-red-600">لا يوجد إنترنت</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
