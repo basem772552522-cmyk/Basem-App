@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Avatar, AvatarFallback } from './components/ui/avatar';
 import { ScrollArea } from './components/ui/scroll-area';
 import { Badge } from './components/ui/badge';
-import { Search, Send, MessageCircle, Users, Settings, Check, CheckCheck, MoreVertical, LogOut, User, Camera } from 'lucide-react';
+import { Search, Send, MessageCircle, Users, Settings, Check, CheckCheck, MoreVertical, LogOut, User, Camera, Paperclip, Image, Video, File, Reply, Trash2, X } from 'lucide-react';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
