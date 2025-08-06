@@ -24,7 +24,7 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [ws, setWs] = useState(null);
   const [wsStatus, setWsStatus] = useState('disconnected'); // 'connecting', 'connected', 'disconnected'
-  const [currentView, setCurrentView] = useState('users'); // 'users', 'search'
+  const [currentView, setCurrentView] = useState('chats'); // 'chats', 'search'
   const [showSettings, setShowSettings] = useState(false); // Settings dropdown
   const [showProfileEdit, setShowProfileEdit] = useState(false); // Profile editing modal
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false); // Attachment menu
