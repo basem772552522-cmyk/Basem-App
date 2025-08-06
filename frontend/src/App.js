@@ -25,8 +25,13 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
   
   const messagesEndRef = useRef(null);
+  const pollingIntervalRef = useRef(null);
+  
+  // صوت الإشعار
+  const notificationSound = useRef(null);
 
   // Set axios default headers
   useEffect(() => {
