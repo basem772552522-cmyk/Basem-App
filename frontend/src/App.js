@@ -95,10 +95,28 @@ function App() {
       
       if (data.type === 'new_message') {
         setMessages(prev => [...prev, data.message]);
+        
+        // Play notification sound for incoming messages (not from current user)
+        if (data.message.sender_id !== user.id) {
+          playNotificationSound();
+        }
+        
+        // Mark message as delivered automatically
+        if (data.message.sender_id !== user.id && selectedChat?.id === data.message.chat_id) {
+          markMessageAsRead(data.message.id);
+        }
+        
         // Refresh chats to update last message
         loadChats();
       } else if (data.type === 'message_sent') {
         setMessages(prev => [...prev, data.message]);
+      } else if (data.type === 'message_read') {
+        // Update message status to read
+        setMessages(prev => prev.map(msg => 
+          msg.id === data.message_id 
+            ? { ...msg, status: 'read', read_at: data.read_at }
+            : msg
+        ));
       }
     };
     
