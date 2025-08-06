@@ -169,6 +169,16 @@ function App() {
     try {
       const response = await axios.get(`${API}/chats/${chatId}/messages`);
       setMessages(response.data);
+      
+      // Mark unread messages as read
+      const unreadMessages = response.data.filter(msg => 
+        msg.sender_id !== user.id && !msg.is_read
+      );
+      
+      unreadMessages.forEach(msg => {
+        markMessageAsRead(msg.id);
+      });
+      
     } catch (error) {
       console.error('Failed to load messages:', error);
     }
