@@ -476,38 +476,74 @@ function App() {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
     
+    const messageData = {
+      chat_id: selectedChat.id,
+      content: newMessage.trim(),
+      message_type: 'text'
+    };
+
+    // Create temp message for immediate UI feedback
+    const tempMessage = {
+      id: 'temp-' + Date.now(),
+      ...messageData,
+      sender_id: user.id,
+      timestamp: new Date().toISOString(),
+      status: isOfflineMode ? 'pending' : 'sending'
+    };
+
+    // Add to UI immediately
+    setMessages(prev => [...prev, tempMessage]);
+    setNewMessage('');
+
     try {
+      if (isOfflineMode || !navigator.onLine) {
+        // Add to pending messages if offline
+        setPendingMessages(prev => [...prev, { ...messageData, tempId: tempMessage.id }]);
+        // Update temp message status
+        setMessages(prev => prev.map(msg => 
+          msg.id === tempMessage.id 
+            ? { ...msg, status: 'pending', content: msg.content + ' ⏳' }
+            : msg
+        ));
+        return;
+      }
+
       // Try WebSocket first (for real-time)
       if (ws && ws.readyState === WebSocket.OPEN) {
-        const messageData = {
+        ws.send(JSON.stringify({
           type: 'send_message',
-          chat_id: selectedChat.id,
-          content: newMessage.trim(),
-          message_type: 'text'
-        };
-        
-        ws.send(JSON.stringify(messageData));
-        setNewMessage('');
+          ...messageData
+        }));
+        // Remove temp message, real message will come from WebSocket
+        setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
       } else {
-        // Fallback to HTTP API if WebSocket is not available
-        const messageData = {
-          chat_id: selectedChat.id,
-          content: newMessage.trim(),
-          message_type: 'text'
-        };
-        
+        // Fallback to HTTP API
         const response = await axios.post(`${API}/messages`, messageData);
         
-        // Add message to local state immediately
-        setMessages(prev => [...prev, response.data]);
-        setNewMessage('');
+        // Replace temp message with real message
+        setMessages(prev => prev.map(msg => 
+          msg.id === tempMessage.id ? response.data : msg
+        ));
         
         // Refresh chats to update last message
         loadChats();
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert('فشل في إرسال الرسالة');
+      
+      if (error.response?.status >= 500 || !error.response) {
+        // Server error or network issue - add to pending
+        setPendingMessages(prev => [...prev, { ...messageData, tempId: tempMessage.id }]);
+        setMessages(prev => prev.map(msg => 
+          msg.id === tempMessage.id 
+            ? { ...msg, status: 'pending', content: msg.content + ' ⏳ سيتم الإرسال عند عودة الاتصال' }
+            : msg
+        ));
+      } else {
+        // Other error - remove message and show error
+        setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+        alert('فشل في إرسال الرسالة');
+      }
     }
   };
 
