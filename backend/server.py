@@ -464,7 +464,9 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                     sender_id=user_id,
                     content=message_data["content"],
                     message_type=message_data.get("message_type", "text"),
-                    replied_to=message_data.get("replied_to")
+                    replied_to=message_data.get("replied_to"),
+                    timestamp=datetime.utcnow(),  # Explicitly set UTC timestamp
+                    status="sent"
                 )
                 
                 # Save to database
