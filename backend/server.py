@@ -334,7 +334,8 @@ async def send_message(message_data: MessageCreate, current_user: UserResponse =
         content=message_data.content,
         message_type=message_data.message_type,
         replied_to=message_data.replied_to,
-        status="sent"
+        status="sent",
+        timestamp=datetime.utcnow()  # Explicitly set UTC timestamp
     )
     
     # Save to database
