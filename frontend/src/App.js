@@ -266,36 +266,36 @@ function App() {
 
   // Main WhatsApp-style interface
   return (
-    <div className="h-screen bg-gray-100 flex" dir="rtl">
+    <div className="min-h-screen bg-gray-100 main-layout" dir="rtl">
       {/* WhatsApp-Style Sidebar */}
-      <div className="w-full max-w-md bg-white border-l border-gray-200 flex flex-col">
+      <div className="sidebar w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px]">
         
         {/* Header with Search */}
-        <div className="bg-gray-50 p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold text-gray-800">BasemApp</h1>
+        <div className="bg-gray-50 p-3 sm:p-4 border-b border-gray-200 app-header">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-800 app-title">BasemApp</h1>
             <div className="relative">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowSettings(!showSettings)}
-                className="text-gray-600 hover:bg-gray-100 p-2"
+                className="text-gray-600 hover:bg-gray-100 p-2 touch-target"
               >
-                <MoreVertical className="w-5 h-5" />
+                <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
               
               {showSettings && (
-                <div className="absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="absolute left-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 settings-menu">
                   <div className="py-2">
                     <button
                       onClick={() => {
                         setShowProfileEdit(true);
                         setShowSettings(false);
                       }}
-                      className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-gray-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse settings-item"
                     >
-                      <User className="w-4 h-4 text-gray-500" />
-                      <span>الملف الشخصي</span>
+                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                      <span className="text-sm sm:text-base">الملف الشخصي</span>
                     </button>
                     <hr className="my-1" />
                     <button
@@ -303,10 +303,10 @@ function App() {
                         setShowSettings(false);
                         logout();
                       }}
-                      className="w-full px-4 py-2 text-right hover:bg-red-50 flex items-center space-x-3 space-x-reverse text-red-600"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-red-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse text-red-600 settings-item"
                     >
-                      <LogOut className="w-4 h-4" />
-                      <span>تسجيل الخروج</span>
+                      <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="text-sm sm:text-base">تسجيل الخروج</span>
                     </button>
                   </div>
                 </div>
@@ -316,11 +316,11 @@ function App() {
           
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
             <Input
               type="text"
               placeholder="ابحث أو ابدأ محادثة جديدة"
-              className="pr-10 bg-gray-100 border-0 rounded-lg text-right"
+              className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-9 sm:h-10 text-sm sm:text-base"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && searchUsers()}
