@@ -42,6 +42,42 @@ function App() {
     }
   }, [token]);
 
+  // إنشاء صوت الإشعار
+  useEffect(() => {
+    // إنشاء صوت بسيط للإشعار
+    const createNotificationSound = () => {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.3, audioContext.sampleRate);
+      const channelData = buffer.getChannelData(0);
+      
+      // إنشاء نغمة جميلة
+      for (let i = 0; i < buffer.length; i++) {
+        channelData[i] = Math.sin(2 * Math.PI * 800 * i / audioContext.sampleRate) * 0.1;
+      }
+      
+      return buffer;
+    };
+
+    try {
+      notificationSound.current = createNotificationSound();
+    } catch (error) {
+      console.log('تعذر إنشاء صوت الإشعار:', error);
+    }
+  }, []);
+
+  // تشغيل صوت الإشعار
+  const playNotificationSound = () => {
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioContext.createBufferSource();
+      source.buffer = notificationSound.current;
+      source.connect(audioContext.destination);
+      source.start();
+    } catch (error) {
+      console.log('تعذر تشغيل صوت الإشعار:', error);
+    }
+  };
+
   const login = async () => {
     try {
       const response = await axios.post(`${API}/auth/login`, { email, password });
