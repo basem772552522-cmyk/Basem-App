@@ -660,9 +660,13 @@ function App() {
                   >
                     <div className="flex items-center space-x-3 space-x-reverse">
                       <Avatar>
-                        <AvatarFallback>
-                          {chat.other_user?.username?.[0]?.toUpperCase()}
-                        </AvatarFallback>
+                        {chat.other_user?.avatar_url ? (
+                          <img src={chat.other_user.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                        ) : (
+                          <AvatarFallback>
+                            {chat.other_user?.username?.[0]?.toUpperCase()}
+                          </AvatarFallback>
+                        )}
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
