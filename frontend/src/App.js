@@ -764,9 +764,13 @@ function App() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3 space-x-reverse">
                   <Avatar>
-                    <AvatarFallback>
-                      {selectedChat.other_user?.username?.[0]?.toUpperCase()}
-                    </AvatarFallback>
+                    {selectedChat.other_user?.avatar_url ? (
+                      <img src={selectedChat.other_user.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                    ) : (
+                      <AvatarFallback>
+                        {selectedChat.other_user?.username?.[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                   <div>
                     <h2 className="font-semibold">{selectedChat.other_user?.username}</h2>
