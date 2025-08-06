@@ -176,10 +176,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 # Authentication routes
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
-    # Check if user exists
-    existing_user = await db.users.find_one({"email": user_data.email})
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    # Check if email exists
+    existing_email = await db.users.find_one({"email": user_data.email})
+    if existing_email:
+        raise HTTPException(status_code=400, detail="البريد الإلكتروني مسجل بالفعل")
+    
+    # Check if username exists
+    existing_username = await db.users.find_one({"username": user_data.username})
+    if existing_username:
+        raise HTTPException(status_code=400, detail="اسم المستخدم مستخدم بالفعل")
     
     # Create new user
     hashed_password = get_password_hash(user_data.password)
