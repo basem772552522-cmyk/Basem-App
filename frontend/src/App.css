@@ -61,6 +61,66 @@ input::placeholder {
   .sidebar.chat-open {
     display: none;
   }
+  
+  /* Mobile chat interface adjustments */
+  .mobile-chat-header {
+    padding: 12px 16px;
+  }
+  
+  .mobile-back-button {
+    display: block;
+  }
+  
+  .desktop-sidebar {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-back-button {
+    display: none;
+  }
+  
+  .desktop-sidebar {
+    display: flex;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .message-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .chat-message {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+  
+  .user-item {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+/* Keyboard adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .messages-container {
+    height: calc(100vh - 180px);
+  }
+}
+
+/* High DPI display support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .avatar, .profile-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
 }
 
 /* Dark mode support (future enhancement) */
