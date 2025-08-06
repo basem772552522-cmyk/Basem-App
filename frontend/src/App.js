@@ -45,7 +45,9 @@ function App() {
       setEmail('');
       setPassword('');
     } catch (error) {
-      alert('فشل في تسجيل الدخول');
+      const errorMessage = error.response?.data?.detail || 'فشل في تسجيل الدخول';
+      alert(errorMessage);
+      console.error('Login error:', error.response?.data || error.message);
     }
   };
 
