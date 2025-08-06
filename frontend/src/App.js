@@ -427,12 +427,23 @@ function App() {
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
             <Input
               type="text"
-              placeholder="ابحث أو ابدأ محادثة جديدة"
+              placeholder="ابحث عن مستخدم بالاسم أو البريد..."
               className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-8 sm:h-9 text-xs sm:text-sm"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchUsers()}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={() => {
+                // إظهار النتائج عند التركيز إذا كان هناك نص
+                if (searchQuery.trim().length >= 2) {
+                  searchUsers();
+                }
+              }}
             />
+            {/* مؤشر التحميل */}
+            {searchQuery.length >= 2 && searchResults.length === 0 && (
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-500"></div>
+              </div>
+            )}
           </div>
         </div>
 
