@@ -426,26 +426,26 @@ function App() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col bg-gray-50">
+      <div className="chat-area">
         {selectedChat ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 bg-white border-b border-gray-200 flex items-center">
-              <Avatar className="w-10 h-10 mr-3">
-                <AvatarFallback>
+            <div className="p-3 sm:p-4 bg-white border-b border-gray-200 flex items-center chat-header">
+              <Avatar className="w-8 h-8 sm:w-10 sm:h-10 mr-2 sm:mr-3">
+                <AvatarFallback className="text-sm sm:text-base">
                   {selectedChat.other_user?.username?.[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-semibold">{selectedChat.other_user?.username}</h2>
-                <p className="text-sm text-gray-500">
+                <h2 className="font-semibold text-sm sm:text-base">{selectedChat.other_user?.username}</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
                   {selectedChat.other_user?.is_online ? 'متصل' : `آخر ظهور: ${formatLastSeen(selectedChat.other_user?.last_seen)}`}
                 </p>
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 messages-container">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -454,13 +454,13 @@ function App() {
                   }`}
                 >
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 py-2 sm:px-4 sm:py-2 rounded-lg message-bubble ${
                       message.sender_id === user.id
                         ? 'bg-emerald-500 text-white'
                         : 'bg-white border border-gray-200'
                     }`}
                   >
-                    <p className="text-sm">{message.content}</p>
+                    <p className="text-sm sm:text-base">{message.content}</p>
                     <p
                       className={`text-xs mt-1 ${
                         message.sender_id === user.id
@@ -477,7 +477,7 @@ function App() {
             </div>
 
             {/* Message Input */}
-            <div className="p-4 bg-white border-t border-gray-200">
+            <div className="p-3 sm:p-4 bg-white border-t border-gray-200 message-input-area">
               <div className="flex space-x-2 space-x-reverse">
                 <Input
                   type="text"
@@ -485,30 +485,30 @@ function App() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 text-right"
+                  className="flex-1 text-right message-input h-9 sm:h-10 text-sm sm:text-base"
                 />
                 <Button 
                   onClick={sendMessage} 
                   disabled={!newMessage.trim()}
-                  className={`transition-all ${
+                  className={`transition-all h-9 sm:h-10 px-3 sm:px-4 ${
                     newMessage.trim() 
                       ? 'bg-emerald-600 hover:bg-emerald-700' 
                       : 'bg-gray-300 cursor-not-allowed opacity-50'
                   }`}
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center p-4">
             <div className="text-center">
-              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h2 className="text-xl font-semibold text-gray-600 mb-2">
+              <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
                 مرحباً بك في BasemApp
               </h2>
-              <p className="text-gray-500">
+              <p className="text-sm sm:text-base text-gray-500">
                 اختر مستخدم لبدء الدردشة
               </p>
             </div>
