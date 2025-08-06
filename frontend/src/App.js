@@ -115,6 +115,29 @@ function App() {
     });
   };
 
+  const formatLastSeen = (lastSeen) => {
+    if (!lastSeen) return 'غير متاح';
+    
+    const now = new Date();
+    const lastSeenDate = new Date(lastSeen.endsWith && lastSeen.endsWith('Z') ? lastSeen : lastSeen + 'Z');
+    const diffInMinutes = Math.floor((now - lastSeenDate) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'منذ قليل';
+    if (diffInMinutes < 60) return `منذ ${diffInMinutes} دقيقة`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `منذ ${diffInHours} ساعة`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `منذ ${diffInDays} يوم`;
+    
+    return lastSeenDate.toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
     
