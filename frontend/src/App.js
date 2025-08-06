@@ -304,6 +304,21 @@ function App() {
     });
   };
 
+  // Message status icon component
+  const MessageStatusIcon = ({ message }) => {
+    if (message.sender_id !== user.id) return null;
+    
+    const status = message.status || 'sent';
+    
+    if (status === 'read') {
+      return <CheckCheck className="w-3 h-3 text-blue-500" />;
+    } else if (status === 'delivered') {
+      return <CheckCheck className="w-3 h-3 text-gray-500" />;
+    } else {
+      return <Check className="w-3 h-3 text-gray-500" />;
+    }
+  };
+
   // Auth screen
   if (!token) {
     return (
