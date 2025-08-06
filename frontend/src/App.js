@@ -518,15 +518,15 @@ function App() {
 
       {/* Profile Edit Modal */}
       {showProfileEdit && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">الملف الشخصي</h3>
+              <h3 className="text-lg sm:text-xl font-semibold">الملف الشخصي</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowProfileEdit(false)}
-                className="text-gray-500"
+                className="text-gray-500 touch-target"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -534,8 +534,8 @@ function App() {
             
             <div className="space-y-4">
               <div className="flex flex-col items-center">
-                <Avatar className="w-24 h-24 mb-4">
-                  <AvatarFallback className="text-2xl">
+                <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mb-4">
+                  <AvatarFallback className="text-xl sm:text-2xl">
                     {user?.username?.[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -548,7 +548,7 @@ function App() {
                     type="text"
                     value={user?.username || ''}
                     disabled
-                    className="bg-gray-50 text-right"
+                    className="bg-gray-50 text-right h-10 sm:h-12"
                   />
                 </div>
                 
@@ -558,7 +558,7 @@ function App() {
                     type="email"
                     value={user?.email || ''}
                     disabled
-                    className="bg-gray-50 text-right"
+                    className="bg-gray-50 text-right h-10 sm:h-12"
                   />
                 </div>
               </div>
@@ -566,7 +566,7 @@ function App() {
               <div className="flex space-x-3 space-x-reverse pt-4">
                 <Button
                   onClick={() => setShowProfileEdit(false)}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-12"
                 >
                   تم
                 </Button>
