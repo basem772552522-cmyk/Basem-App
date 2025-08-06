@@ -1173,6 +1173,67 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Message Actions Modal */}
+      {showMessageActions && selectedMessage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">خيارات الرسالة</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setShowMessageActions(false);
+                  setSelectedMessage(null);
+                }}
+                className="text-gray-500"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-3">
+              {/* Forward message */}
+              <Button
+                variant="outline"
+                className="w-full flex items-center space-x-3 space-x-reverse justify-start"
+                onClick={() => {
+                  // TODO: Implement forward functionality
+                  alert('ميزة إعادة الإرسال ستتوفر قريباً');
+                  setShowMessageActions(false);
+                }}
+              >
+                <Reply className="w-4 h-4 text-blue-500" />
+                <span>إعادة إرسال</span>
+              </Button>
+
+              {/* Delete message */}
+              {selectedMessage.sender_id === user.id && (
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center space-x-3 space-x-reverse justify-start text-red-600 border-red-200 hover:bg-red-50"
+                  onClick={async () => {
+                    if (window.confirm('هل تريد حذف هذه الرسالة؟')) {
+                      try {
+                        await axios.delete(`${API}/messages/${selectedMessage.id}`);
+                        setMessages(prev => prev.filter(msg => msg.id !== selectedMessage.id));
+                        setShowMessageActions(false);
+                      } catch (error) {
+                        console.error('Failed to delete message:', error);
+                        alert('فشل في حذف الرسالة');
+                      }
+                    }
+                  }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>حذف الرسالة</span>
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
