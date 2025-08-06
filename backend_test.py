@@ -232,6 +232,147 @@ class BasemappAPITester:
             
         return success
 
+    def test_send_message(self):
+        """Test sending a message to a chat"""
+        if not self.token1 or not self.chat_id:
+            print("❌ Missing token or chat ID for send message test")
+            return False
+            
+        message_data = {
+            "chat_id": self.chat_id,
+            "content": "مرحبا! هذه رسالة تجريبية من BasemApp",
+            "message_type": "text"
+        }
+        
+        success, response = self.run_test(
+            "Send Message",
+            "POST",
+            "messages",
+            200,
+            data=message_data,
+            token=self.token1
+        )
+        
+        if success and 'id' in response:
+            self.message_id = response['id']
+            print(f"   Message ID: {self.message_id}")
+            print(f"   Message Status: {response.get('status', 'unknown')}")
+            
+        return success
+
+    def test_message_status_tracking(self):
+        """Test message delivery status tracking"""
+        if not hasattr(self, 'message_id') or not self.message_id:
+            print("❌ No message ID available for status tracking test")
+            return False
+            
+        # Test marking message as read
+        success, response = self.run_test(
+            "Mark Message as Read",
+            "PUT",
+            f"messages/{self.message_id}/read",
+            200,
+            token=self.token2  # Use token2 to mark user1's message as read
+        )
+        
+        if success:
+            print(f"   Message marked as read successfully")
+            
+        return success
+
+    def test_user_status_management(self):
+        """Test user online status management"""
+        if not self.token1:
+            print("❌ No token available for user status test")
+            return False
+            
+        # Test updating user status to online
+        status_data = {"is_online": True}
+        
+        success, response = self.run_test(
+            "Update User Status (Online)",
+            "POST",
+            "users/update-status",
+            200,
+            data=status_data,
+            token=self.token1
+        )
+        
+        if success:
+            print(f"   User status updated: {response.get('is_online', 'unknown')}")
+            
+        # Test updating user status to offline
+        status_data = {"is_online": False}
+        
+        success2, response2 = self.run_test(
+            "Update User Status (Offline)",
+            "POST",
+            "users/update-status",
+            200,
+            data=status_data,
+            token=self.token1
+        )
+        
+        return success and success2
+
+    def test_comprehensive_chat_flow(self):
+        """Test complete chat flow with message status tracking"""
+        if not self.token1 or not self.token2 or not self.chat_id:
+            print("❌ Missing required data for comprehensive chat flow test")
+            return False
+            
+        # Send message from user1
+        message_data = {
+            "chat_id": self.chat_id,
+            "content": "رسالة شاملة لاختبار حالة التسليم",
+            "message_type": "text"
+        }
+        
+        success1, response1 = self.run_test(
+            "Send Message (User 1)",
+            "POST",
+            "messages",
+            200,
+            data=message_data,
+            token=self.token1
+        )
+        
+        if not success1:
+            return False
+            
+        message_id = response1.get('id')
+        print(f"   Message sent with status: {response1.get('status', 'unknown')}")
+        
+        # Get messages as user2 (should mark as read)
+        success2, response2 = self.run_test(
+            "Get Messages (User 2)",
+            "GET",
+            f"chats/{self.chat_id}/messages",
+            200,
+            token=self.token2
+        )
+        
+        if success2:
+            print(f"   User 2 retrieved {len(response2)} messages")
+            
+        # Send reply from user2
+        reply_data = {
+            "chat_id": self.chat_id,
+            "content": "تم استلام الرسالة بنجاح!",
+            "message_type": "text"
+        }
+        
+        success3, response3 = self.run_test(
+            "Send Reply (User 2)",
+            "POST",
+            "messages",
+            200,
+            data=reply_data,
+            token=self.token2
+        )
+        
+        return success1 and success2 and success3
+
     def test_invalid_auth(self):
         """Test invalid authentication scenarios"""
         # Test with invalid token
