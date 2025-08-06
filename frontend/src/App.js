@@ -227,6 +227,7 @@ function App() {
     if (token) {
       loadUser();
       loadChats();
+      loadAllUsers();
       connectWebSocket();
     }
   }, [token]);
