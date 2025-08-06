@@ -465,17 +465,25 @@ function App() {
           <>
             {/* Chat header */}
             <div className="p-4 border-b border-gray-200 bg-white">
-              <div className="flex items-center space-x-3 space-x-reverse">
-                <Avatar>
-                  <AvatarFallback>
-                    {selectedChat.other_user?.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h2 className="font-semibold">{selectedChat.other_user?.username}</h2>
-                  <p className="text-sm text-gray-500">
-                    {selectedChat.other_user?.is_online ? 'متصل' : 'غير متصل'}
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3 space-x-reverse">
+                  <Avatar>
+                    <AvatarFallback>
+                      {selectedChat.other_user?.username?.[0]?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="font-semibold">{selectedChat.other_user?.username}</h2>
+                    <p className="text-sm text-gray-500">
+                      {selectedChat.other_user?.is_online ? 'متصل' : 'غير متصل'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 space-x-reverse text-sm">
+                  <div className={`w-2 h-2 rounded-full ${wsStatus === 'connected' ? 'bg-green-500' : wsStatus === 'connecting' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
+                  <span className="text-xs text-gray-500">
+                    {wsStatus === 'connected' ? 'متصل' : wsStatus === 'connecting' ? 'اتصال...' : 'غير متصل'}
+                  </span>
                 </div>
               </div>
             </div>
