@@ -25,6 +25,8 @@ function App() {
   const [ws, setWs] = useState(null);
   const [wsStatus, setWsStatus] = useState('disconnected'); // 'connecting', 'connected', 'disconnected'
   const [currentView, setCurrentView] = useState('chats'); // 'chats', 'search'
+  const [showSettings, setShowSettings] = useState(false); // Settings dropdown
+  const [showProfileEdit, setShowProfileEdit] = useState(false); // Profile editing modal
   
   // Auth states
   const [isLogin, setIsLogin] = useState(true);
