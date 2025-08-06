@@ -165,19 +165,26 @@ function App() {
   const handleSearchChange = (value) => {
     setSearchQuery(value);
     
+    // إذا كان النص فارغاً، امسح النتائج فوراً
+    if (!value.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    
+    // إذا كان النص أقل من حرفين، لا تبحث
+    if (value.trim().length < 2) {
+      return;
+    }
+    
     // إلغاء البحث السابق
     if (window.searchTimeout) {
       clearTimeout(window.searchTimeout);
     }
     
-    // بحث بعد 500ms من توقف الكتابة
+    // بحث بعد 300ms من توقف الكتابة
     window.searchTimeout = setTimeout(() => {
-      if (value.trim().length >= 2) {
-        searchUsers(value);
-      } else if (value.trim().length === 0) {
-        setSearchResults([]);
-      }
-    }, 500);
+      searchUsers(value);
+    }, 300);
   };
 
   const startChat = async (userId) => {
