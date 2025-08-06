@@ -244,39 +244,38 @@ function App() {
     };
   }, [showSettings]);
 
-  // Auto-update user online status and last seen
+  // Network status detection
   useEffect(() => {
-    if (!user) return;
-    
-    const updateOnlineStatus = async () => {
-      try {
-        // Update own online status
-        await axios.post(`${API}/users/update-status`, { is_online: true });
-        // Refresh chats to get updated user statuses
-        loadChats();
-      } catch (error) {
-        console.error('Failed to update online status:', error);
+    const handleOnline = () => {
+      setIsOfflineMode(false);
+      // Try to send pending messages
+      if (pendingMessages.length > 0) {
+        pendingMessages.forEach(async (msg) => {
+          try {
+            await axios.post(`${API}/messages`, msg);
+            setPendingMessages(prev => prev.filter(m => m.id !== msg.id));
+          } catch (error) {
+            console.error('Failed to send pending message:', error);
+          }
+        });
       }
     };
 
-    // Update status immediately and then every 30 seconds
-    updateOnlineStatus();
-    const statusInterval = setInterval(updateOnlineStatus, 30000);
-
-    // Update status before page unload
-    const handleBeforeUnload = () => {
-      navigator.sendBeacon(`${API}/users/update-status`, 
-        JSON.stringify({ is_online: false })
-      );
+    const handleOffline = () => {
+      setIsOfflineMode(true);
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Initial check
+    setIsOfflineMode(!navigator.onLine);
 
     return () => {
-      clearInterval(statusInterval);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
     };
-  }, [user]);
+  }, [pendingMessages]);
 
   // Scroll to bottom of messages
   useEffect(() => {
