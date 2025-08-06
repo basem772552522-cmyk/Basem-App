@@ -124,45 +124,167 @@ input::placeholder {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+
+/* Base responsive layout */
+.main-layout {
+  @apply flex h-screen;
+}
+
+.sidebar {
+  @apply bg-white border-l border-gray-200 flex flex-col;
+}
+
+.chat-area {
+  @apply flex-1 flex flex-col bg-gray-50;
+}
+
+/* Mobile First Approach */
+/* Extra Small devices (phones, 375px and down) */
+@media (max-width: 375px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  
   .sidebar {
     width: 100%;
-    max-width: 320px;
+    max-width: none;
+    height: 50vh;
   }
   
   .chat-area {
-    display: none;
+    height: 50vh;
+  }
+  
+  /* App title adjustment for small screens */
+  .app-title {
+    font-size: 18px;
+  }
+  
+  /* Login card adjustments */
+  .login-card {
+    margin: 8px;
+    padding: 16px;
+  }
+  
+  .login-title {
+    font-size: 20px;
+  }
+  
+  /* Smaller input padding */
+  .form-input {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  /* Chat list items */
+  .chat-item {
+    padding: 12px;
+  }
+  
+  .chat-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Message bubbles */
+  .message-bubble {
+    max-width: 85%;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 376px) and (max-width: 575px) {
+  .sidebar {
+    width: 100%;
+    max-width: 400px;
   }
   
   .chat-area.active {
-    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
   }
   
   .sidebar.chat-open {
     display: none;
   }
-  
-  /* Mobile chat interface adjustments */
-  .mobile-chat-header {
-    padding: 12px 16px;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .main-layout {
+    padding: 16px;
   }
   
-  .mobile-back-button {
-    display: block;
+  .sidebar {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 8px;
+    margin: 0 auto;
   }
   
-  .desktop-sidebar {
-    display: none;
+  .login-card {
+    max-width: 400px;
   }
 }
 
-@media (min-width: 769px) {
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 768px) {
+  .sidebar {
+    width: 400px;
+    max-width: 400px;
+  }
+  
+  .chat-area {
+    display: flex;
+  }
+  
   .mobile-back-button {
     display: none;
   }
   
   .desktop-sidebar {
     display: flex;
+  }
+  
+  .main-layout {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 992px) {
+  .sidebar {
+    width: 450px;
+    max-width: 450px;
+  }
+  
+  .main-layout {
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .sidebar, .chat-area {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Ultra wide screens (1400px and up) */
+@media (min-width: 1200px) {
+  .main-layout {
+    max-width: 1600px;
+  }
+  
+  .sidebar {
+    width: 500px;
+    max-width: 500px;
   }
 }
 
