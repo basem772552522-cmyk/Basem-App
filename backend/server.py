@@ -342,6 +342,42 @@ async def send_message(message_data: MessageCreate, current_user: UserResponse =
     
     return message_dict
 
+@api_router.put("/messages/{message_id}/read")
+async def mark_message_as_read(message_id: str, current_user: UserResponse = Depends(get_current_user)):
+    # Find the message and verify user has access
+    message = await db.messages.find_one({"id": message_id})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Check if user is participant in the chat
+    chat = await db.chats.find_one({"id": message["chat_id"], "participants": current_user.id})
+    if not chat:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # Don't update if it's the sender's own message
+    if message["sender_id"] == current_user.id:
+        return {"status": "success", "message": "Cannot mark own message as read"}
+    
+    # Update message status to read
+    await db.messages.update_one(
+        {"id": message_id},
+        {"$set": {
+            "status": "read",
+            "is_read": True,
+            "read_at": datetime.utcnow()
+        }}
+    )
+    
+    # Notify sender via WebSocket if connected
+    await manager.send_personal_message({
+        "type": "message_read",
+        "message_id": message_id,
+        "read_by": current_user.id,
+        "read_at": datetime.utcnow().isoformat()
+    }, message["sender_id"])
+    
+    return {"status": "success"}
+
 # User search functionality
 @api_router.get("/users/search")
 async def search_users(q: str, current_user: UserResponse = Depends(get_current_user)):
