@@ -893,9 +893,9 @@ function App() {
         <div className="p-2 border-b border-gray-200">
           <div className="flex space-x-1 space-x-reverse">
             <Button
-              variant={currentView === 'users' ? 'default' : 'ghost'}
+              variant={currentView === 'chats' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setCurrentView('users')}
+              onClick={() => setCurrentView('chats')}
               className="flex-1"
             >
               <Users className="w-4 h-4 ml-2" />
