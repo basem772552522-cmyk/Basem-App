@@ -373,3 +373,5 @@ agent_communication:
       message: "USER REPORTED: Send button enables when typing but doesn't actually send messages when clicked. This is likely due to WebSocket connection timeout issues identified in backend testing. Need to implement HTTP fallback for message sending."
     - agent: "main"
       message: "FRONTEND BLANK PAGE ISSUE FIXED: User reported app won't open (showing blank page). Issue was in App.js line 11 - import.meta.env was undefined. Fixed by changing to process.env.REACT_APP_BACKEND_URL. App now loads correctly showing BasemApp login screen in Arabic."
+    - agent: "main"
+      message: "NEW FEATURES IMPLEMENTED: Added user last seen display, Times New Roman font, responsive design improvements, Made with Emergent footer, and smaller search field. All backend APIs tested and working perfectly (10/10 success rate). Ready for comprehensive frontend testing."
