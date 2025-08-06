@@ -449,38 +449,86 @@ function App() {
 
         {/* Chat List */}
         <div className="flex-1 overflow-y-auto">
-          {searchQuery && searchResults.length > 0 ? (
+          {searchQuery && searchQuery.length >= 2 ? (
             <div className="p-2">
-              <h3 className="text-xs sm:text-sm font-medium text-gray-500 p-2">نتائج البحث</h3>
-              {searchResults.map((user) => (
-                <div
-                  key={user.id}
-                  onClick={() => startChat(user.id)}
-                  className="p-3 sm:p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors user-item"
+              <div className="flex items-center justify-between p-2 mb-2">
+                <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                  نتائج البحث عن "{searchQuery}"
+                </h3>
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchResults([]);
+                  }}
+                  className="text-xs text-gray-400 hover:text-gray-600"
                 >
-                  <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
-                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar">
-                      <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700">
-                        {user.username[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">
-                        {user.username}
-                      </h3>
-                      <p className="text-gray-600 text-xs sm:text-sm truncate">
-                        {user.email}
-                      </p>
+                  مسح
+                </button>
+              </div>
+              
+              {searchResults.length > 0 ? (
+                searchResults.map((user) => (
+                  <div
+                    key={user.id}
+                    onClick={() => startChat(user.id)}
+                    className="p-3 sm:p-4 border border-gray-100 rounded-lg mb-2 hover:bg-emerald-50 hover:border-emerald-200 cursor-pointer transition-all duration-200 user-item"
+                  >
+                    <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
+                      <div className="relative">
+                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar border-2 border-emerald-100">
+                          <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700 font-semibold">
+                            {user.username[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        {user.is_online && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 space-x-reverse">
+                          <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                            {user.username}
+                          </h3>
+                          {user.is_online && (
+                            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5">
+                              متصل
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-gray-600 text-xs sm:text-sm truncate mt-0.5">
+                          {user.email}
+                        </p>
+                        {!user.is_online && user.last_seen && (
+                          <p className="text-gray-400 text-xs mt-0.5">
+                            آخر ظهور: {formatLastSeen(user.last_seen)}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center">
+                        <Button
+                          size="sm"
+                          className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 text-xs"
+                        >
+                          محادثة
+                        </Button>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                  <p className="text-sm">لا توجد نتائج للبحث عن "{searchQuery}"</p>
+                  <p className="text-xs text-gray-400 mt-1">جرب كتابة اسم مختلف أو بريد إلكتروني</p>
                 </div>
-              ))}
+              )}
             </div>
           ) : chats.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 sm:h-64 text-gray-500 p-4 sm:p-8">
               <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 text-gray-300" />
               <h3 className="text-base sm:text-lg font-medium mb-2">لا توجد محادثات</h3>
               <p className="text-xs sm:text-sm text-center">ابحث عن مستخدم لبدء محادثة جديدة</p>
+              <p className="text-xs text-gray-400 mt-2">اكتب أكثر من حرفين للبحث</p>
             </div>
           ) : (
             <div>
