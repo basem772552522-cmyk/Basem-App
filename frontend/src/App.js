@@ -32,6 +32,7 @@ function App() {
   const [showMessageActions, setShowMessageActions] = useState(false); // Message actions menu
   const [isOfflineMode, setIsOfflineMode] = useState(false); // Offline mode indicator
   const [pendingMessages, setPendingMessages] = useState([]); // Messages waiting to be sent
+  const [allUsers, setAllUsers] = useState([]); // All users in the system
   
   // Auth states
   const [isLogin, setIsLogin] = useState(true);
