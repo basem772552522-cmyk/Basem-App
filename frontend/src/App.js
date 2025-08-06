@@ -1184,10 +1184,10 @@ function App() {
             <div className="text-center">
               <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h2 className="text-xl font-semibold text-gray-600 mb-2">
-                مرحباً بك في بيس ماب
+                مرحباً بك في BasemApp
               </h2>
               <p className="text-gray-500">
-                اختر محادثة لبدء الدردشة
+                اختر مستخدم لبدء الدردشة
               </p>
             </div>
           </div>
