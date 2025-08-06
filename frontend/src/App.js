@@ -732,7 +732,7 @@ function App() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-emerald-600 mb-2">
-              بيس ماب
+              BasemApp
             </CardTitle>
             <p className="text-gray-600">
               {isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}
