@@ -936,13 +936,70 @@ function App() {
             {/* Message input */}
             <div className="p-4 border-t border-gray-200 bg-white">
               <div className="flex space-x-2 space-x-reverse">
+                {/* Attachment button */}
+                <div className="relative">
+                  <Button
+                    type="button"
+                    onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2"
+                  >
+                    <Paperclip className="w-5 h-5" />
+                  </Button>
+                  
+                  {/* Attachment Menu */}
+                  {showAttachmentMenu && (
+                    <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <div className="py-2">
+                        <div className="relative">
+                          <button className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse">
+                            <Image className="w-4 h-4 text-blue-500" />
+                            <span>صورة</span>
+                          </button>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, 'image')}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        
+                        <div className="relative">
+                          <button className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse">
+                            <Video className="w-4 h-4 text-red-500" />
+                            <span>فيديو</span>
+                          </button>
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => handleFileUpload(e, 'video')}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        
+                        <div className="relative">
+                          <button className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse">
+                            <File className="w-4 h-4 text-green-500" />
+                            <span>ملف</span>
+                          </button>
+                          <input
+                            type="file"
+                            accept="*/*"
+                            onChange={(e) => handleFileUpload(e, 'file')}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
                 <Input
                   type="text"
                   placeholder="اكتب رسالة..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 text-right"
+                  className="flex-1 text-right message-input"
                 />
                 <Button 
                   onClick={sendMessage} 
