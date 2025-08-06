@@ -855,6 +855,89 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* Profile Edit Modal */}
+      {showProfileEdit && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">الملف الشخصي</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowProfileEdit(false)}
+                className="text-gray-500"
+              >
+                ✕
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Profile Image */}
+              <div className="flex flex-col items-center">
+                <Avatar className="w-24 h-24 mb-4">
+                  {user?.avatar_url ? (
+                    <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                  ) : (
+                    <AvatarFallback className="text-2xl">
+                      {user?.username?.[0]?.toUpperCase()}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                
+                <div className="relative">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center space-x-2 space-x-reverse"
+                  >
+                    <Camera className="w-4 h-4" />
+                    <span>تغيير الصورة</span>
+                  </Button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* User Info */}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+                  <Input
+                    type="text"
+                    value={user?.username || ''}
+                    disabled
+                    className="bg-gray-50 text-right"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
+                  <Input
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="bg-gray-50 text-right"
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-3 space-x-reverse pt-4">
+                <Button
+                  onClick={() => setShowProfileEdit(false)}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                >
+                  تم
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
