@@ -732,9 +732,13 @@ function App() {
                   >
                     <div className="flex items-center space-x-3 space-x-reverse">
                       <Avatar>
-                        <AvatarFallback>
-                          {user.username[0].toUpperCase()}
-                        </AvatarFallback>
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                        ) : (
+                          <AvatarFallback>
+                            {user.username[0].toUpperCase()}
+                          </AvatarFallback>
+                        )}
                       </Avatar>
                       <div>
                         <h3 className="font-medium">{user.username}</h3>
