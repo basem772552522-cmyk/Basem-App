@@ -264,6 +264,21 @@ backend:
           agent: "main"
           comment: "FOOTER TEXT TESTING PASSED: 'Made with Emergent' displays perfectly in all tested screen sizes. Positioned elegantly at bottom of chat area with subtle styling (small text, light gray, proper opacity). Non-intrusive and professional appearance. Maintains position correctly across all responsive breakpoints."
 
+  - task: "Real-time notifications and sound for incoming messages"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "User requested instant message delivery with sound when chat is open. Need to implement real-time polling and notification sound system."
+        - working: true
+          agent: "main"
+          comment: "REAL-TIME NOTIFICATIONS IMPLEMENTED: Added pollMessagesForActiveChat() function with 2-second polling interval. Integrated playNotificationSound() with Web Audio API creating 800Hz sine wave notification. Browser notifications included for when chat is open. System detects new messages from other users only and triggers sound + visual notification. Polling automatically starts when chat is selected and cleans up when chat is closed. Complete real-time messaging experience achieved."
+
   - task: "Search field size optimization"
     implemented: true
     working: true
