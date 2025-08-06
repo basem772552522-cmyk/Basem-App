@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Button } from './components/ui/button';
-import { Input } from './components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
-import { Avatar, AvatarFallback } from './components/ui/avatar';
+import { Input } from './components/ui/input';
+import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
-import { Search, Send, MessageCircle, MoreVertical, LogOut, User, X } from 'lucide-react';
-import './App.css';
+import { Avatar, AvatarFallback } from './components/ui/avatar';
+import { Search, MessageCircle, Send, MoreVertical, User, LogOut, X } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'}/api`;
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -25,13 +25,8 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
-  const [lastMessageCount, setLastMessageCount] = useState(0);
   
   const messagesEndRef = useRef(null);
-  const pollingIntervalRef = useRef(null);
-  
-  // صوت الإشعار
-  const notificationSound = useRef(null);
 
   // Set axios default headers
   useEffect(() => {
@@ -41,106 +36,6 @@ function App() {
       delete axios.defaults.headers.common['Authorization'];
     }
   }, [token]);
-
-  // إنشاء صوت الإشعار
-  useEffect(() => {
-    // إنشاء صوت بسيط للإشعار
-    const createNotificationSound = () => {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.3, audioContext.sampleRate);
-      const channelData = buffer.getChannelData(0);
-      
-      // إنشاء نغمة جميلة
-      for (let i = 0; i < buffer.length; i++) {
-        channelData[i] = Math.sin(2 * Math.PI * 800 * i / audioContext.sampleRate) * 0.1;
-      }
-      
-      return buffer;
-    };
-
-    try {
-      notificationSound.current = createNotificationSound();
-    } catch (error) {
-      console.log('تعذر إنشاء صوت الإشعار:', error);
-    }
-  }, []);
-
-  // تشغيل صوت الإشعار
-  const playNotificationSound = () => {
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioContext.createBufferSource();
-      source.buffer = notificationSound.current;
-      source.connect(audioContext.destination);
-      source.start();
-    } catch (error) {
-      console.log('تعذر تشغيل صوت الإشعار:', error);
-    }
-  };
-
-  // تحديث الرسائل تلقائياً للدردشة المفتوحة
-  const pollMessagesForActiveChat = async () => {
-    if (!selectedChat || !user) return;
-    
-    try {
-      const response = await axios.get(`${API}/chats/${selectedChat.id}/messages`);
-      const newMessages = response.data;
-      
-      // التحقق من وجود رسائل جديدة
-      if (newMessages.length > lastMessageCount && lastMessageCount > 0) {
-        const latestMessage = newMessages[newMessages.length - 1];
-        
-        // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
-        if (latestMessage.sender_id !== user.id) {
-          playNotificationSound();
-          
-          // إشعار المتصفح
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('رسالة جديدة في BasemApp', {
-              body: `${selectedChat.other_user?.username}: ${latestMessage.content}`,
-              icon: '/favicon.ico',
-              tag: 'new-message'
-            });
-          }
-        }
-      }
-      
-      setMessages(newMessages);
-      setLastMessageCount(newMessages.length);
-    } catch (error) {
-      console.error('خطأ في تحديث الرسائل:', error);
-    }
-  };
-
-  // بدء polling عندما تكون الدردشة مفتوحة
-  useEffect(() => {
-    if (selectedChat && user) {
-      setLastMessageCount(messages.length);
-      
-      // تنظيف polling السابق
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
-      
-      // بدء polling كل 2 ثانية
-      pollingIntervalRef.current = setInterval(pollMessagesForActiveChat, 2000);
-      
-      return () => {
-        if (pollingIntervalRef.current) {
-          clearInterval(pollingIntervalRef.current);
-        }
-      };
-    }
-  }, [selectedChat, user, lastMessageCount]);
-
-  // تنظيف polling عند إغلاق التطبيق
-  useEffect(() => {
-    return () => {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
-    };
-  }, []);
 
   const login = async () => {
     try {
@@ -152,9 +47,7 @@ function App() {
     } catch (error) {
       const errorMessage = error.response?.data?.detail || 'فشل في تسجيل الدخول';
       alert(errorMessage);
-      console.error('Login error:', error.response?.data || error.message);
     }
-  };
   };
 
   const register = async () => {
@@ -172,17 +65,16 @@ function App() {
     } catch (error) {
       const errorMessage = error.response?.data?.detail || 'فشل في إنشاء الحساب';
       alert(errorMessage);
-      console.error('Registration error:', error.response?.data || error.message);
     }
   };
 
   const logout = () => {
     setToken(null);
-    localStorage.removeItem('token');
     setUser(null);
-    setChats([]);
     setSelectedChat(null);
     setMessages([]);
+    setChats([]);
+    localStorage.removeItem('token');
   };
 
   const loadUser = async () => {
@@ -209,6 +101,51 @@ function App() {
       setMessages(response.data);
     } catch (error) {
       console.error('Failed to load messages:', error);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !selectedChat) return;
+
+    try {
+      await axios.post(`${API}/messages`, {
+        chat_id: selectedChat.id,
+        content: newMessage.trim()
+      });
+      
+      setNewMessage('');
+      loadMessages(selectedChat.id);
+      loadChats();
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
+  };
+
+  const searchUsers = async () => {
+    if (!searchQuery.trim()) return;
+    
+    try {
+      const response = await axios.get(`${API}/users/search?q=${searchQuery}`);
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error('Search failed:', error);
+    }
+  };
+
+  const startChat = async (userId) => {
+    try {
+      const response = await axios.post(`${API}/chats`, {
+        user_id: userId
+      });
+      
+      await loadChats();
+      const newChat = chats.find(chat => chat.id === response.data.id) || response.data;
+      setSelectedChat(newChat);
+      loadMessages(response.data.id);
+      setSearchQuery('');
+      setSearchResults([]);
+    } catch (error) {
+      console.error('Failed to start chat:', error);
     }
   };
 
@@ -244,62 +181,13 @@ function App() {
     });
   };
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedChat) return;
-    
-    try {
-      const response = await axios.post(`${API}/messages`, {
-        chat_id: selectedChat.id,
-        content: newMessage.trim(),
-        message_type: 'text'
-      });
-      
-      setMessages(prev => [...prev, response.data]);
-      setNewMessage('');
-      loadChats();
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      alert('فشل في إرسال الرسالة');
-    }
-  };
-
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+    if (e.key === 'Enter') {
       sendMessage();
     }
   };
 
-  const searchUsers = async () => {
-    if (!searchQuery.trim()) return;
-    
-    try {
-      const response = await axios.get(`${API}/users/search`, {
-        params: { q: searchQuery }
-      });
-      setSearchResults(response.data);
-    } catch (error) {
-      console.error('Failed to search users:', error);
-    }
-  };
-
-  const startChat = async (otherUserId) => {
-    try {
-      const response = await axios.post(`${API}/chats`, null, {
-        params: { other_user_id: otherUserId }
-      });
-      
-      await loadChats();
-      setSelectedChat(response.data);
-      setSearchQuery('');
-      setSearchResults([]);
-      await loadMessages(response.data.id);
-    } catch (error) {
-      console.error('Failed to start chat:', error);
-    }
-  };
-
-  // Initialize app
+  // Load user and chats on token change
   useEffect(() => {
     if (token) {
       loadUser();
@@ -313,68 +201,6 @@ function App() {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
-
-  // التحديث التلقائي للرسائل عند فتح دردشة
-  useEffect(() => {
-    let intervalId = null;
-    
-    if (selectedChat && user) {
-      // تشغيل صوت الإشعار
-      const playNotificationSound = () => {
-        try {
-          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-          oscillator.type = 'sine';
-          
-          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-          
-          oscillator.start(audioContext.currentTime);
-          oscillator.stop(audioContext.currentTime + 0.3);
-        } catch (error) {
-          console.log('تعذر تشغيل الصوت:', error);
-        }
-      };
-
-      // دالة التحديث
-      const checkForNewMessages = async () => {
-        try {
-          const response = await axios.get(`${API}/chats/${selectedChat.id}/messages`);
-          const newMessages = response.data;
-          
-          // التحقق من وجود رسائل جديدة
-          if (newMessages.length > messages.length) {
-            const latestMessage = newMessages[newMessages.length - 1];
-            
-            // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
-            if (latestMessage.sender_id !== user.id) {
-              playNotificationSound();
-            }
-            
-            setMessages(newMessages);
-          }
-        } catch (error) {
-          console.error('خطأ في تحديث الرسائل:', error);
-        }
-      };
-
-      // بدء التحديث كل 3 ثوان
-      intervalId = setInterval(checkForNewMessages, 3000);
-    }
-
-    // تنظيف عند تغيير الدردشة أو إغلاقها
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [selectedChat, user, messages.length]);
 
   // Authentication screen
   if (!user) {
@@ -684,6 +510,10 @@ function App() {
               <p className="text-sm sm:text-base text-gray-500">
                 اختر مستخدم لبدء الدردشة
               </p>
+              {/* Made with Emergent */}
+              <div className="text-center mt-4">
+                <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
+              </div>
             </div>
           </div>
         )}
