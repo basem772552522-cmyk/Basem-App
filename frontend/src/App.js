@@ -211,24 +211,24 @@ function App() {
   // Authentication screen
   if (!user) {
     return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8" dir="rtl">
+        <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg login-card">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-emerald-600 mb-2">
+            <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-600 mb-2 login-title">
               BasemApp
             </CardTitle>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               {isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}
             </p>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4">
             {!isLogin && (
               <Input
                 type="text"
                 placeholder="اسم المستخدم"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="text-right"
+                className="text-right form-input h-10 sm:h-12"
               />
             )}
             <Input
@@ -236,25 +236,25 @@ function App() {
               placeholder="البريد الإلكتروني"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="text-right"
+              className="text-right form-input h-10 sm:h-12"
             />
             <Input
               type="password"
               placeholder="كلمة المرور"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="text-right"
+              className="text-right form-input h-10 sm:h-12"
             />
             <Button
               onClick={isLogin ? login : register}
-              className="w-full bg-emerald-600 hover:bg-emerald-700"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-12 text-sm sm:text-base mobile-button"
             >
               {isLogin ? 'تسجيل الدخول' : 'إنشاء الحساب'}
             </Button>
             <Button
               variant="ghost"
               onClick={() => setIsLogin(!isLogin)}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
               {isLogin ? 'إنشاء حساب جديد' : 'لديك حساب؟ سجل الدخول'}
             </Button>
