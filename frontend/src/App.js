@@ -69,6 +69,15 @@ function App() {
     }
   }, [token]);
 
+  // Initialize app
+  useEffect(() => {
+    if (token) {
+      loadUser();
+      loadChats();
+      connectWebSocket();
+    }
+  }, [token]);
+
   // Auto-update user online status and last seen
   useEffect(() => {
     if (!user) return;
