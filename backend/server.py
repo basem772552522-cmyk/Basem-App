@@ -298,7 +298,8 @@ async def send_message(message_data: MessageCreate, current_user: UserResponse =
         sender_id=current_user.id,
         content=message_data.content,
         message_type=message_data.message_type,
-        replied_to=message_data.replied_to
+        replied_to=message_data.replied_to,
+        status="sent"
     )
     
     # Save to database
@@ -311,12 +312,28 @@ async def send_message(message_data: MessageCreate, current_user: UserResponse =
     )
     
     # Try to send via WebSocket to other participants (if connected)
+    message_delivered = False
     for participant_id in chat["participants"]:
         if participant_id != current_user.id:
-            await manager.send_personal_message({
+            delivered = await manager.send_personal_message({
                 "type": "new_message",
                 "message": message.dict()
             }, participant_id)
+            
+            if delivered:
+                message_delivered = True
+    
+    # Update message status to delivered if successfully sent via WebSocket
+    if message_delivered:
+        await db.messages.update_one(
+            {"id": message.id},
+            {"$set": {
+                "status": "delivered",
+                "delivered_at": datetime.utcnow()
+            }}
+        )
+        message.status = "delivered"
+        message.delivered_at = datetime.utcnow()
     
     # Remove MongoDB ObjectId
     message_dict = message.dict()
