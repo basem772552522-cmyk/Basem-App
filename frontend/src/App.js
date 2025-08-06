@@ -78,7 +78,69 @@ function App() {
     }
   };
 
-  const login = async () => {
+  // تحديث الرسائل تلقائياً للدردشة المفتوحة
+  const pollMessagesForActiveChat = async () => {
+    if (!selectedChat || !user) return;
+    
+    try {
+      const response = await axios.get(`${API}/chats/${selectedChat.id}/messages`);
+      const newMessages = response.data;
+      
+      // التحقق من وجود رسائل جديدة
+      if (newMessages.length > lastMessageCount && lastMessageCount > 0) {
+        const latestMessage = newMessages[newMessages.length - 1];
+        
+        // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
+        if (latestMessage.sender_id !== user.id) {
+          playNotificationSound();
+          
+          // إشعار المتصفح
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('رسالة جديدة في BasemApp', {
+              body: `${selectedChat.other_user?.username}: ${latestMessage.content}`,
+              icon: '/favicon.ico',
+              tag: 'new-message'
+            });
+          }
+        }
+      }
+      
+      setMessages(newMessages);
+      setLastMessageCount(newMessages.length);
+    } catch (error) {
+      console.error('خطأ في تحديث الرسائل:', error);
+    }
+  };
+
+  // بدء polling عندما تكون الدردشة مفتوحة
+  useEffect(() => {
+    if (selectedChat && user) {
+      setLastMessageCount(messages.length);
+      
+      // تنظيف polling السابق
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+      
+      // بدء polling كل 2 ثانية
+      pollingIntervalRef.current = setInterval(pollMessagesForActiveChat, 2000);
+      
+      return () => {
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+        }
+      };
+    }
+  }, [selectedChat, user, lastMessageCount]);
+
+  // تنظيف polling عند إغلاق التطبيق
+  useEffect(() => {
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, []);
     try {
       const response = await axios.post(`${API}/auth/login`, { email, password });
       setToken(response.data.access_token);
