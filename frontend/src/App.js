@@ -523,14 +523,57 @@ function App() {
                 <p className="text-emerald-100 text-sm">متصل</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={logout}
-              className="text-white hover:bg-emerald-700"
-            >
-              خروج
-            </Button>
+            <div className="flex items-center space-x-2 space-x-reverse">
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="text-white hover:bg-emerald-700 p-2"
+                >
+                  <MoreVertical className="w-5 h-5" />
+                </Button>
+                
+                {/* Settings Dropdown */}
+                {showSettings && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          setShowProfileEdit(true);
+                          setShowSettings(false);
+                        }}
+                        className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse"
+                      >
+                        <User className="w-4 h-4 text-gray-500" />
+                        <span>الملف الشخصي</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSettings(false);
+                          // Add settings functionality later
+                        }}
+                        className="w-full px-4 py-2 text-right hover:bg-gray-50 flex items-center space-x-3 space-x-reverse"
+                      >
+                        <Settings className="w-4 h-4 text-gray-500" />
+                        <span>الإعدادات</span>
+                      </button>
+                      <hr className="my-1" />
+                      <button
+                        onClick={() => {
+                          setShowSettings(false);
+                          logout();
+                        }}
+                        className="w-full px-4 py-2 text-right hover:bg-red-50 flex items-center space-x-3 space-x-reverse text-red-600"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>تسجيل الخروج</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
