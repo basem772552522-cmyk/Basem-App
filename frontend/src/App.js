@@ -406,10 +406,14 @@ function App() {
                         <p className="text-gray-600 text-sm truncate">
                           {chat.last_message?.content || 'لا توجد رسائل'}
                         </p>
-                        {chat.other_user?.is_online && (
+                        {chat.other_user?.is_online ? (
                           <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5">
                             متصل
                           </Badge>
+                        ) : (
+                          <span className="text-xs text-gray-400">
+                            {formatLastSeen(chat.other_user?.last_seen)}
+                          </span>
                         )}
                       </div>
                     </div>
