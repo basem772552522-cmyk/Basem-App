@@ -817,34 +817,19 @@ function App() {
     <div className="h-screen bg-gray-50 flex" dir="rtl">
       {/* Sidebar */}
       <div className="w-80 bg-white border-l border-gray-200 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200 bg-emerald-600">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 space-x-reverse">
-              <Avatar>
-                {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-full" />
-                ) : (
-                  <AvatarFallback className="bg-white text-emerald-600">
-                    {user?.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                )}
-              </Avatar>
-              <div>
-                <h2 className="font-semibold text-white">{user?.username}</h2>
-                <p className="text-emerald-100 text-sm">متصل</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 space-x-reverse">
-              <div className="relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSettings(!showSettings)}
-                  className="text-white hover:bg-emerald-700 p-2"
-                >
-                  <MoreVertical className="w-5 h-5" />
-                </Button>
+        {/* Header - WhatsApp Style */}
+        <div className="p-4 bg-gray-50 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-semibold text-gray-800">BasemApp</h1>
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSettings(!showSettings)}
+                className="text-gray-600 hover:bg-gray-100 p-2"
+              >
+                <MoreVertical className="w-5 h-5" />
+              </Button>
                 
                 {/* Settings Dropdown */}
                 {showSettings && (
