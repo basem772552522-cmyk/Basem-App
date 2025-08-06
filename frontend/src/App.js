@@ -166,7 +166,7 @@ function App() {
         
         // Play notification sound for incoming messages (not from current user)
         if (data.message.sender_id !== user.id) {
-          playNotificationSound();
+          playNotificationSound(data.message);
         }
         
         // Mark message as delivered automatically
