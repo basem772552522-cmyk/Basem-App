@@ -575,15 +575,18 @@ function App() {
                       }`}
                     >
                       <p className="text-sm">{message.content}</p>
-                      <p
-                        className={`text-xs mt-1 ${
-                          message.sender_id === user.id
-                            ? 'text-emerald-100'
-                            : 'text-gray-500'
-                        }`}
-                      >
-                        {formatTime(message.timestamp)}
-                      </p>
+                      <div className="flex items-center justify-between mt-1">
+                        <p
+                          className={`text-xs ${
+                            message.sender_id === user.id
+                              ? 'text-emerald-100'
+                              : 'text-gray-500'
+                          }`}
+                        >
+                          {formatTime(message.timestamp)}
+                        </p>
+                        <MessageStatusIcon message={message} />
+                      </div>
                     </div>
                   </div>
                 ))}
