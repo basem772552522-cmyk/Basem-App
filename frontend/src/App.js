@@ -35,6 +35,23 @@ function App() {
   });
 
   const messagesEndRef = useRef(null);
+  const notificationSound = useRef(null);
+
+  // Initialize notification sound
+  useEffect(() => {
+    // Create audio for notification sound
+    notificationSound.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAoTXrTp66hVFApGn+DyvmwhBT2P2fTNeSsFJHfH8N2QQAo=');
+    notificationSound.current.volume = 0.5; // Set volume to 50%
+  }, []);
+
+  // Play notification sound
+  const playNotificationSound = () => {
+    if (notificationSound.current) {
+      notificationSound.current.play().catch(error => {
+        console.log('Could not play notification sound:', error);
+      });
+    }
+  };
 
   // Setup axios interceptor
   useEffect(() => {
