@@ -189,7 +189,21 @@ backend:
           agent: "main"
           comment: "Added POST /api/users/update-status endpoint for updating user online status and last_seen timestamp. Enhanced chat listing to show Arabic-formatted last seen text (منذ قليل، منذ دقيقة، منذ ساعة، منذ يوم)."
 
-frontend:
+  - task: "Frontend blank page issue resolution"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported that the program won't open - blank page issue after WhatsApp UI redesign attempts"
+        - working: true
+          agent: "main"
+          comment: "Fixed environment variable access issue. Changed from import.meta.env.REACT_APP_BACKEND_URL to process.env.REACT_APP_BACKEND_URL. App now loads correctly showing BasemApp login screen in Arabic."
+
   - task: "Enable send button only when chat input has content"
     implemented: true
     working: true
