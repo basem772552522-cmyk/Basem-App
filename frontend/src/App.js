@@ -569,18 +569,47 @@ function App() {
     }
   };
 
-  // Message status icon component
-  const MessageStatusIcon = ({ message }) => {
-    if (message.sender_id !== user.id) return null;
-    
-    const status = message.status || 'sent';
-    
-    if (status === 'read') {
-      return <CheckCheck className="w-3 h-3 text-blue-500" />;
-    } else if (status === 'delivered') {
-      return <CheckCheck className="w-3 h-3 text-gray-500" />;
+  // Render message content based on type
+  const renderMessageContent = (message) => {
+    if (message.message_type === 'image') {
+      return (
+        <div className="max-w-xs">
+          <img 
+            src={message.content} 
+            alt="صورة" 
+            className="rounded-lg max-w-full h-auto cursor-pointer hover:opacity-90 transition-opacity"
+            onClick={() => {
+              // Open image in new tab
+              window.open(message.content, '_blank');
+            }}
+          />
+        </div>
+      );
+    } else if (message.message_type === 'video') {
+      return (
+        <div className="max-w-xs">
+          <video 
+            src={message.content} 
+            controls
+            className="rounded-lg max-w-full h-auto"
+            style={{ maxHeight: '200px' }}
+          />
+        </div>
+      );
+    } else if (message.message_type === 'file') {
+      const fileName = message.file_name || 'ملف';
+      return (
+        <div className="flex items-center space-x-3 space-x-reverse p-2 bg-gray-100 rounded-lg max-w-xs">
+          <File className="w-8 h-8 text-gray-500" />
+          <div className="flex-1">
+            <p className="text-sm font-medium truncate">{fileName}</p>
+            <p className="text-xs text-gray-500">اضغط لتحميل</p>
+          </div>
+        </div>
+      );
     } else {
-      return <Check className="w-3 h-3 text-gray-500" />;
+      // Regular text message
+      return <p className="text-sm">{message.content}</p>;
     }
   };
 
