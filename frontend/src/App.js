@@ -44,12 +44,37 @@ function App() {
     notificationSound.current.volume = 0.5; // Set volume to 50%
   }, []);
 
-  // Play notification sound
-  const playNotificationSound = () => {
+  // Play notification sound and show browser notification
+  const playNotificationSound = (message) => {
+    // Play sound
     if (notificationSound.current) {
       notificationSound.current.play().catch(error => {
         console.log('Could not play notification sound:', error);
       });
+    }
+
+    // Show browser notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const senderName = selectedChat?.other_user?.username || 'مستخدم';
+        const notification = new Notification(`رسالة جديدة من ${senderName}`, {
+          body: message.content,
+          icon: '/favicon.ico',
+          tag: 'basemapp-message',
+          requireInteraction: false
+        });
+        
+        // Auto close after 4 seconds
+        setTimeout(() => notification.close(), 4000);
+        
+        // Focus app when notification clicked
+        notification.onclick = function() {
+          window.focus();
+          notification.close();
+        };
+      } catch (error) {
+        console.log('Could not show notification:', error);
+      }
     }
   };
 
