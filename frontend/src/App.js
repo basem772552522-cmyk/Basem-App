@@ -136,12 +136,18 @@ function App() {
     }
     
     try {
+      console.log('البحث عن:', searchTerm);
+      
       // ترميز النص للـ URL
       const encodedQuery = encodeURIComponent(searchTerm);
       const response = await axios.get(`${API}/users/search?q=${encodedQuery}&limit=10`);
       
+      console.log('نتائج البحث من API:', response.data);
+      
       // فلترة النتائج لإزالة المستخدم الحالي
-      const filteredResults = response.data.filter(user => user.id !== (user?.id));
+      const filteredResults = response.data.filter(searchUser => searchUser.id !== user?.id);
+      
+      console.log('النتائج بعد الفلترة:', filteredResults);
       
       setSearchResults(filteredResults);
       
