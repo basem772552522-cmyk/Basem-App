@@ -27,6 +27,11 @@ function App() {
   const [currentView, setCurrentView] = useState('chats'); // 'chats', 'search'
   const [showSettings, setShowSettings] = useState(false); // Settings dropdown
   const [showProfileEdit, setShowProfileEdit] = useState(false); // Profile editing modal
+  const [showAttachmentMenu, setShowAttachmentMenu] = useState(false); // Attachment menu
+  const [selectedMessage, setSelectedMessage] = useState(null); // Selected message for actions
+  const [showMessageActions, setShowMessageActions] = useState(false); // Message actions menu
+  const [isOfflineMode, setIsOfflineMode] = useState(false); // Offline mode indicator
+  const [pendingMessages, setPendingMessages] = useState([]); // Messages waiting to be sent
   
   // Auth states
   const [isLogin, setIsLogin] = useState(true);
