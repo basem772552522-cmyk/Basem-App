@@ -816,8 +816,8 @@ function App() {
 
   return (
     <div className="h-screen bg-gray-50 flex" dir="rtl">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-l border-gray-200 flex flex-col">
+      {/* WhatsApp-Style Sidebar */}
+      <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
         {/* Header - WhatsApp Style */}
         <div className="p-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
