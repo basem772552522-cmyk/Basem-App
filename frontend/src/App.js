@@ -230,11 +230,14 @@ function App() {
     }
   }, [token]);
 
-  // Close settings dropdown when clicking outside
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showSettings && !event.target.closest('.settings-dropdown')) {
         setShowSettings(false);
+      }
+      if (showAttachmentMenu && !event.target.closest('.attachment-menu')) {
+        setShowAttachmentMenu(false);
       }
     };
 
@@ -242,7 +245,7 @@ function App() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSettings]);
+  }, [showSettings, showAttachmentMenu]);
 
   // Network status detection
   useEffect(() => {
