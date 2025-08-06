@@ -469,17 +469,17 @@ function App() {
     }
   };
 
-  const startChat = async (otherUserId) => {
+  const startChatWithUser = async (otherUser) => {
     try {
       const response = await axios.post(`${API}/chats`, null, {
-        params: { other_user_id: otherUserId }
+        params: { other_user_id: otherUser.id }
       });
       
       await loadChats();
-      setSelectedChat(response.data);
-      setCurrentView('chats');
-      setSearchQuery('');
-      setSearchResults([]);
+      setSelectedChat({
+        ...response.data,
+        other_user: otherUser
+      });
       await loadMessages(response.data.id);
     } catch (error) {
       console.error('Failed to start chat:', error);
