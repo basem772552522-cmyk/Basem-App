@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 
 class WebSocketTester:
-    def __init__(self, base_url="https://337ef148-c522-471a-80f8-2a8061523faa.preview.emergentagent.com"):
+    def __init__(self, base_url="https://75fa55c5-4e13-48b1-b9ce-875df16baaa7.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.ws_url = base_url.replace("https://", "wss://").replace("http://", "ws://")
