@@ -474,6 +474,39 @@ async def update_user_status(status_data: dict, current_user: UserResponse = Dep
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.delete("/messages/{message_id}")
+async def delete_message(message_id: str, current_user: UserResponse = Depends(get_current_user)):
+    try:
+        # Find the message
+        message = await db.messages.find_one({"id": message_id})
+        if not message:
+            raise HTTPException(status_code=404, detail="Message not found")
+        
+        # Check if user is the sender
+        if message["sender_id"] != current_user.id:
+            raise HTTPException(status_code=403, detail="Can only delete your own messages")
+        
+        # Delete the message
+        await db.messages.delete_one({"id": message_id})
+        
+        # Notify other participants via WebSocket
+        chat = await db.chats.find_one({"id": message["chat_id"]})
+        if chat:
+            for participant_id in chat["participants"]:
+                if participant_id != current_user.id:
+                    await manager.send_personal_message({
+                        "type": "message_deleted",
+                        "message_id": message_id,
+                        "chat_id": message["chat_id"]
+                    }, participant_id)
+        
+        return {"status": "success", "message": "Message deleted"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # User search functionality
 @api_router.get("/users/search")
 async def search_users(q: str, current_user: UserResponse = Depends(get_current_user)):
