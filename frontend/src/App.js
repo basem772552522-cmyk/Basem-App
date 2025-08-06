@@ -143,6 +143,7 @@ function App() {
   }, []);
 
   const login = async () => {
+    try {
       const response = await axios.post(`${API}/auth/login`, { email, password });
       setToken(response.data.access_token);
       localStorage.setItem('token', response.data.access_token);
@@ -153,6 +154,7 @@ function App() {
       alert(errorMessage);
       console.error('Login error:', error.response?.data || error.message);
     }
+  };
   };
 
   const register = async () => {
