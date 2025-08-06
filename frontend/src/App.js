@@ -592,7 +592,7 @@ function App() {
                 
                 {/* Settings Dropdown */}
                 {showSettings && (
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="settings-dropdown absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                     <div className="py-2">
                       <button
                         onClick={() => {
