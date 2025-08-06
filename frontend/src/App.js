@@ -359,6 +359,10 @@ function App() {
             ? { ...msg, status: 'read', read_at: data.read_at }
             : msg
         ));
+      } else if (data.type === 'message_deleted') {
+        // Remove deleted message from UI
+        setMessages(prev => prev.filter(msg => msg.id !== data.message_id));
+        loadChats(); // Refresh chats to update last message
       }
     };
     
