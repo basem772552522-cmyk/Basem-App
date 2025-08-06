@@ -53,6 +53,15 @@ function App() {
     }
   };
 
+  // Mark message as read
+  const markMessageAsRead = async (messageId) => {
+    try {
+      await axios.put(`${API}/messages/${messageId}/read`);
+    } catch (error) {
+      console.error('Failed to mark message as read:', error);
+    }
+  };
+
   // Setup axios interceptor
   useEffect(() => {
     if (token) {
