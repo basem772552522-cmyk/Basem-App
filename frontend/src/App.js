@@ -94,41 +94,85 @@ function App() {
     }
   };
 
-  // Handle profile image upload
-  const handleImageUpload = async (event) => {
+  // Handle file upload (images, videos)
+  const handleFileUpload = async (event, fileType) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Check file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('حجم الصورة كبير جداً. يرجى اختيار صورة أصغر من 5 ميجابايت');
+    // Check file size (max 10MB for images, 50MB for videos)
+    const maxSize = fileType === 'image' ? 10 * 1024 * 1024 : 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert(`حجم الملف كبير جداً. الحد الأقصى ${fileType === 'image' ? '10' : '50'} ميجابايت`);
       return;
     }
 
     // Check file type
-    if (!file.type.startsWith('image/')) {
-      alert('يرجى اختيار صورة صحيحة');
+    const validTypes = fileType === 'image' 
+      ? ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+      : ['video/mp4', 'video/webm', 'video/ogg'];
+    
+    if (!validTypes.includes(file.type)) {
+      alert(`نوع الملف غير مدعوم. يرجى اختيار ${fileType === 'image' ? 'صورة' : 'فيديو'} صحيح`);
       return;
     }
 
     try {
+      // Show loading indicator
+      const tempMessage = {
+        id: 'temp-' + Date.now(),
+        content: fileType === 'image' ? '📷 جاري رفع الصورة...' : '🎥 جاري رفع الفيديو...',
+        sender_id: user.id,
+        timestamp: new Date().toISOString(),
+        status: 'uploading',
+        type: 'temp'
+      };
+      setMessages(prev => [...prev, tempMessage]);
+
       // Convert to base64
       const reader = new FileReader();
       reader.onload = async (e) => {
-        const base64Image = e.target.result;
+        const base64Data = e.target.result;
         
-        // Update profile with new image
-        const response = await axios.put(`${API}/users/profile`, {
-          avatar_url: base64Image
-        });
-        
-        setUser(response.data);
-        alert('تم تحديث الصورة بنجاح');
+        try {
+          // Send media message
+          const mediaMessage = {
+            chat_id: selectedChat.id,
+            content: base64Data,
+            message_type: fileType === 'image' ? 'image' : 'video'
+          };
+
+          let response;
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            // Send via WebSocket
+            ws.send(JSON.stringify({
+              type: 'send_message',
+              ...mediaMessage
+            }));
+          } else {
+            // Send via HTTP API
+            response = await axios.post(`${API}/messages`, mediaMessage);
+          }
+
+          // Remove temp message and add real message
+          setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+          
+          if (response?.data) {
+            setMessages(prev => [...prev, response.data]);
+          }
+
+          setShowAttachmentMenu(false);
+          
+        } catch (error) {
+          console.error('Failed to send media:', error);
+          setMessages(prev => prev.filter(msg => msg.id !== tempMessage.id));
+          alert('فشل في إرسال الملف');
+        }
       };
       reader.readAsDataURL(file);
+
     } catch (error) {
-      console.error('Failed to upload image:', error);
-      alert('فشل في رفع الصورة');
+      console.error('Failed to process file:', error);
+      alert('فشل في معالجة الملف');
     }
   };
 
