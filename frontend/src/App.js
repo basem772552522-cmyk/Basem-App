@@ -362,6 +362,68 @@ function App() {
     }
   }, [messages]);
 
+  // التحديث التلقائي للرسائل عند فتح دردشة
+  useEffect(() => {
+    let intervalId = null;
+    
+    if (selectedChat && user) {
+      // تشغيل صوت الإشعار
+      const playNotificationSound = () => {
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (error) {
+          console.log('تعذر تشغيل الصوت:', error);
+        }
+      };
+
+      // دالة التحديث
+      const checkForNewMessages = async () => {
+        try {
+          const response = await axios.get(`${API}/chats/${selectedChat.id}/messages`);
+          const newMessages = response.data;
+          
+          // التحقق من وجود رسائل جديدة
+          if (newMessages.length > messages.length) {
+            const latestMessage = newMessages[newMessages.length - 1];
+            
+            // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
+            if (latestMessage.sender_id !== user.id) {
+              playNotificationSound();
+            }
+            
+            setMessages(newMessages);
+          }
+        } catch (error) {
+          console.error('خطأ في تحديث الرسائل:', error);
+        }
+      };
+
+      // بدء التحديث كل 3 ثوان
+      intervalId = setInterval(checkForNewMessages, 3000);
+    }
+
+    // تنظيف عند تغيير الدردشة أو إغلاقها
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [selectedChat, user, messages.length]);
+
   // Authentication screen
   if (!user) {
     return (
