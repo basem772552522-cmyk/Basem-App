@@ -425,15 +425,15 @@ function App() {
           <>
             {/* Chat Header */}
             <div className="p-3 sm:p-4 bg-white border-b border-gray-200 flex items-center chat-header shadow-sm">
-              <div className="relative mr-3 sm:mr-4">
-                <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-gray-200">
+              <div className="relative mr-3 sm:mr-4 avatar-enhanced">
+                <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-gray-200 avatar-gradient">
                   <AvatarFallback className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
                     {selectedChat.other_user?.username?.[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {/* مؤشر الحالة */}
                 {selectedChat.other_user?.is_online && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+                  <div className="status-indicator online-indicator"></div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -443,12 +443,12 @@ function App() {
                   </h2>
                   {selectedChat.other_user?.is_online && (
                     <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-1 online-indicator"></div>
                       <span className="text-xs text-green-600 font-medium">نشط الآن</span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                <p className="text-xs sm:text-sm text-gray-500 mt-0.5 truncate">
                   {selectedChat.other_user?.is_online ? 
                     'متصل الآن' : 
                     `آخر ظهور: ${formatLastSeen(selectedChat.other_user?.last_seen)}`
@@ -457,29 +457,23 @@ function App() {
               </div>
               
               {/* معلومات إضافية */}
-              <div className="flex flex-col items-end space-y-1">
-                <div className="flex items-center space-x-1 space-x-reverse">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
-                    onClick={() => {
-                      // يمكن إضافة وظائف إضافية هنا مثل البحث في المحادثة
-                    }}
-                  >
-                    <Search className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-500 hover:bg-gray-100 p-2 rounded-full"
-                    onClick={() => {
-                      // يمكن إضافة المزيد من الخيارات هنا
-                    }}
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
-                </div>
+              <div className="flex items-center space-x-1 space-x-reverse ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
+                  title="البحث في المحادثة"
+                >
+                  <Search className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
+                  title="المزيد من الخيارات"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
               </div>
             </div>
 
