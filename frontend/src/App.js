@@ -406,6 +406,15 @@ function App() {
     }
   };
 
+  const loadAllUsers = async () => {
+    try {
+      const response = await axios.get(`${API}/users`);
+      setAllUsers(response.data);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  };
+
   const loadMessages = async (chatId) => {
     try {
       const response = await axios.get(`${API}/chats/${chatId}/messages`);
