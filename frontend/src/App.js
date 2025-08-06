@@ -483,17 +483,29 @@ function App() {
                           <h3 className="font-medium truncate">
                             {chat.other_user?.username}
                           </h3>
-                          {chat.other_user?.is_online && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800">
-                              متصل
-                            </Badge>
+                          <div className="flex items-center space-x-1 space-x-reverse">
+                            {chat.other_user?.is_online && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full online-indicator"></div>
+                            )}
+                            {chat.other_user?.is_online && (
+                              <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
+                                متصل
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          {chat.last_message && (
+                            <p className="text-sm text-gray-500 truncate">
+                              {chat.last_message.content}
+                            </p>
+                          )}
+                          {!chat.other_user?.is_online && (
+                            <p className="text-xs text-gray-400">
+                              {chat.other_user?.last_seen_text || 'غير متصل'}
+                            </p>
                           )}
                         </div>
-                        {chat.last_message && (
-                          <p className="text-sm text-gray-500 truncate">
-                            {chat.last_message.content}
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>
