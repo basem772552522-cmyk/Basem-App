@@ -357,18 +357,27 @@ function App() {
   };
 
   const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
+    // Create date object and ensure it's treated as UTC if it comes from server
+    let date;
+    if (typeof timestamp === 'string') {
+      // If timestamp is string, parse it as UTC then convert to local
+      date = new Date(timestamp.endsWith('Z') ? timestamp : timestamp + 'Z');
+    } else {
+      date = new Date(timestamp);
+    }
+    
     const now = new Date();
     
-    // Check if message is from today
+    // Check if message is from today (local time)
     const isToday = date.toDateString() === now.toDateString();
     
     if (isToday) {
-      // Show only time for today's messages
-      return date.toLocaleTimeString('ar', {
+      // Show only time for today's messages in local timezone
+      return date.toLocaleTimeString('ar-SA', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       });
     } else {
       // Show date and time for older messages
@@ -376,15 +385,27 @@ function App() {
       yesterday.setDate(yesterday.getDate() - 1);
       
       if (date.toDateString() === yesterday.toDateString()) {
-        return 'أمس ' + date.toLocaleTimeString('ar', {
+        return 'أمس ' + date.toLocaleTimeString('ar-SA', {
           hour: '2-digit',
-          minute: '2-digit'
+          minute: '2-digit',
+          hour12: true,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
         });
       } else {
-        return date.toLocaleDateString('ar') + ' ' + date.toLocaleTimeString('ar', {
-          hour: '2-digit',
-          minute: '2-digit'
+        // For older messages, show date and time
+        const dateStr = date.toLocaleDateString('ar-SA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
         });
+        const timeStr = date.toLocaleTimeString('ar-SA', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        });
+        return `${dateStr} ${timeStr}`;
       }
     }
   };
