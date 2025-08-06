@@ -121,15 +121,57 @@ function App() {
     }
   };
 
-  const searchUsers = async () => {
-    if (!searchQuery.trim()) return;
+  const searchUsers = async (query = null) => {
+    const searchTerm = (query || searchQuery).trim();
+    
+    // إذا كان النص فارغاً، امسح النتائج
+    if (!searchTerm) {
+      setSearchResults([]);
+      return;
+    }
+
+    // إذا كان النص قصير جداً، لا تبحث
+    if (searchTerm.length < 2) {
+      return;
+    }
     
     try {
-      const response = await axios.get(`${API}/users/search?q=${searchQuery}`);
-      setSearchResults(response.data);
+      // ترميز النص للـ URL
+      const encodedQuery = encodeURIComponent(searchTerm);
+      const response = await axios.get(`${API}/users/search?q=${encodedQuery}&limit=10`);
+      
+      // فلترة النتائج لإزالة المستخدم الحالي
+      const filteredResults = response.data.filter(user => user.id !== (user?.id));
+      
+      setSearchResults(filteredResults);
+      
+      // إذا لم توجد نتائج، اعرض رسالة
+      if (filteredResults.length === 0) {
+        console.log('لا توجد نتائج للبحث:', searchTerm);
+      }
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error('فشل البحث:', error);
+      setSearchResults([]);
     }
+  };
+
+  // بحث فوري أثناء الكتابة
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    
+    // إلغاء البحث السابق
+    if (window.searchTimeout) {
+      clearTimeout(window.searchTimeout);
+    }
+    
+    // بحث بعد 500ms من توقف الكتابة
+    window.searchTimeout = setTimeout(() => {
+      if (value.trim().length >= 2) {
+        searchUsers(value);
+      } else if (value.trim().length === 0) {
+        setSearchResults([]);
+      }
+    }, 500);
   };
 
   const startChat = async (userId) => {
