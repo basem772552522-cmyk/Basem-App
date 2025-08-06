@@ -951,13 +951,20 @@ function App() {
                     }`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                      className={`relative group max-w-xs lg:max-w-md px-4 py-2 rounded-lg cursor-pointer ${
                         message.sender_id === user.id
                           ? 'bg-emerald-500 text-white'
                           : 'bg-white border border-gray-200'
-                      }`}
+                      } ${message.status === 'uploading' ? 'opacity-75' : ''}`}
+                      onClick={() => {
+                        setSelectedMessage(message);
+                        setShowMessageActions(true);
+                      }}
                     >
-                      <p className="text-sm">{message.content}</p>
+                      {/* Message content */}
+                      {renderMessageContent(message)}
+                      
+                      {/* Time and status */}
                       <div className="flex items-center justify-between mt-1">
                         <p
                           className={`text-xs ${
@@ -970,6 +977,16 @@ function App() {
                         </p>
                         <MessageStatusIcon message={message} />
                       </div>
+
+                      {/* Message actions (show on hover for sent messages) */}
+                      {message.sender_id === user.id && (
+                        <div className="absolute -top-8 right-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded flex space-x-2 space-x-reverse">
+                            <Reply className="w-3 h-3 cursor-pointer hover:text-blue-300" title="إعادة إرسال" />
+                            <Trash2 className="w-3 h-3 cursor-pointer hover:text-red-300" title="حذف" />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
