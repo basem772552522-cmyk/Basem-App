@@ -358,11 +358,46 @@ input::placeholder {
   }
 }
 
-/* Keyboard adjustments for mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-  .messages-container {
-    height: calc(100vh - 180px);
-  }
+/* Font size adjustments for different screen sizes */
+@media (max-width: 575px) {
+  .text-xs { font-size: 10px; }
+  .text-sm { font-size: 12px; }
+  .text-base { font-size: 14px; }
+  .text-lg { font-size: 16px; }
+  .text-xl { font-size: 18px; }
+  .text-2xl { font-size: 20px; }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 13px; }
+  .text-base { font-size: 15px; }
+  .text-lg { font-size: 17px; }
+  .text-xl { font-size: 19px; }
+  .text-2xl { font-size: 22px; }
+}
+
+@media (min-width: 768px) {
+  .text-xs { font-size: 12px; }
+  .text-sm { font-size: 14px; }
+  .text-base { font-size: 16px; }
+  .text-lg { font-size: 18px; }
+  .text-xl { font-size: 20px; }
+  .text-2xl { font-size: 24px; }
+}
+
+/* Spacing adjustments */
+@media (max-width: 575px) {
+  .p-4 { padding: 12px; }
+  .p-2 { padding: 6px; }
+  .m-4 { margin: 12px; }
+  .space-y-4 > * + * { margin-top: 12px; }
+}
+
+@media (min-width: 1200px) {
+  .p-4 { padding: 20px; }
+  .p-2 { padding: 10px; }
+  .space-y-4 > * + * { margin-top: 20px; }
 }
 
 /* High DPI display support */
