@@ -865,13 +865,13 @@ function App() {
         <div className="p-2 border-b border-gray-200">
           <div className="flex space-x-1 space-x-reverse">
             <Button
-              variant={currentView === 'chats' ? 'default' : 'ghost'}
+              variant={currentView === 'users' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setCurrentView('chats')}
+              onClick={() => setCurrentView('users')}
               className="flex-1"
             >
-              <MessageCircle className="w-4 h-4 ml-2" />
-              المحادثات
+              <Users className="w-4 h-4 ml-2" />
+              المستخدمين
             </Button>
             <Button
               variant={currentView === 'search' ? 'default' : 'ghost'}
@@ -879,7 +879,7 @@ function App() {
               onClick={() => setCurrentView('search')}
               className="flex-1"
             >
-              <Users className="w-4 h-4 ml-2" />
+              <Search className="w-4 h-4 ml-2" />
               بحث
             </Button>
           </div>
