@@ -320,7 +320,7 @@ function App() {
             <Input
               type="text"
               placeholder="ابحث أو ابدأ محادثة جديدة"
-              className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-9 sm:h-10 text-sm sm:text-base"
+              className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-8 sm:h-9 text-xs sm:text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && searchUsers()}
