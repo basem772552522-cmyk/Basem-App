@@ -544,7 +544,10 @@ function App() {
                   <div>
                     <h2 className="font-semibold">{selectedChat.other_user?.username}</h2>
                     <p className="text-sm text-gray-500">
-                      {selectedChat.other_user?.is_online ? 'متصل' : 'غير متصل'}
+                      {selectedChat.other_user?.is_online 
+                        ? 'متصل' 
+                        : selectedChat.other_user?.last_seen_text || 'غير متصل'
+                      }
                     </p>
                   </div>
                 </div>
