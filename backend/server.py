@@ -406,6 +406,24 @@ async def mark_message_as_read(message_id: str, current_user: UserResponse = Dep
     
     return {"status": "success"}
 
+@api_router.post("/users/update-status")
+async def update_user_status(status_data: dict, current_user: UserResponse = Depends(get_current_user)):
+    try:
+        is_online = status_data.get('is_online', True)
+        
+        # Update user status
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": {
+                "is_online": is_online,
+                "last_seen": datetime.utcnow()
+            }}
+        )
+        
+        return {"status": "success", "is_online": is_online}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # User search functionality
 @api_router.get("/users/search")
 async def search_users(q: str, current_user: UserResponse = Depends(get_current_user)):
