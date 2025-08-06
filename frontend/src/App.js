@@ -8,7 +8,7 @@ import { Badge } from './components/ui/badge';
 import { Search, Send, MessageCircle, MoreVertical, LogOut, User, X } from 'lucide-react';
 import './App.css';
 
-const API = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001/api';
+const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001/api';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
