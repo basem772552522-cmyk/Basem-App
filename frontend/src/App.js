@@ -94,6 +94,44 @@ function App() {
     }
   };
 
+  // Handle profile image upload
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الصورة كبير جداً. يرجى اختيار صورة أصغر من 5 ميجابايت');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار صورة صحيحة');
+      return;
+    }
+
+    try {
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Image = e.target.result;
+        
+        // Update profile with new image
+        const response = await axios.put(`${API}/users/profile`, {
+          avatar_url: base64Image
+        });
+        
+        setUser(response.data);
+        alert('تم تحديث الصورة بنجاح');
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      alert('فشل في رفع الصورة');
+    }
+  };
+
   // Handle file upload (images, videos)
   const handleFileUpload = async (event, fileType) => {
     const file = event.target.files[0];
