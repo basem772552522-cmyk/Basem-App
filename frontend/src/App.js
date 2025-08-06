@@ -332,24 +332,24 @@ function App() {
         <div className="flex-1 overflow-y-auto">
           {searchQuery && searchResults.length > 0 ? (
             <div className="p-2">
-              <h3 className="text-sm font-medium text-gray-500 p-2">نتائج البحث</h3>
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 p-2">نتائج البحث</h3>
               {searchResults.map((user) => (
                 <div
                   key={user.id}
                   onClick={() => startChat(user.id)}
-                  className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="p-3 sm:p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors user-item"
                 >
-                  <div className="flex items-center space-x-3 space-x-reverse">
-                    <Avatar className="w-12 h-12">
-                      <AvatarFallback className="w-12 h-12 text-lg bg-emerald-100 text-emerald-700">
+                  <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
+                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar">
+                      <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700">
                         {user.username[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 text-sm truncate">
+                      <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">
                         {user.username}
                       </h3>
-                      <p className="text-gray-600 text-sm truncate">
+                      <p className="text-gray-600 text-xs sm:text-sm truncate">
                         {user.email}
                       </p>
                     </div>
@@ -358,10 +358,10 @@ function App() {
               ))}
             </div>
           ) : chats.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500 p-8">
-              <MessageCircle className="w-16 h-16 mb-4 text-gray-300" />
-              <h3 className="text-lg font-medium mb-2">لا توجد محادثات</h3>
-              <p className="text-sm text-center">ابحث عن مستخدم لبدء محادثة جديدة</p>
+            <div className="flex flex-col items-center justify-center h-48 sm:h-64 text-gray-500 p-4 sm:p-8">
+              <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 text-gray-300" />
+              <h3 className="text-base sm:text-lg font-medium mb-2">لا توجد محادثات</h3>
+              <p className="text-xs sm:text-sm text-center">ابحث عن مستخدم لبدء محادثة جديدة</p>
             </div>
           ) : (
             <div>
@@ -374,25 +374,25 @@ function App() {
                     setSearchQuery('');
                     setSearchResults([]);
                   }}
-                  className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+                  className={`p-3 sm:p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors chat-item ${
                     selectedChat?.id === chat.id ? 'bg-gray-100' : ''
                   }`}
                 >
-                  <div className="flex items-center space-x-3 space-x-reverse">
+                  <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                     <div className="relative">
-                      <Avatar className="w-12 h-12">
-                        <AvatarFallback className="w-12 h-12 text-lg bg-emerald-100 text-emerald-700">
+                      <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar">
+                        <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700">
                           {chat.other_user?.username?.[0]?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       {chat.other_user?.is_online && (
-                        <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white absolute -bottom-0.5 -right-0.5"></div>
+                        <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-white absolute -bottom-0.5 -right-0.5"></div>
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-medium text-gray-900 text-sm truncate">
+                        <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">
                           {chat.other_user?.username}
                         </h3>
                         {chat.last_message && (
@@ -403,11 +403,11 @@ function App() {
                       </div>
                       
                       <div className="flex items-center justify-between mt-1">
-                        <p className="text-gray-600 text-sm truncate">
+                        <p className="text-gray-600 text-xs sm:text-sm truncate">
                           {chat.last_message?.content || 'لا توجد رسائل'}
                         </p>
                         {chat.other_user?.is_online ? (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5">
+                          <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1 py-0.5 sm:px-1.5 sm:py-0.5">
                             متصل
                           </Badge>
                         ) : (
