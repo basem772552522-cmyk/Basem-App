@@ -499,6 +499,11 @@ function App() {
                   <Send className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
+              
+              {/* Made with Emergent */}
+              <div className="text-center mt-2">
+                <p className="text-xs text-gray-400">Made with Emergent</p>
+              </div>
             </div>
           </>
         ) : (
