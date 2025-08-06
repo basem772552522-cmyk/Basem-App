@@ -290,7 +290,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enable send button only when chat input has content"
+    - "Frontend blank page issue resolution"
   stuck_tasks: 
     - "WebSocket real-time messaging"
   test_all: false
