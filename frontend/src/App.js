@@ -64,7 +64,9 @@ function App() {
       setEmail('');
       setPassword('');
     } catch (error) {
-      alert('فشل في إنشاء الحساب');
+      const errorMessage = error.response?.data?.detail || 'فشل في إنشاء الحساب';
+      alert(errorMessage);
+      console.error('Registration error:', error.response?.data || error.message);
     }
   };
 
