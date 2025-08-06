@@ -143,39 +143,19 @@ function App() {
     }
   }, [token]);
 
-  // Auto-update user online status and last seen
+  // Close settings dropdown when clicking outside
   useEffect(() => {
-    if (!user) return;
-    
-    const updateOnlineStatus = async () => {
-      try {
-        // Update own online status
-        await axios.post(`${API}/users/update-status`, { is_online: true });
-        // Refresh chats to get updated user statuses
-        loadChats();
-      } catch (error) {
-        console.error('Failed to update online status:', error);
+    const handleClickOutside = (event) => {
+      if (showSettings && !event.target.closest('.settings-dropdown')) {
+        setShowSettings(false);
       }
     };
 
-    // Update status immediately and then every 30 seconds
-    updateOnlineStatus();
-    const statusInterval = setInterval(updateOnlineStatus, 30000);
-
-    // Update status before page unload
-    const handleBeforeUnload = () => {
-      navigator.sendBeacon(`${API}/users/update-status`, 
-        JSON.stringify({ is_online: false })
-      );
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      clearInterval(statusInterval);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [user]);
+  }, [showSettings]);
 
   // Scroll to bottom of messages
   useEffect(() => {
