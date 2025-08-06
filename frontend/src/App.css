@@ -288,8 +288,8 @@ input::placeholder {
   }
 }
 
-/* Touch-friendly improvements for mobile */
-@media (max-width: 768px) {
+/* Touch-friendly improvements for all devices */
+@media (max-width: 991px) {
   .touch-target {
     min-height: 44px;
     min-width: 44px;
@@ -297,6 +297,7 @@ input::placeholder {
   
   .message-input {
     font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px 16px;
   }
   
   .chat-message {
@@ -307,6 +308,53 @@ input::placeholder {
   .user-item {
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
+  }
+  
+  /* Larger buttons for touch */
+  .mobile-button {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+  
+  /* Search input improvements */
+  .search-input {
+    height: 48px;
+    font-size: 16px;
+    padding: 0 16px;
+  }
+  
+  /* Settings menu */
+  .settings-menu {
+    min-width: 200px;
+    font-size: 16px;
+  }
+  
+  .settings-item {
+    padding: 12px 16px;
+  }
+}
+
+/* Keyboard adjustments for mobile landscape */
+@media (max-width: 991px) and (orientation: landscape) {
+  .messages-container {
+    height: calc(100vh - 180px);
+  }
+  
+  .main-layout {
+    height: 100vh;
+  }
+  
+  .sidebar {
+    max-height: 100vh;
+  }
+  
+  /* Reduce header size in landscape */
+  .app-header {
+    padding: 8px 16px;
+  }
+  
+  .chat-header {
+    padding: 8px 16px;
   }
 }
 
