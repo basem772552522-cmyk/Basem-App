@@ -128,6 +128,10 @@ class Message(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     is_read: bool = False
     replied_to: Optional[str] = None  # message ID if replying
+    # Message status tracking
+    status: str = "sent"  # sent, delivered, read
+    delivered_at: Optional[datetime] = None
+    read_at: Optional[datetime] = None
 
 class MessageCreate(BaseModel):
     chat_id: str
