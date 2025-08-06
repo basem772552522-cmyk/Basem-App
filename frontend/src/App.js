@@ -501,8 +501,8 @@ function App() {
               </div>
               
               {/* Made with Emergent */}
-              <div className="text-center mt-2">
-                <p className="text-xs text-gray-400">Made with Emergent</p>
+              <div className="text-center mt-4 mb-1">
+                <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
               </div>
             </div>
           </>
