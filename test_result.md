@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "تفعيل زر النقر بعد كتابة الدردشة - Enable/activate the send button only when user has typed content in the chat input + إضافة ميزات المرحلة الأولى: علامات التسليم، حالة الاتصال، التوقيت المحلي، والتنبيهات الصوتية + عرض آخر ظهور للمستخدم + تغيير الخط إلى Times New Roman + تحسين التصميم المتجاوب + إضافة Made with Emergent + تصغير حقل البحث"
+user_problem_statement: "تفعيل زر النقر بعد كتابة الدردشة - Enable/activate the send button only when user has typed content in the chat input + إضافة ميزات المرحلة الأولى: علامات التسليم، حالة الاتصال، التوقيت المحلي، والتنبيهات الصوتية + عرض آخر ظهور للمستخدم + تغيير الخط إلى Times New Roman + تحسين التصميم المتجاوب + إضافة Made with Emergent + تصغير حقل البحث + إشعارات فورية وصوت للرسائل الواردة"
 
 backend:
   - task: "User authentication endpoints"
