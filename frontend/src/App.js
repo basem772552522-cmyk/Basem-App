@@ -662,6 +662,15 @@ function App() {
 
   // Render message content based on type
   const renderMessageContent = (message) => {
+    if (message.status === 'uploading') {
+      return (
+        <div className="flex items-center space-x-2 space-x-reverse">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <p className="text-sm">{message.content}</p>
+        </div>
+      );
+    }
+
     if (message.message_type === 'image') {
       return (
         <div className="max-w-xs">
@@ -672,6 +681,9 @@ function App() {
             onClick={() => {
               // Open image in new tab
               window.open(message.content, '_blank');
+            }}
+            onError={(e) => {
+              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDEyQTkgOSAwIDEgMSAzIDEyQTkgOSAwIDAgMSAyMSAxMloiIHN0cm9rZT0iI2JkYjNiMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1IDlMOSAxNSIgc3Ryb2tlPSIjYmRiM2IzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNOSA5TDE1IDE1IiBzdHJva2U9IiNiZGIzYjMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';
             }}
           />
         </div>
@@ -690,7 +702,16 @@ function App() {
     } else if (message.message_type === 'file') {
       const fileName = message.file_name || 'ملف';
       return (
-        <div className="flex items-center space-x-3 space-x-reverse p-2 bg-gray-100 rounded-lg max-w-xs">
+        <div 
+          className="flex items-center space-x-3 space-x-reverse p-2 bg-gray-100 rounded-lg max-w-xs cursor-pointer hover:bg-gray-200"
+          onClick={() => {
+            // Download file
+            const link = document.createElement('a');
+            link.href = message.content;
+            link.download = fileName;
+            link.click();
+          }}
+        >
           <File className="w-8 h-8 text-gray-500" />
           <div className="flex-1">
             <p className="text-sm font-medium truncate">{fileName}</p>
