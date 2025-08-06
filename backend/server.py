@@ -208,6 +208,48 @@ async def login(user_data: UserLogin):
 async def get_me(current_user: UserResponse = Depends(get_current_user)):
     return current_user
 
+@api_router.put("/users/profile", response_model=UserResponse)
+async def update_profile(profile_data: dict, current_user: UserResponse = Depends(get_current_user)):
+    try:
+        update_fields = {}
+        
+        # Handle avatar update
+        if 'avatar_url' in profile_data:
+            avatar_url = profile_data['avatar_url']
+            # Validate base64 image (basic validation)
+            if avatar_url and (avatar_url.startswith('data:image/') or avatar_url.startswith('http')):
+                update_fields['avatar_url'] = avatar_url
+        
+        # Handle username update (if needed later)
+        if 'username' in profile_data and profile_data['username']:
+            # Check if username already exists
+            existing_user = await db.users.find_one({
+                "username": profile_data['username'],
+                "id": {"$ne": current_user.id}
+            })
+            if existing_user:
+                raise HTTPException(status_code=400, detail="Username already exists")
+            update_fields['username'] = profile_data['username']
+        
+        if update_fields:
+            # Update user in database
+            await db.users.update_one(
+                {"id": current_user.id},
+                {"$set": update_fields}
+            )
+            
+            # Get updated user
+            updated_user = await db.users.find_one({"id": current_user.id})
+            if updated_user:
+                return UserResponse(**updated_user)
+        
+        return current_user
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Chat routes
 @api_router.get("/chats")
 async def get_chats(current_user: UserResponse = Depends(get_current_user)):
