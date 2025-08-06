@@ -512,6 +512,19 @@ async def delete_message(message_id: str, current_user: UserResponse = Depends(g
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/users", response_model=List[UserResponse])
+async def get_all_users(current_user: UserResponse = Depends(get_current_user)):
+    try:
+        # Get all users except current user
+        users = await db.users.find(
+            {"id": {"$ne": current_user.id}},
+            {"password_hash": 0}  # Exclude password hash
+        ).to_list(100)
+        
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # User search functionality
 @api_router.get("/users/search")
 async def search_users(q: str, current_user: UserResponse = Depends(get_current_user)):
