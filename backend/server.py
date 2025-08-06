@@ -224,10 +224,38 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
         if other_participants:
             other_user = await db.users.find_one({"id": other_participants[0]})
             if other_user:
+                # Format last seen time
+                last_seen_text = "منذ فترة"
+                if other_user.get("is_online"):
+                    last_seen_text = "متصل"
+                elif other_user.get("last_seen"):
+                    try:
+                        last_seen = other_user["last_seen"]
+                        if isinstance(last_seen, str):
+                            last_seen = datetime.fromisoformat(last_seen.replace('Z', '+00:00'))
+                        
+                        now = datetime.utcnow()
+                        diff = now - last_seen
+                        
+                        if diff.days > 0:
+                            last_seen_text = f"منذ {diff.days} يوم"
+                        elif diff.seconds > 3600:
+                            hours = diff.seconds // 3600
+                            last_seen_text = f"منذ {hours} ساعة"
+                        elif diff.seconds > 60:
+                            minutes = diff.seconds // 60
+                            last_seen_text = f"منذ {minutes} دقيقة"
+                        else:
+                            last_seen_text = "منذ قليل"
+                    except:
+                        last_seen_text = "منذ فترة"
+                
                 chat["other_user"] = {
                     "id": other_user["id"],
                     "username": other_user["username"],
                     "is_online": other_user.get("is_online", False),
+                    "last_seen": other_user.get("last_seen"),
+                    "last_seen_text": last_seen_text,
                     "avatar_url": other_user.get("avatar_url")
                 }
         
