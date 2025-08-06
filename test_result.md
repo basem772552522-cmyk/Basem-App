@@ -204,6 +204,66 @@ backend:
           agent: "main"
           comment: "Fixed environment variable access issue. Changed from import.meta.env.REACT_APP_BACKEND_URL to process.env.REACT_APP_BACKEND_URL. App now loads correctly showing BasemApp login screen in Arabic."
 
+  - task: "Display user last seen status"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Added formatLastSeen() function to display Arabic last seen text. Enhanced chat header and chat list to show last seen information. Needs testing to verify functionality works correctly."
+
+  - task: "Times New Roman font implementation"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Updated CSS to use Times New Roman as primary font family. Changed font-family from Cairo to Times New Roman while keeping Arabic support. Needs verification that font displays correctly."
+
+  - task: "Responsive design improvements"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Comprehensive responsive design overhaul. Added mobile-first approach with breakpoints for 375px, 576px, 768px, 992px, and 1200px+. Enhanced touch targets, font sizes, and spacing for all device sizes. Needs thorough testing across different screen sizes."
+
+  - task: "Made with Emergent footer text"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Added 'Made with Emergent' text below chat input area. Positioned with proper spacing and styling (text-[10px], text-gray-300, opacity-75). Needs verification that it displays correctly in all contexts."
+
+  - task: "Search field size optimization"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Reduced search field height from h-9 sm:h-10 to h-8 sm:h-9 and text size from text-sm sm:text-base to text-xs sm:text-sm. Made search field smaller than message input field. Needs verification of proportions and usability."
+
   - task: "Enable send button only when chat input has content"
     implemented: true
     working: true
