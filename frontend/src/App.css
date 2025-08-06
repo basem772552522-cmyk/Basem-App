@@ -507,12 +507,61 @@ input::placeholder {
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
+/* Chat header enhancements */
+.chat-header {
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  backdrop-filter: blur(10px);
+}
+
+.chat-header .avatar-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.online-indicator {
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* Avatar improvements */
+.avatar-enhanced {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.avatar-enhanced:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  background-color: #10b981;
+  border: 3px solid white;
+  border-radius: 50%;
+  animation: pulse-indicator 2s infinite;
+}
+
+@keyframes pulse-indicator {
   0% {
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
