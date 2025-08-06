@@ -356,16 +356,38 @@ function App() {
     }
   };
 
-  const formatTime = (timestamp) => {
-    // Create date object and ensure it's treated as UTC if it comes from server
-    let date;
-    if (typeof timestamp === 'string') {
-      // If timestamp is string, parse it as UTC then convert to local
-      date = new Date(timestamp.endsWith('Z') ? timestamp : timestamp + 'Z');
-    } else {
-      date = new Date(timestamp);
+  // Get user's timezone
+  const getUserTimezone = () => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch (error) {
+      return 'UTC'; // fallback
     }
-    
+  };
+
+  // Convert UTC timestamp to local time
+  const convertToLocalTime = (utcTimestamp) => {
+    try {
+      // Ensure we have a proper UTC timestamp
+      let utcDate;
+      if (typeof utcTimestamp === 'string') {
+        // Add Z if not present to indicate UTC
+        utcDate = new Date(utcTimestamp.endsWith('Z') ? utcTimestamp : utcTimestamp + 'Z');
+      } else {
+        utcDate = new Date(utcTimestamp);
+      }
+      
+      // Return local date object
+      return utcDate;
+    } catch (error) {
+      console.error('Error converting timestamp:', error);
+      return new Date();
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    // Convert UTC timestamp to local time
+    const date = convertToLocalTime(timestamp);
     const now = new Date();
     
     // Check if message is from today (local time)
@@ -376,8 +398,7 @@ function App() {
       return date.toLocaleTimeString('ar-SA', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        hour12: true
       });
     } else {
       // Show date and time for older messages
@@ -388,22 +409,19 @@ function App() {
         return 'أمس ' + date.toLocaleTimeString('ar-SA', {
           hour: '2-digit',
           minute: '2-digit',
-          hour12: true,
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          hour12: true
         });
       } else {
         // For older messages, show date and time
         const dateStr = date.toLocaleDateString('ar-SA', {
-          year: 'numeric',
-          month: '2-digit',
           day: '2-digit',
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          month: '2-digit',
+          year: 'numeric'
         });
         const timeStr = date.toLocaleTimeString('ar-SA', {
           hour: '2-digit',
           minute: '2-digit',
-          hour12: true,
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          hour12: true
         });
         return `${dateStr} ${timeStr}`;
       }
