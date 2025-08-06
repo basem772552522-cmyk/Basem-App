@@ -232,12 +232,18 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
                     try:
                         last_seen = other_user["last_seen"]
                         if isinstance(last_seen, str):
+                            # Parse ISO format datetime string
                             last_seen = datetime.fromisoformat(last_seen.replace('Z', '+00:00'))
+                        elif not isinstance(last_seen, datetime):
+                            # If it's not a datetime object, convert it
+                            last_seen = datetime.fromisoformat(str(last_seen))
                         
                         now = datetime.utcnow()
                         diff = now - last_seen
                         
-                        if diff.days > 0:
+                        if diff.days > 7:
+                            last_seen_text = f"منذ {diff.days} يوم"
+                        elif diff.days > 0:
                             last_seen_text = f"منذ {diff.days} يوم"
                         elif diff.seconds > 3600:
                             hours = diff.seconds // 3600
@@ -247,7 +253,8 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
                             last_seen_text = f"منذ {minutes} دقيقة"
                         else:
                             last_seen_text = "منذ قليل"
-                    except:
+                    except Exception as e:
+                        print(f"Error parsing last_seen: {e}")
                         last_seen_text = "منذ فترة"
                 
                 chat["other_user"] = {
