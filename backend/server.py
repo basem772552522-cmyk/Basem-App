@@ -193,7 +193,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Authentication routes
-@api_router.post("/auth/register", response_model=Token)
+@api_router.post("/auth/register", response_model=dict)
 async def register(user_data: UserCreate):
     # Check if email exists
     existing_email = await db.users.find_one({"email": user_data.email})
@@ -205,7 +205,10 @@ async def register(user_data: UserCreate):
     if existing_username:
         raise HTTPException(status_code=400, detail="اسم المستخدم مستخدم بالفعل")
     
-    # Create new user
+    # Generate verification code
+    verification_code = generate_verification_code()
+    
+    # Create new user (but not verified yet)
     hashed_password = get_password_hash(user_data.password)
     user = User(
         username=user_data.username,
@@ -213,11 +216,75 @@ async def register(user_data: UserCreate):
         password_hash=hashed_password
     )
     
-    await db.users.insert_one(user.dict())
+    # Store user as unverified with verification code
+    user_dict = user.dict()
+    user_dict['is_verified'] = False
+    user_dict['verification_code'] = verification_code
+    user_dict['verification_expires'] = datetime.utcnow() + timedelta(minutes=15)  # 15 minutes
+    
+    await db.users_pending.insert_one(user_dict)
+    
+    # Send verification email (simulated)
+    await send_verification_email(user_data.email, verification_code)
+    
+    return {
+        "message": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+        "email": user_data.email,
+        "requires_verification": True
+    }
+
+@api_router.post("/auth/verify-email", response_model=Token)
+async def verify_email(verification_data: EmailVerification):
+    # Find pending user
+    pending_user = await db.users_pending.find_one({
+        "email": verification_data.email,
+        "verification_code": verification_data.code
+    })
+    
+    if not pending_user:
+        raise HTTPException(status_code=400, detail="رمز التحقق غير صحيح")
+    
+    # Check if verification code expired
+    if datetime.utcnow() > pending_user['verification_expires']:
+        raise HTTPException(status_code=400, detail="انتهت صلاحية رمز التحقق")
+    
+    # Move user to verified users collection
+    user_data = pending_user.copy()
+    del user_data['verification_code']
+    del user_data['verification_expires']
+    user_data['is_verified'] = True
+    
+    await db.users.insert_one(user_data)
+    await db.users_pending.delete_one({"_id": pending_user["_id"]})
     
     # Create access token
-    access_token = create_access_token(data={"sub": user.id})
+    access_token = create_access_token(data={"sub": user_data["id"]})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@api_router.post("/auth/resend-verification")
+async def resend_verification(resend_data: ResendVerificationCode):
+    # Find pending user
+    pending_user = await db.users_pending.find_one({"email": resend_data.email})
+    
+    if not pending_user:
+        raise HTTPException(status_code=404, detail="لم يتم العثور على طلب التسجيل")
+    
+    # Generate new verification code
+    verification_code = generate_verification_code()
+    
+    # Update verification code and expiry
+    await db.users_pending.update_one(
+        {"email": resend_data.email},
+        {"$set": {
+            "verification_code": verification_code,
+            "verification_expires": datetime.utcnow() + timedelta(minutes=15)
+        }}
+    )
+    
+    # Send verification email
+    await send_verification_email(resend_data.email, verification_code)
+    
+    return {"message": "تم إرسال رمز تحقق جديد"}
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
