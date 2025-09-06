@@ -1141,7 +1141,7 @@ function App() {
                       الوصول المباشر لجهات اتصال المتصفح (مستحسن)
                     </p>
                     <Button
-                      onClick={async () => {
+                      onClick={async (event) => {
                         const btn = event.target;
                         const originalText = btn.textContent;
                         btn.textContent = 'جاري التزامن...';
