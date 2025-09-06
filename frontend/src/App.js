@@ -32,15 +32,21 @@ function App() {
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
 
-  // تهيئة جهات الاتصال
+  // تحميل جهات الاتصال المحفوظة عند بدء التطبيق
   useEffect(() => {
     try {
       const savedContacts = localStorage.getItem('contacts');
       if (savedContacts) {
         setContacts(JSON.parse(savedContacts));
       }
+      
+      // تزامن تلقائي إذا كان مُفعلاً
+      setTimeout(() => {
+        autoSyncContacts();
+      }, 2000); // تأخير 2 ثانية لضمان تحميل التطبيق
+      
     } catch (error) {
-      console.error('خطأ في تحميل جهات الاتصال:', error);
+      console.error('خطأ في تحميل جهات الاتصال المحفوظة:', error);
     }
   }, []);
 
