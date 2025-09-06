@@ -883,6 +883,13 @@ function App() {
     };
   }, [user]);
 
+  // طلب إذن الإشعارات عند تحميل التطبيق
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
   // Email verification screen
   if (showVerification) {
     return (
