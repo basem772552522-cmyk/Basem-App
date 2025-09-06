@@ -437,7 +437,118 @@ function App() {
     }
   };
 
-  const resendVerificationCode = async () => {
+  // ضغط الصورة قبل الرفع
+  const compressImage = (file, maxSizeMB = 1, quality = 0.8) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // حساب الأبعاد الجديدة (حد أقصى 400x400)
+        const maxSize = 400;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // رسم الصورة المضغوطة
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // تحويل إلى base64 مع ضغط
+        canvas.toBlob(
+          (blob) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  // رفع الصورة الشخصية
+  const uploadProfileImage = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // التحقق من نوع الملف
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار ملف صورة فقط');
+      return;
+    }
+
+    // التحقق من حجم الملف (5MB كحد أقصى قبل الضغط)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الصورة كبير جداً. يرجى اختيار صورة أصغر من 5 ميجابايت');
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      // ضغط الصورة
+      const compressedImage = await compressImage(file);
+      
+      // رفع الصورة للخادم
+      const response = await axios.put(`${API}/users/profile`, {
+        avatar_url: compressedImage
+      });
+
+      // تحديث معلومات المستخدم
+      setUser(response.data);
+      setProfileImage(compressedImage);
+      alert('تم تحديث الصورة الشخصية بنجاح!');
+
+    } catch (error) {
+      console.error('خطأ في رفع الصورة:', error);
+      const errorMessage = error.response?.data?.detail || 'فشل في رفع الصورة';
+      alert(errorMessage);
+    } finally {
+      setIsUploadingImage(false);
+      // مسح input file
+      event.target.value = '';
+    }
+  };
+
+  // حذف الصورة الشخصية
+  const removeProfileImage = async () => {
+    if (!confirm('هل تريد حذف الصورة الشخصية؟')) return;
+
+    setIsUploadingImage(true);
+
+    try {
+      const response = await axios.put(`${API}/users/profile`, {
+        remove_avatar: true
+      });
+
+      setUser(response.data);
+      setProfileImage(null);
+      alert('تم حذف الصورة الشخصية');
+
+    } catch (error) {
+      console.error('خطأ في حذف الصورة:', error);
+      alert('فشل في حذف الصورة');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
     try {
       await axios.post(`${API}/auth/resend-verification`, {
         email: pendingEmail
