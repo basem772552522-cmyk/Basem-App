@@ -34,6 +34,7 @@ function App() {
   const [contactSearchQuery, setContactSearchQuery] = useState('');
   const [messageCache, setMessageCache] = useState({});
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [messageDrafts, setMessageDrafts] = useState({}); // حفظ المسودات
   
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
