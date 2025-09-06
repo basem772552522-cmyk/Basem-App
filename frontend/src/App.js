@@ -819,7 +819,7 @@ function App() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <h3 className="font-medium text-gray-900 text-sm sm:text-base truncate">
-                          {chat.other_user?.username}
+                          {getDisplayName(chat.other_user)}
                         </h3>
                         {chat.last_message && (
                           <span className="text-xs text-gray-500">
