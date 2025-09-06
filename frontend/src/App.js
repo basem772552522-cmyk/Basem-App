@@ -29,6 +29,8 @@ function App() {
   const [showContactsSync, setShowContactsSync] = useState(false);
   const [contacts, setContacts] = useState({});
   const [contactSearchQuery, setContactSearchQuery] = useState('');
+  const [messageCache, setMessageCache] = useState({});
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
