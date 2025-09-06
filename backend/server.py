@@ -333,44 +333,27 @@ async def update_user_status(status_data: UserStatusUpdate, current_user: UserRe
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-async def update_profile(profile_data: ProfileUpdateRequest, current_user: UserResponse = Depends(get_current_user)):
+@api_router.post("/messages/update-status")
+async def update_message_status(status_data: MessageStatusUpdate, current_user: UserResponse = Depends(get_current_user)):
+    """تحديث حالة الرسائل (delivered/read)"""
     try:
-        update_fields = {}
+        # التحقق من أن الحالة صحيحة
+        if status_data.status not in ['delivered', 'read']:
+            raise HTTPException(status_code=400, detail="حالة غير صحيحة. استخدم 'delivered' أو 'read'")
         
-        # Handle avatar removal
-        if profile_data.remove_avatar:
-            update_fields['avatar_url'] = None
+        # تحديث حالة الرسائل
+        result = await db.messages.update_many(
+            {
+                "id": {"$in": status_data.message_ids},
+                "sender_id": {"$ne": current_user.id}  # لا يمكن تحديث حالة رسائل المستخدم نفسه
+            },
+            {"$set": {"status": status_data.status, "updated_at": datetime.utcnow()}}
+        )
         
-        # Handle avatar update
-        elif profile_data.avatar_url:
-            avatar_url = profile_data.avatar_url
-            # Validate base64 image (basic validation)
-            if avatar_url.startswith('data:image/'):
-                # Check image size (max 2MB base64)
-                if len(avatar_url) > 2 * 1024 * 1024 * 1.37:  # 1.37 is base64 overhead
-                    raise HTTPException(status_code=400, detail="حجم الصورة كبير جداً. الحد الأقصى 2 ميجابايت")
-                
-                # Check image format
-                if not any(format in avatar_url for format in ['jpeg', 'jpg', 'png', 'gif', 'webp']):
-                    raise HTTPException(status_code=400, detail="نوع الصورة غير مدعوم. استخدم JPEG، PNG، GIF أو WebP")
-                
-                update_fields['avatar_url'] = avatar_url
-            else:
-                raise HTTPException(status_code=400, detail="تنسيق الصورة غير صحيح")
-        
-        if update_fields:
-            # Update user in database
-            await db.users.update_one(
-                {"id": current_user.id},
-                {"$set": update_fields}
-            )
-            
-            # Get updated user
-            updated_user = await db.users.find_one({"id": current_user.id})
-            if updated_user:
-                return UserResponse(**updated_user)
-        
-        return current_user
+        return {
+            "message": f"تم تحديث حالة {result.modified_count} رسالة إلى {status_data.status}",
+            "updated_count": result.modified_count
+        }
         
     except HTTPException:
         raise
