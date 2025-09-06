@@ -312,7 +312,7 @@ async def get_me(current_user: UserResponse = Depends(get_current_user)):
 
 @api_router.post("/users/update-status")
 async def update_user_status(status_data: UserStatusUpdate, current_user: UserResponse = Depends(get_current_user)):
-    """تحديث حالة المستخدم (متصل/غير متصل)"""
+    """تحديث حالة المستخدم (متصل/غير متصل) مع timestamp دقيق"""
     try:
         current_time = datetime.utcnow()
         update_fields = {
@@ -320,16 +320,23 @@ async def update_user_status(status_data: UserStatusUpdate, current_user: UserRe
             "last_seen": current_time
         }
         
-        # إذا كان المستخدم غير متصل، تحديث last_seen فقط
+        # إذا كان المستخدم غير متصل، تحديث last_seen بشكل دقيق
         if not status_data.is_online:
             update_fields["is_online"] = False
+            # إضافة timestamp إضافي للدقة
+            update_fields["offline_timestamp"] = current_time
         
         await db.users.update_one(
             {"id": current_user.id},
             {"$set": update_fields}
         )
         
-        return {"message": "تم تحديث الحالة بنجاح", "is_online": status_data.is_online}
+        return {
+            "message": "تم تحديث الحالة بنجاح", 
+            "is_online": status_data.is_online,
+            "last_seen": current_time.isoformat(),
+            "timestamp": current_time.isoformat()
+        }
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
