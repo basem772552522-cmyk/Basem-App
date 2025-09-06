@@ -60,6 +60,32 @@ function App() {
     }
   }, []);
 
+  // مراقبة حالة الاتصال
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // إعادة تحميل البيانات عند العودة للاتصال
+      if (user) {
+        loadChats();
+        if (selectedChat) {
+          loadMessages(selectedChat.id, false); // force reload
+        }
+      }
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [user, selectedChat]);
+
   // حفظ جهات الاتصال
   const saveContacts = (newContacts) => {
     const updatedContacts = { ...contacts, ...newContacts };
