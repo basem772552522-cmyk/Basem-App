@@ -276,7 +276,7 @@ async def verify_email(verification_data: EmailVerification):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.post("/auth/resend-verification")
-async def resend_verification(resend_data: ResendVerificationCode):
+async def resend_verification(resend_data: ResendVerificationRequest):
     # Find pending user
     pending_user = await db.users_pending.find_one({"email": resend_data.email})
     
