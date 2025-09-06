@@ -125,6 +125,50 @@ input::placeholder {
 
 /* Responsive design */
 
+/* Sticky chat header and message input */
+.chat-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.message-input-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.messages-container-with-sticky {
+  height: calc(100vh - 140px); /* Accounting for header and input */
+  overflow-y: auto;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Enhanced scrollbar for messages */
+.messages-container-with-sticky::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messages-container-with-sticky::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.messages-container-with-sticky::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.messages-container-with-sticky::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 /* Mobile-first responsive chat interface */
 .min-h-screen {
   min-height: 100vh;
