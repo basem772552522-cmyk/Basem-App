@@ -75,7 +75,6 @@ function App() {
       // محاولة استخدام Contacts API إذا كان متاحاً
       if ('contacts' in navigator && 'ContactsManager' in window) {
         const contactPermission = await navigator.permissions.query({name: 'contacts'});
-        setContactPermission(contactPermission.state);
         
         if (contactPermission.state === 'granted') {
           const props = ['name', 'email'];
