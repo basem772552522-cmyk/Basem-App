@@ -304,27 +304,30 @@ async def get_me(current_user: UserResponse = Depends(get_current_user)):
     return current_user
 
 @api_router.put("/users/profile", response_model=UserResponse)
-async def update_profile(profile_data: dict, current_user: UserResponse = Depends(get_current_user)):
+async def update_profile(profile_data: ProfileUpdateRequest, current_user: UserResponse = Depends(get_current_user)):
     try:
         update_fields = {}
         
-        # Handle avatar update
-        if 'avatar_url' in profile_data:
-            avatar_url = profile_data['avatar_url']
-            # Validate base64 image (basic validation)
-            if avatar_url and (avatar_url.startswith('data:image/') or avatar_url.startswith('http')):
-                update_fields['avatar_url'] = avatar_url
+        # Handle avatar removal
+        if profile_data.remove_avatar:
+            update_fields['avatar_url'] = None
         
-        # Handle username update (if needed later)
-        if 'username' in profile_data and profile_data['username']:
-            # Check if username already exists
-            existing_user = await db.users.find_one({
-                "username": profile_data['username'],
-                "id": {"$ne": current_user.id}
-            })
-            if existing_user:
-                raise HTTPException(status_code=400, detail="Username already exists")
-            update_fields['username'] = profile_data['username']
+        # Handle avatar update
+        elif profile_data.avatar_url:
+            avatar_url = profile_data.avatar_url
+            # Validate base64 image (basic validation)
+            if avatar_url.startswith('data:image/'):
+                # Check image size (max 2MB base64)
+                if len(avatar_url) > 2 * 1024 * 1024 * 1.37:  # 1.37 is base64 overhead
+                    raise HTTPException(status_code=400, detail="حجم الصورة كبير جداً. الحد الأقصى 2 ميجابايت")
+                
+                # Check image format
+                if not any(format in avatar_url for format in ['jpeg', 'jpg', 'png', 'gif', 'webp']):
+                    raise HTTPException(status_code=400, detail="نوع الصورة غير مدعوم. استخدم JPEG، PNG، GIF أو WebP")
+                
+                update_fields['avatar_url'] = avatar_url
+            else:
+                raise HTTPException(status_code=400, detail="تنسيق الصورة غير صحيح")
         
         if update_fields:
             # Update user in database
