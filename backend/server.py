@@ -166,6 +166,16 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=ALGORITHM)
     return encoded_jwt
 
+def generate_verification_code():
+    """توليد رمز تحقق مكون من 6 أرقام"""
+    return ''.join(random.choices(string.digits, k=6))
+
+async def send_verification_email(email: str, code: str):
+    """إرسال بريد إلكتروني للتحقق (محاكاة)"""
+    # في الإنتاج، يمكن استخدام خدمة مثل SendGrid أو AWS SES
+    print(f"رمز التحقق لـ {email}: {code}")
+    return True
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         token = credentials.credentials
