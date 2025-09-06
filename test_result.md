@@ -247,6 +247,18 @@ frontend:
           agent: "main"
           comment: "Improved notification system with better memory management, auto-close after 4 seconds, click-to-focus functionality, and optimized polling logic."
 
+  - task: "Enhanced online status indicators with animated pulse"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Enhanced online status display throughout the application. Added current user online indicator in app header with green pulsing dot. Replaced all Badge components with custom rounded containers featuring animated pulse dots (animate-pulse), consistent green styling (bg-green-100, text-green-800), and unified design. Updated online indicators in: chat list, search results, chat header, and added user status in main header. All indicators now have pulsing green dots and consistent pill-shaped design with rounded corners."
+
   - task: "Real-time user status and WhatsApp-style read receipts"
     implemented: true
     working: true
