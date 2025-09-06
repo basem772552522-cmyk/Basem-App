@@ -1106,22 +1106,47 @@ function App() {
             
             <div className="space-y-4">
               <div className="text-center">
-                <Users className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                <Users className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
                 <p className="text-sm text-gray-600 mb-4">
                   قم بتزامن جهات اتصالك لعرض الأسماء الحقيقية بدلاً من أسماء المستخدمين
                 </p>
                 
-                <div className="bg-blue-50 p-3 rounded-lg mb-4">
-                  <p className="text-xs text-blue-800">
+                <div className="bg-emerald-50 p-3 rounded-lg mb-4">
+                  <p className="text-xs text-emerald-800">
                     📊 عدد جهات الاتصال المحفوظة: {Object.keys(contacts).length}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3">
+                {/* تزامن مباشر من المتصفح */}
+                <div className="border-2 border-emerald-200 rounded-lg p-4 bg-emerald-50">
+                  <div className="text-center">
+                    <Users className="w-8 h-8 mx-auto mb-2 text-emerald-600" />
+                    <p className="text-sm font-medium text-emerald-800 mb-2">تزامن مباشر من جهات الاتصال</p>
+                    <p className="text-xs text-emerald-600 mb-3">
+                      الوصول المباشر لجهات اتصال المتصفح (مستحسن)
+                    </p>
+                    <Button
+                      onClick={async () => {
+                        const result = await syncBrowserContacts();
+                        if (result.success) {
+                          alert(result.message);
+                        } else {
+                          alert(`فشل التزامن: ${result.message}`);
+                        }
+                      }}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm rounded"
+                    >
+                      بدء التزامن المباشر
+                    </Button>
+                  </div>
+                </div>
+
+                {/* تزامن من ملف CSV */}
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                   <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p className="text-sm text-gray-600 mb-2">رفع ملف CSV لجهات الاتصال</p>
+                  <p className="text-sm text-gray-600 mb-2">أو رفع ملف CSV لجهات الاتصال</p>
                   <input
                     type="file"
                     accept=".csv,.txt"
@@ -1131,7 +1156,7 @@ function App() {
                   />
                   <label
                     htmlFor="contacts-upload"
-                    className="cursor-pointer bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded text-sm"
+                    className="cursor-pointer bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm"
                   >
                     اختر ملف CSV
                   </label>
@@ -1140,9 +1165,28 @@ function App() {
                   </p>
                 </div>
 
+                {/* إعدادات التزامن التلقائي */}
+                <div className="border rounded-lg p-3 bg-blue-50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-blue-800">التزامن التلقائي</p>
+                      <p className="text-xs text-blue-600">تزامن جهات الاتصال عند فتح التطبيق</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        defaultChecked={localStorage.getItem('autoSyncContacts') === 'true'}
+                        onChange={(e) => toggleAutoSync(e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                </div>
+
                 {Object.keys(contacts).length > 0 && (
                   <div className="border rounded-lg p-3">
-                    <h4 className="font-medium mb-2 text-sm">جهات الاتصال المزامنة:</h4>
+                    <h4 className="font-medium mb-2 text-sm">جهات الاتصال المُزامنة:</h4>
                     <div className="max-h-32 overflow-y-auto space-y-1">
                       {Object.entries(contacts).slice(0, 5).map(([email, name]) => (
                         <div key={email} className="flex justify-between text-xs">
@@ -1170,9 +1214,11 @@ function App() {
                 {Object.keys(contacts).length > 0 && (
                   <Button
                     onClick={() => {
-                      setContacts({});
-                      localStorage.removeItem('contacts');
-                      alert('تم مسح جميع جهات الاتصال');
+                      if (confirm('هل أنت متأكد من مسح جميع جهات الاتصال؟')) {
+                        setContacts({});
+                        localStorage.removeItem('contacts');
+                        alert('تم مسح جميع جهات الاتصال');
+                      }
                     }}
                     variant="outline"
                     className="text-red-600 border-red-300 hover:bg-red-50"
