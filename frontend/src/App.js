@@ -710,6 +710,12 @@ function App() {
     }
   }, [selectedChat]);
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
   // Load user and chats on token change
   useEffect(() => {
     if (token) {
