@@ -161,21 +161,31 @@ class BasemappFocusedTester:
         results = []
         for method, endpoint, name in protected_endpoints:
             # Test without authentication (should return 401 or 403)
-            success, response = self.run_test(
-                f"{name} (بدون مصادقة)",
-                method,
-                endpoint,
-                [401, 403],  # Accept both 401 and 403
-                data={} if method == "POST" else None
-            )
+            url = f"{self.api_url}/{endpoint}"
+            headers = {'Content-Type': 'application/json'}
             
-            # For this test, we consider it successful if it properly rejects unauthenticated requests
-            if response and 'detail' in response:
-                if 'authenticated' in response['detail'].lower() or 'authorization' in response['detail'].lower():
-                    success = True
-                    self.tests_passed += 1 if not success else 0  # Adjust counter
+            self.tests_run += 1
+            print(f"\n🔍 Testing {name} (بدون مصادقة)...")
             
-            results.append(success)
+            try:
+                if method == 'GET':
+                    response = requests.get(url, headers=headers)
+                elif method == 'POST':
+                    response = requests.post(url, json={}, headers=headers)
+                
+                # Accept both 401 and 403 as valid authentication rejection
+                if response.status_code in [401, 403]:
+                    self.tests_passed += 1
+                    print(f"✅ Passed - Status: {response.status_code}")
+                    print(f"   🔒 Properly protected endpoint")
+                    results.append(True)
+                else:
+                    print(f"❌ Failed - Expected 401/403, got {response.status_code}")
+                    results.append(False)
+                    
+            except Exception as e:
+                print(f"❌ Failed - Error: {str(e)}")
+                results.append(False)
         
         # Test public endpoints
         public_success1, _ = self.run_test(
