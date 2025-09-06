@@ -37,6 +37,7 @@ function App() {
   const [messageDrafts, setMessageDrafts] = useState({}); // حفظ المسودات
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState({}); // {chatId: {userId: timestamp}}
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
