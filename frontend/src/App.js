@@ -738,18 +738,25 @@ function App() {
       return `أمس ${time}`;
     }
     
+    // أيام الأسبوع العربية
+    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const months = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    
     // التواريخ الأقدم - التاريخ الميلادي
     const daysDiff = Math.floor((today - messageDate) / (1000 * 60 * 60 * 24));
     if (daysDiff < 7) {
-      return `${date.toLocaleDateString('ar-EG', { weekday: 'long', calendar: 'gregory' })} ${time}`;
+      const weekday = weekdays[date.getDay()];
+      return `${weekday} ${time}`;
     }
     
-    return `${date.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      calendar: 'gregory'
-    })} ${time}`;
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    
+    return `${day} ${month} ${year} ${time}`;
   };
 
   const formatLastSeen = (lastSeen) => {
