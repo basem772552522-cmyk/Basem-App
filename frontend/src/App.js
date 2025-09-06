@@ -978,6 +978,8 @@ function App() {
     if (token) {
       loadUser();
       loadChats();
+      // تحديث حالة المستخدم إلى متصل عند فتح التطبيق
+      updateUserStatus(true);
     }
   }, [token]);
 
