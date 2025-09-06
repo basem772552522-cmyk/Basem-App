@@ -358,13 +358,60 @@ function App() {
         email, 
         password 
       });
-      setToken(response.data.access_token);
-      localStorage.setItem('token', response.data.access_token);
-      setUsername('');
-      setEmail('');
-      setPassword('');
+      
+      if (response.data.requires_verification) {
+        setPendingEmail(email);
+        setShowVerification(true);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        alert('تم إرسال رمز التحقق إلى بريدك الإلكتروني');
+      } else {
+        // تسجيل دخول مباشر إذا لم يكن التحقق مطلوباً
+        setToken(response.data.access_token);
+        localStorage.setItem('token', response.data.access_token);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.detail || 'فشل في إنشاء الحساب';
+      alert(errorMessage);
+    }
+  };
+
+  const verifyEmail = async () => {
+    if (!verificationCode.trim()) {
+      alert('يرجى إدخال رمز التحقق');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API}/auth/verify-email`, {
+        email: pendingEmail,
+        code: verificationCode.trim()
+      });
+      
+      setToken(response.data.access_token);
+      localStorage.setItem('token', response.data.access_token);
+      setShowVerification(false);
+      setVerificationCode('');
+      setPendingEmail('');
+      alert('تم التحقق من البريد الإلكتروني بنجاح!');
+    } catch (error) {
+      const errorMessage = error.response?.data?.detail || 'رمز التحقق غير صحيح';
+      alert(errorMessage);
+    }
+  };
+
+  const resendVerificationCode = async () => {
+    try {
+      await axios.post(`${API}/auth/resend-verification`, {
+        email: pendingEmail
+      });
+      alert('تم إرسال رمز تحقق جديد');
+    } catch (error) {
+      const errorMessage = error.response?.data?.detail || 'فشل في إرسال رمز التحقق';
       alert(errorMessage);
     }
   };
