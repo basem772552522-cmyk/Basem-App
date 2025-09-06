@@ -109,6 +109,13 @@ class EmailVerification(BaseModel):
     email: str
     code: str
 
+class MessageStatusUpdate(BaseModel):
+    message_ids: List[str]
+    status: str  # 'delivered' or 'read'
+
+class UserStatusUpdate(BaseModel):
+    is_online: bool
+
 class ResendVerificationCode(BaseModel):
     email: str
 
