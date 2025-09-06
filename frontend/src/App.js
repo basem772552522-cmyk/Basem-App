@@ -162,19 +162,7 @@ function App() {
     reader.readAsText(file);
   };
 
-  // الحصول على الاسم المعروض (من جهات الاتصال أو اسم المستخدم)
-  const getDisplayName = (user) => {
-    if (!user) return '';
-    
-    // البحث في جهات الاتصال أولاً
-    const contactName = contacts[user.email?.toLowerCase()];
-    if (contactName) {
-      return contactName;
-    }
-    
-    // إذا لم يجد في جهات الاتصال، استخدم اسم المستخدم
-    return user.username || user.email;
-  };
+
 
   // تحميل جهات الاتصال المحفوظة عند بدء التطبيق
   useEffect(() => {
