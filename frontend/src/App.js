@@ -666,6 +666,8 @@ function App() {
     setSelectedChat(null);
     setMessages([]);
   };
+
+  const startChat = async (userId) => {
     try {
       console.log('محاولة بدء محادثة مع المستخدم:', userId);
       
