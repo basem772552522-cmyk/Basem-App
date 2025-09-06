@@ -38,6 +38,7 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [typingUsers, setTypingUsers] = useState({}); // {chatId: {userId: timestamp}}
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [currentView, setCurrentView] = useState('chats'); // 'chats' أو 'chat'
   
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
