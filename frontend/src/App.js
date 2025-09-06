@@ -688,11 +688,27 @@ function App() {
     });
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      sendMessage();
+  // حفظ المسودة عند تغيير النص
+  const handleMessageChange = (value) => {
+    setNewMessage(value);
+    
+    // حفظ المسودة إذا كان هناك محادثة محددة
+    if (selectedChat) {
+      setMessageDrafts(prev => ({
+        ...prev,
+        [selectedChat.id]: value
+      }));
     }
   };
+
+  // تحميل المسودة عند تغيير المحادثة
+  useEffect(() => {
+    if (selectedChat && messageDrafts[selectedChat.id]) {
+      setNewMessage(messageDrafts[selectedChat.id]);
+    } else {
+      setNewMessage('');
+    }
+  }, [selectedChat]);
 
   // Load user and chats on token change
   useEffect(() => {
