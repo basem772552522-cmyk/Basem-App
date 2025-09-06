@@ -25,6 +25,9 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [showContactsSync, setShowContactsSync] = useState(false);
+  const [contacts, setContacts] = useState({});
+  const [contactPermission, setContactPermission] = useState('default');
   
   const messagesEndRef = useRef(null);
 
