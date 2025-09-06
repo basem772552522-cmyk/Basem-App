@@ -944,7 +944,12 @@ function App() {
     }
   };
 
-  // Load user and chats on token change
+  // تحديث صورة المستخدم عند تحميل المعلومات
+  useEffect(() => {
+    if (user?.avatar_url) {
+      setProfileImage(user.avatar_url);
+    }
+  }, [user]);
   useEffect(() => {
     if (token) {
       loadUser();
