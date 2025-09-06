@@ -119,9 +119,6 @@ class MessageStatusUpdate(BaseModel):
 class UserStatusUpdate(BaseModel):
     is_online: bool
 
-class ResendVerificationCode(BaseModel):
-    email: str
-
 class UserResponse(BaseModel):
     id: str
     username: str
