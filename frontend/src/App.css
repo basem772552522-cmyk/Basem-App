@@ -125,48 +125,77 @@ input::placeholder {
 
 /* Responsive design */
 
-/* Sticky chat header and message input */
+/* Sticky chat header and message input - قوي ومضمون */
 .chat-header-sticky {
   position: sticky;
+  position: -webkit-sticky; /* Safari support */
   top: 0;
-  z-index: 10;
+  z-index: 20;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .message-input-sticky {
   position: sticky;
+  position: -webkit-sticky; /* Safari support */
   bottom: 0;
-  z-index: 10;
+  z-index: 20;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
   background: rgba(255, 255, 255, 0.95);
   border-top: 1px solid rgba(229, 231, 235, 0.8);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* محسن للموبايل - تأكيد التثبيت */
+@supports (position: sticky) {
+  .chat-header-sticky {
+    position: sticky !important;
+    top: 0 !important;
+  }
+  
+  .message-input-sticky {
+    position: sticky !important;
+    bottom: 0 !important;
+  }
 }
 
 .messages-container-with-sticky {
   height: calc(100vh - 140px); /* Accounting for header and input */
+  height: calc(100dvh - 140px); /* Dynamic viewport height for mobile */
   overflow-y: auto;
+  overflow-x: hidden;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+  scroll-behavior: smooth;
 }
 
-/* Enhanced scrollbar for messages */
+/* تحسين شريط التمرير للرسائل */
 .messages-container-with-sticky::-webkit-scrollbar {
   width: 4px;
 }
 
 .messages-container-with-sticky::-webkit-scrollbar-track {
   background: #f1f5f9;
+  border-radius: 2px;
 }
 
 .messages-container-with-sticky::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 2px;
+  transition: background 0.2s ease;
 }
 
 .messages-container-with-sticky::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* تأثيرات التمرير الناعم */
+.messages-container-with-sticky {
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
 }
 
 /* Mobile-first responsive chat interface */
