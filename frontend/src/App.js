@@ -58,6 +58,104 @@ function App() {
     return contactName || user.username || user.email || 'مستخدم';
   };
 
+  // تزامن جهات الاتصال مباشرة من المتصفح
+  const syncBrowserContacts = async () => {
+    try {
+      // التحقق من دعم Contacts API
+      if ('contacts' in navigator && 'ContactsManager' in window) {
+        console.log('Contacts API متاح');
+        
+        const props = ['name', 'email', 'tel'];
+        const opts = { multiple: true };
+        
+        try {
+          const contactList = await navigator.contacts.select(props, opts);
+          const contactMap = {};
+          let addedCount = 0;
+          
+          contactList.forEach(contact => {
+            // معالجة البريد الإلكتروني
+            if (contact.email && contact.email.length > 0) {
+              contact.email.forEach(emailObj => {
+                const email = emailObj.toLowerCase();
+                const name = contact.name && contact.name.length > 0 ? contact.name[0] : null;
+                
+                if (name && email.includes('@')) {
+                  contactMap[email] = name;
+                  addedCount++;
+                }
+              });
+            }
+          });
+          
+          if (addedCount > 0) {
+            saveContacts(contactMap);
+            return { success: true, count: addedCount, message: `تم تزامن ${addedCount} جهة اتصال بنجاح!` };
+          } else {
+            return { success: false, message: 'لم يتم العثور على جهات اتصال تحتوي على بريد إلكتروني' };
+          }
+          
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            return { success: false, message: 'تم إلغاء العملية من قبل المستخدم' };
+          }
+          throw error;
+        }
+      }
+      
+      // إذا لم يكن Contacts API متاحاً، جرب Web API أخرى
+      else if (navigator.permissions) {
+        // طلب إذن جهات الاتصال
+        try {
+          const permission = await navigator.permissions.query({name: 'contacts'});
+          if (permission.state === 'denied') {
+            return { success: false, message: 'تم رفض الوصول لجهات الاتصال' };
+          }
+        } catch (permError) {
+          console.log('لا يمكن التحقق من أذونات جهات الاتصال:', permError);
+        }
+        
+        return { success: false, message: 'Contacts API غير مدعوم في هذا المتصفح' };
+      }
+      
+      return { success: false, message: 'المتصفح لا يدعم الوصول لجهات الاتصال' };
+      
+    } catch (error) {
+      console.error('خطأ في تزامن جهات الاتصال:', error);
+      return { success: false, message: `خطأ: ${error.message}` };
+    }
+  };
+
+  // تزامن جهات الاتصال من Google Contacts (بديل)
+  const syncGoogleContacts = async () => {
+    try {
+      // يمكن استخدام Google People API هنا
+      // هذا يتطلب مصادقة Google OAuth
+      return { success: false, message: 'ميزة Google Contacts قريباً' };
+    } catch (error) {
+      return { success: false, message: 'خطأ في الاتصال بـ Google Contacts' };
+    }
+  };
+
+  // تزامن تلقائي عند فتح التطبيق (اختياري)
+  const autoSyncContacts = async () => {
+    const autoSyncEnabled = localStorage.getItem('autoSyncContacts') === 'true';
+    if (autoSyncEnabled) {
+      const result = await syncBrowserContacts();
+      if (result.success) {
+        console.log('تم التزامن التلقائي:', result.message);
+      }
+    }
+  };
+
+  // تفعيل/إلغاء التزامن التلقائي
+  const toggleAutoSync = (enabled) => {
+    localStorage.setItem('autoSyncContacts', enabled.toString());
+    if (enabled) {
+      autoSyncContacts();
+    }
+  };
+
   // رفع ملف جهات الاتصال
   const handleContactsUpload = (event) => {
     const file = event.target.files[0];
