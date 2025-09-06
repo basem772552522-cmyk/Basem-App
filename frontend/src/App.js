@@ -1330,9 +1330,17 @@ function App() {
                     <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                       <div className="relative">
                         <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar border-2 border-emerald-100">
-                          <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700 font-semibold">
-                            {user.username[0].toUpperCase()}
-                          </AvatarFallback>
+                          {user.avatar_url ? (
+                            <img 
+                              src={user.avatar_url} 
+                              alt={getDisplayName(user)} 
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700 font-semibold">
+                              {user.username[0].toUpperCase()}
+                            </AvatarFallback>
+                          )}
                         </Avatar>
                         {user.is_online && (
                           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
