@@ -1203,6 +1203,37 @@ function App() {
         await updateLastSeenAccurately();
       }
     });
+    
+    // استمع لاستعادة التركيز (تحديث العلامات الزرقاء فوراً)
+    window.addEventListener('focus', async () => {
+      if (user && selectedChat) {
+        // تحديث فوري للعلامات الزرقاء عند العودة للتطبيق
+        try {
+          const response = await axios.get(`${API}/chats/${selectedChat.id}/messages`);
+          const unreadMessages = response.data.filter(msg => 
+            msg.sender_id !== user.id && msg.status !== 'read'
+          );
+          
+          if (unreadMessages.length > 0) {
+            const messageIds = unreadMessages.map(msg => msg.id);
+            
+            // تحديث العلامات فوراً في الواجهة
+            const updatedMessages = response.data.map(msg => {
+              if (msg.sender_id !== user.id && msg.status !== 'read') {
+                return { ...msg, status: 'read' };
+              }
+              return msg;
+            });
+            setMessages(updatedMessages);
+            
+            // تحديث قاعدة البيانات
+            await updateMessageStatus(messageIds, 'read');
+          }
+        } catch (error) {
+          console.error('خطأ في تحديث العلامات عند العودة:', error);
+        }
+      }
+    });
 
     return () => {
       window.removeEventListener('beforeunload', cleanup);
