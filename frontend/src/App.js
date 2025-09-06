@@ -1325,6 +1325,23 @@ function App() {
                   </div>
                 ))
               )}
+              
+              {/* Typing Indicator */}
+              {typingUsers[selectedChat?.id] && (
+                <div className="flex justify-end px-3 pb-2">
+                  <div className="max-w-xs px-3 py-2 bg-gray-100 rounded-lg">
+                    <div className="flex items-center space-x-1 space-x-reverse">
+                      <span className="text-sm text-gray-600">يكتب...</span>
+                      <div className="flex space-x-1">
+                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div ref={messagesEndRef} />
             </div>
 
