@@ -1623,8 +1623,8 @@ function App() {
             </div>
           </div>
 
-          {/* Messages - Full Screen */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 messages-container">
+          {/* Messages - مع التمرير المحسن */}
+          <div className="messages-container-with-sticky px-3 sm:px-4 space-y-3 sm:space-y-4 messages-container">
             {isLoadingMessages ? (
               <div className="flex items-center justify-center h-32">
                 <div className="flex items-center space-x-2 space-x-reverse text-gray-500">
