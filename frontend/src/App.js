@@ -980,7 +980,25 @@ function App() {
     }
   }, [user]);
 
-  // تحديث حالة المستخدم (متصل/غير متصل)
+  // تحديث "آخر ظهور" بدقة عند الخروج
+  const updateLastSeenAccurately = async () => {
+    if (user) {
+      try {
+        // تحديث الحالة مع timestamp دقيق
+        await axios.post(`${API}/users/update-status`, {
+          is_online: false
+        });
+        
+        // تحديث إضافي للتأكد من دقة التوقيت
+        const now = new Date().toISOString();
+        await axios.put(`${API}/users/profile`, {
+          last_seen_update: now
+        });
+      } catch (error) {
+        console.error('خطأ في تحديث آخر ظهور:', error);
+      }
+    }
+  };
   const updateUserStatus = async (isOnline) => {
     try {
       await axios.post(`${API}/users/update-status`, {
