@@ -1407,9 +1407,17 @@ function App() {
                   <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                     <div className="relative">
                       <Avatar className="w-10 h-10 sm:w-12 sm:h-12 chat-avatar">
-                        <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700">
-                          {chat.other_user?.username?.[0]?.toUpperCase()}
-                        </AvatarFallback>
+                        {chat.other_user?.avatar_url ? (
+                          <img 
+                            src={chat.other_user.avatar_url} 
+                            alt={getDisplayName(chat.other_user)} 
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <AvatarFallback className="w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-lg bg-emerald-100 text-emerald-700">
+                            {chat.other_user?.username?.[0]?.toUpperCase()}
+                          </AvatarFallback>
+                        )}
                       </Avatar>
                       {chat.other_user?.is_online && (
                         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-white absolute -bottom-0.5 -right-0.5"></div>
