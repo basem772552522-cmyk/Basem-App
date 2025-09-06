@@ -1039,6 +1039,16 @@ function App() {
       {/* WhatsApp-Style Sidebar */}
       <div className="sidebar w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px]">
         
+        {/* Connection Status */}
+        {!isOnline && (
+          <div className="bg-yellow-100 border-b border-yellow-200 px-3 py-2 text-center">
+            <div className="flex items-center justify-center space-x-2 space-x-reverse">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+              <span className="text-xs text-yellow-800">لا يوجد اتصال بالإنترنت</span>
+            </div>
+          </div>
+        )}
+        
         {/* Header with Search */}
         <div className="bg-gray-50 p-3 sm:p-4 border-b border-gray-200 app-header">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
