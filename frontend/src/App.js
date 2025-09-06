@@ -810,6 +810,66 @@ function App() {
     }
   }, []);
 
+  // Email verification screen
+  if (showVerification) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8" dir="rtl">
+        <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg verification-card">
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-600 mb-2">
+              تحقق من البريد الإلكتروني
+            </CardTitle>
+            <p className="text-sm sm:text-base text-gray-600">
+              أدخل رمز التحقق المرسل إلى
+            </p>
+            <p className="text-sm font-medium text-emerald-600">
+              {pendingEmail}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-3 sm:space-y-4">
+            <Input
+              type="text"
+              placeholder="رمز التحقق (6 أرقام)"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              className="text-right form-input h-10 sm:h-12 text-center text-lg tracking-widest"
+              maxLength={6}
+            />
+            <Button
+              onClick={verifyEmail}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-12 text-sm sm:text-base"
+            >
+              تحقق من الرمز
+            </Button>
+            <div className="text-center space-y-2">
+              <p className="text-xs text-gray-500">
+                لم تستلم الرمز؟
+              </p>
+              <Button
+                variant="ghost"
+                onClick={resendVerificationCode}
+                className="text-sm text-emerald-600 hover:text-emerald-700"
+              >
+                إرسال رمز جديد
+              </Button>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowVerification(false);
+                setVerificationCode('');
+                setPendingEmail('');
+              }}
+              className="w-full text-sm sm:text-base"
+            >
+              العودة للتسجيل
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // Authentication screen
   if (!user) {
     return (
