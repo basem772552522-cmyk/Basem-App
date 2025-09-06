@@ -1090,7 +1090,7 @@ function App() {
 
   // Main WhatsApp-style interface
   return (
-    <div className="min-h-screen bg-gray-100 main-layout" dir="rtl">
+    <div className="min-h-screen bg-gray-100" dir="rtl">
       {/* WhatsApp-Style Sidebar */}
       <div className="sidebar w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px]">
         
