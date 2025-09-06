@@ -950,6 +950,30 @@ function App() {
       setProfileImage(user.avatar_url);
     }
   }, [user]);
+
+  // تحديث حالة المستخدم (متصل/غير متصل)
+  const updateUserStatus = async (isOnline) => {
+    try {
+      await axios.post(`${API}/users/update-status`, {
+        is_online: isOnline
+      });
+    } catch (error) {
+      console.error('خطأ في تحديث الحالة:', error);
+    }
+  };
+
+  // تحديث حالة قراءة الرسائل
+  const updateMessageStatus = async (messageIds, status) => {
+    try {
+      await axios.post(`${API}/messages/update-status`, {
+        message_ids: messageIds,
+        status: status
+      });
+    } catch (error) {
+      console.error('خطأ في تحديث حالة الرسائل:', error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       loadUser();
