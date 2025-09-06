@@ -175,6 +175,8 @@ function App() {
       }
     }
   }, []);
+
+  const login = async () => {
     try {
       const response = await axios.post(`${API}/auth/login`, { email, password });
       setToken(response.data.access_token);
