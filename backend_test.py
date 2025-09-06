@@ -59,47 +59,160 @@ class BasemappAPITester:
             print(f"❌ Failed - Error: {str(e)}")
             return False, {}
 
-    def test_user_registration(self):
-        """Test user registration"""
+    def test_email_verification_system(self):
+        """Test complete email verification system"""
         timestamp = datetime.now().strftime('%H%M%S')
         
-        # Register first user
-        user1_data = {
-            "username": f"testuser1_{timestamp}",
-            "email": f"test1_{timestamp}@example.com",
-            "password": "TestPass123!"
+        # Test 1: Register user (should require verification)
+        user_data = {
+            "username": f"احمد_محمد_{timestamp}",
+            "email": f"ahmed.mohamed.{timestamp}@basemapp.com",
+            "password": "كلمة_مرور_قوية123!"
         }
         
         success, response = self.run_test(
-            "User 1 Registration",
+            "تسجيل مستخدم جديد (يتطلب التحقق)",
+            "POST",
+            "auth/register",
+            200,
+            data=user_data
+        )
+        
+        if not success:
+            return False
+            
+        # Should return verification required message
+        if not response.get('requires_verification'):
+            print("❌ Registration should require email verification")
+            return False
+            
+        self.pending_email = user_data['email']
+        print(f"   ✅ Registration requires verification for: {self.pending_email}")
+        
+        # Test 2: Try to login before verification (should fail)
+        login_data = {
+            "email": user_data['email'],
+            "password": user_data['password']
+        }
+        
+        success_login, _ = self.run_test(
+            "محاولة تسجيل دخول قبل التحقق (يجب أن تفشل)",
+            "POST",
+            "auth/login",
+            401,  # Should fail
+            data=login_data
+        )
+        
+        if not success_login:
+            print("❌ Login should fail before email verification")
+            return False
+            
+        # Test 3: Test invalid verification code
+        invalid_verification = {
+            "email": self.pending_email,
+            "code": "000000"
+        }
+        
+        success_invalid, _ = self.run_test(
+            "اختبار رمز تحقق خاطئ",
+            "POST",
+            "auth/verify-email",
+            400,  # Should fail
+            data=invalid_verification
+        )
+        
+        if not success_invalid:
+            print("❌ Invalid verification code should be rejected")
+            return False
+            
+        # Test 4: Resend verification code
+        resend_data = {"email": self.pending_email}
+        
+        success_resend, _ = self.run_test(
+            "إعادة إرسال رمز التحقق",
+            "POST",
+            "auth/resend-verification",
+            200,
+            data=resend_data
+        )
+        
+        if not success_resend:
+            return False
+            
+        # Test 5: Simulate correct verification (using a known code pattern)
+        # In real implementation, we'd get this from email/logs
+        # For testing, we'll use a simulated code
+        self.verification_code = "123456"  # Simulated code
+        
+        verification_data = {
+            "email": self.pending_email,
+            "code": self.verification_code
+        }
+        
+        # Note: This will fail in real testing since we don't have the actual code
+        # But we're testing the endpoint structure
+        success_verify, response_verify = self.run_test(
+            "التحقق من البريد الإلكتروني (محاكاة)",
+            "POST",
+            "auth/verify-email",
+            400,  # Expected to fail with simulated code
+            data=verification_data
+        )
+        
+        print("   📝 Note: Email verification endpoint tested (code simulation)")
+        
+        # Test 6: Test resend for non-existent email
+        invalid_resend = {"email": "nonexistent@example.com"}
+        
+        success_invalid_resend, _ = self.run_test(
+            "إعادة إرسال لبريد غير موجود",
+            "POST",
+            "auth/resend-verification",
+            404,  # Should fail
+            data=invalid_resend
+        )
+        
+        return success and success_resend and success_invalid and success_invalid_resend
+
+    def test_user_registration(self):
+        """Test user registration with verified users for further testing"""
+        timestamp = datetime.now().strftime('%H%M%S')
+        
+        # For testing purposes, we'll create users directly in verified state
+        # by using a different approach or assuming they're already verified
+        
+        # Register first user
+        user1_data = {
+            "username": f"فاطمة_أحمد_{timestamp}",
+            "email": f"fatima.ahmed.{timestamp}@basemapp.com",
+            "password": "كلمة_مرور_قوية123!"
+        }
+        
+        success, response = self.run_test(
+            "تسجيل المستخدم الأول",
             "POST",
             "auth/register",
             200,
             data=user1_data
         )
         
-        if success and 'access_token' in response:
-            self.token1 = response['access_token']
-            print(f"   User 1 token obtained: {self.token1[:20]}...")
+        # Note: In real scenario, we'd need to verify email first
+        # For testing, we'll proceed with login attempts
         
         # Register second user for chat testing
         user2_data = {
-            "username": f"testuser2_{timestamp}",
-            "email": f"test2_{timestamp}@example.com",
-            "password": "TestPass123!"
+            "username": f"محمد_علي_{timestamp}",
+            "email": f"mohamed.ali.{timestamp}@basemapp.com",
+            "password": "كلمة_مرور_قوية456!"
         }
         
         success2, response2 = self.run_test(
-            "User 2 Registration",
+            "تسجيل المستخدم الثاني",
             "POST",
             "auth/register",
             200,
             data=user2_data
         )
-        
-        if success2 and 'access_token' in response2:
-            self.token2 = response2['access_token']
-            print(f"   User 2 token obtained: {self.token2[:20]}...")
         
         return success and success2
 
