@@ -989,6 +989,104 @@ function App() {
         )}
       </div>
 
+      {/* Contacts Sync Modal */}
+      {showContactsSync && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold">تزامن جهات الاتصال</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowContactsSync(false)}
+                className="text-gray-500 touch-target"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="text-center">
+                <Users className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                <p className="text-sm text-gray-600 mb-4">
+                  قم بتزامن جهات اتصالك لعرض الأسماء الحقيقية بدلاً من أسماء المستخدمين
+                </p>
+                
+                <div className="bg-blue-50 p-3 rounded-lg mb-4">
+                  <p className="text-xs text-blue-800">
+                    📊 عدد جهات الاتصال المحفوظة: {Object.keys(contacts).length}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                  <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600 mb-2">رفع ملف CSV لجهات الاتصال</p>
+                  <input
+                    type="file"
+                    accept=".csv,.txt"
+                    onChange={handleContactsUpload}
+                    className="hidden"
+                    id="contacts-upload"
+                  />
+                  <label
+                    htmlFor="contacts-upload"
+                    className="cursor-pointer bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    اختر ملف CSV
+                  </label>
+                  <p className="text-xs text-gray-500 mt-2">
+                    تنسيق: الاسم,البريد الإلكتروني
+                  </p>
+                </div>
+
+                {Object.keys(contacts).length > 0 && (
+                  <div className="border rounded-lg p-3">
+                    <h4 className="font-medium mb-2 text-sm">جهات الاتصال المزامنة:</h4>
+                    <div className="max-h-32 overflow-y-auto space-y-1">
+                      {Object.entries(contacts).slice(0, 5).map(([email, name]) => (
+                        <div key={email} className="flex justify-between text-xs">
+                          <span className="font-medium">{name}</span>
+                          <span className="text-gray-500">{email}</span>
+                        </div>
+                      ))}
+                      {Object.keys(contacts).length > 5 && (
+                        <p className="text-xs text-gray-500 text-center pt-1">
+                          و {Object.keys(contacts).length - 5} جهة اتصال أخرى...
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex space-x-3 space-x-reverse pt-4">
+                <Button
+                  onClick={() => setShowContactsSync(false)}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-12"
+                >
+                  تم
+                </Button>
+                {Object.keys(contacts).length > 0 && (
+                  <Button
+                    onClick={() => {
+                      setContacts({});
+                      localStorage.removeItem('contacts');
+                      alert('تم مسح جميع جهات الاتصال');
+                    }}
+                    variant="outline"
+                    className="text-red-600 border-red-300 hover:bg-red-50"
+                  >
+                    مسح الكل
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Profile Edit Modal */}
       {showProfileEdit && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
