@@ -191,9 +191,7 @@ function App() {
     try {
       console.log('محاولة بدء محادثة مع المستخدم:', userId);
       
-      const response = await axios.post(`${API}/chats`, {
-        user_id: userId
-      });
+      const response = await axios.post(`${API}/chats?other_user_id=${userId}`);
       
       console.log('استجابة إنشاء المحادثة:', response.data);
       
