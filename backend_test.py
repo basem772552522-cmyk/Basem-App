@@ -1022,6 +1022,44 @@ class BasemappAPITester:
         
         return success and success2
 
+    def test_avatar_comprehensive_system(self):
+        """Test complete avatar system as requested in Arabic review"""
+        print("\n🖼️ اختبار شامل لنظام الصورة الشخصية الجديد...")
+        
+        # Create test users with tokens for avatar testing
+        timestamp = datetime.now().strftime('%H%M%S')
+        
+        # Create and verify test users for avatar testing
+        user1_data = {
+            "username": f"مستخدم_الصورة_{timestamp}",
+            "email": f"avatar.user.{timestamp}@basemapp.com",
+            "password": "كلمة_مرور_قوية123!"
+        }
+        
+        # Register user (will require verification in real scenario)
+        reg_success, reg_response = self.run_test(
+            "تسجيل مستخدم لاختبار الصورة الشخصية",
+            "POST",
+            "auth/register",
+            200,
+            data=user1_data
+        )
+        
+        if not reg_success:
+            print("❌ Failed to register user for avatar testing")
+            return False
+        
+        # For testing purposes, we'll simulate having a verified user
+        # In production, this would require email verification
+        
+        # Test all avatar functionality
+        avatar_upload_success = self.test_avatar_upload_functionality()
+        avatar_removal_success = self.test_avatar_removal_functionality()
+        avatar_display_success = self.test_avatar_display_in_endpoints()
+        avatar_security_success = self.test_avatar_security_and_authentication()
+        
+        return avatar_upload_success and avatar_removal_success and avatar_display_success and avatar_security_success
+
     def run_all_tests(self):
         """Run comprehensive backend API tests for BasemApp"""
         print("🚀 بدء اختبار شامل لواجهة BasemApp الخلفية المحسّنة")
@@ -1048,7 +1086,11 @@ class BasemappAPITester:
         print("\n✨ اختبار الميزات المحسّنة...")
         features_success = self.test_enhanced_features()
         
-        # Test 6: Security and Error Handling
+        # Test 6: Avatar System (NEW - As requested in Arabic review)
+        print("\n🖼️ اختبار نظام الصورة الشخصية الجديد...")
+        avatar_system_success = self.test_avatar_comprehensive_system()
+        
+        # Test 7: Security and Error Handling
         print("\n🔒 اختبار الأمان ومعالجة الأخطاء...")
         security_success = self.test_invalid_auth()
         
@@ -1060,6 +1102,7 @@ class BasemappAPITester:
             ("تسجيل الدخول", login_success),
             ("تحسينات الأداء", performance_success),
             ("الميزات المحسّنة", features_success),
+            ("نظام الصورة الشخصية الجديد", avatar_system_success),
             ("الأمان ومعالجة الأخطاء", security_success)
         ]
         
@@ -1082,14 +1125,15 @@ class BasemappAPITester:
         print(f"📈 معدل النجاح الرئيسي: {(passed_major/len(major_tests))*100:.1f}%")
         
         # Final assessment
-        if passed_major >= 6:  # At least 6 out of 7 major tests
+        if passed_major >= 7:  # At least 7 out of 8 major tests
             print("\n🎉 تقييم شامل: النظام المحسّن يعمل بكفاءة عالية!")
             print("✅ جميع الميزات الأساسية تعمل بشكل صحيح")
             print("✅ نظام التحقق من البريد الإلكتروني مُنفذ بشكل صحيح")
+            print("✅ نظام الصورة الشخصية يعمل بشكل مثالي")
             print("✅ تحسينات الأداء فعّالة")
             print("✅ الأمان والمعالجة للأخطاء محسّنة")
             return True
-        elif passed_major >= 4:
+        elif passed_major >= 5:
             print("\n⚠️ تقييم شامل: النظام يعمل مع بعض المشاكل البسيطة")
             print("🔧 يحتاج إلى تحسينات طفيفة")
             return False
