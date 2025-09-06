@@ -857,12 +857,31 @@ function App() {
     }
   }, [messages, selectedChat]);
 
-  // طلب إذن الإشعارات عند تحميل التطبيق
+  // تنظيف الذاكرة عند إغلاق التطبيق
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
+    const cleanup = () => {
+      // إيقاف كل timers
+      if (window.searchTimeout) {
+        clearTimeout(window.searchTimeout);
+      }
+      
+      // تحديث حالة المستخدم إلى offline
+      if (user) {
+        axios.post(`${API}/users/update-status`, { is_online: false })
+          .catch(err => console.log('خطأ في تحديث الحالة:', err));
+      }
+    };
+
+    // استمع لإغلاق النافذة
+    window.addEventListener('beforeunload', cleanup);
+    window.addEventListener('unload', cleanup);
+
+    return () => {
+      window.removeEventListener('beforeunload', cleanup);
+      window.removeEventListener('unload', cleanup);
+      cleanup();
+    };
+  }, [user]);
 
   // Email verification screen
   if (showVerification) {
