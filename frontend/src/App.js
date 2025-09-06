@@ -498,7 +498,7 @@ function App() {
 
     const tempMessage = {
       id: 'temp-' + Date.now(),
-      content: newMessage.trim(),
+      content: cleanMessage,
       sender_id: user.id,
       timestamp: new Date().toISOString(),
       status: 'sending'
