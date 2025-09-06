@@ -658,9 +658,10 @@ function App() {
     }
   }, [messages]);
 
-  // نظام الإشعارات الفورية مع الصوت
+  // نظام الإشعارات الفورية مع الصوت والتحسينات
   useEffect(() => {
     let intervalId = null;
+    let lastMessageCount = messages.length;
     
     if (selectedChat && user) {
       const checkForNewMessages = async () => {
@@ -669,7 +670,7 @@ function App() {
           const newMessages = response.data;
           
           // التحقق من وجود رسائل جديدة
-          if (newMessages.length > messages.length) {
+          if (newMessages.length > lastMessageCount) {
             const latestMessage = newMessages[newMessages.length - 1];
             
             // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
@@ -697,15 +698,31 @@ function App() {
               
               // إشعار المتصفح
               if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('رسالة جديدة في BasemApp', {
+                const notification = new Notification('رسالة جديدة في BasemApp', {
                   body: `${selectedChat.other_user?.username}: ${latestMessage.content}`,
                   icon: '/favicon.ico',
                   tag: 'new-message'
                 });
+                
+                // إغلاق الإشعار تلقائياً بعد 4 ثوان
+                setTimeout(() => notification.close(), 4000);
+                
+                // التركيز على التطبيق عند النقر
+                notification.onclick = () => {
+                  window.focus();
+                  notification.close();
+                };
               }
             }
             
+            // تحديث الرسائل والـ cache
             setMessages(newMessages);
+            setMessageCache(prev => ({
+              ...prev,
+              [selectedChat.id]: newMessages
+            }));
+            
+            lastMessageCount = newMessages.length;
           }
         } catch (error) {
           console.error('خطأ في تحديث الرسائل:', error);
@@ -721,7 +738,20 @@ function App() {
         clearInterval(intervalId);
       }
     };
-  }, [selectedChat, user, messages.length]);
+  }, [selectedChat, user]);
+
+  // تحديث عدد الرسائل عند تغيير المحادثة
+  useEffect(() => {
+    if (messages.length > 0) {
+      // تحديث الـ cache عند تغيير الرسائل
+      if (selectedChat) {
+        setMessageCache(prev => ({
+          ...prev,
+          [selectedChat.id]: messages
+        }));
+      }
+    }
+  }, [messages, selectedChat]);
 
   // طلب إذن الإشعارات عند تحميل التطبيق
   useEffect(() => {
