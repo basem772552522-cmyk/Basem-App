@@ -247,6 +247,18 @@ frontend:
           agent: "main"
           comment: "Improved notification system with better memory management, auto-close after 4 seconds, click-to-focus functionality, and optimized polling logic."
 
+  - task: "Accurate last seen timestamp and sticky chat interface"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/frontend/src/App.css, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Enhanced last seen accuracy and sticky interface. Backend: Updated user status endpoint to provide precise timestamps with offline_timestamp field. Frontend: Added updateLastSeenAccurately() function that triggers on app exit, window close, blur events, and logout. Implemented sticky header/footer with CSS classes: chat-header-sticky (top: 0), message-input-sticky (bottom: 0), messages-container-with-sticky with backdrop-filter blur effects. Added enhanced scrollbar styling and proper height calculations. Chat header and message input now remain fixed during scroll with glass-morphism effect."
+
   - task: "Enhanced online status indicators with animated pulse"
     implemented: true
     working: true
