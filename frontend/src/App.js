@@ -716,11 +716,40 @@ function App() {
 
   const formatTime = (timestamp) => {
     const date = new Date(timestamp.endsWith && timestamp.endsWith('Z') ? timestamp : timestamp + 'Z');
-    return date.toLocaleTimeString('ar-SA', {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    const time = date.toLocaleTimeString('ar-EG', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
     });
+    
+    // اليوم
+    if (messageDate.getTime() === today.getTime()) {
+      return time;
+    }
+    
+    // أمس
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (messageDate.getTime() === yesterday.getTime()) {
+      return `أمس ${time}`;
+    }
+    
+    // التواريخ الأقدم - التاريخ الميلادي
+    const daysDiff = Math.floor((today - messageDate) / (1000 * 60 * 60 * 24));
+    if (daysDiff < 7) {
+      return `${date.toLocaleDateString('ar-EG', { weekday: 'long', calendar: 'gregory' })} ${time}`;
+    }
+    
+    return `${date.toLocaleDateString('ar-EG', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      calendar: 'gregory'
+    })} ${time}`;
   };
 
   const formatLastSeen = (lastSeen) => {
