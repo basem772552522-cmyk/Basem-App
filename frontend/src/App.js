@@ -1429,9 +1429,10 @@ function App() {
                           </h3>
                           <span className="text-xs text-gray-500">(@{user.username})</span>
                           {user.is_online && (
-                            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5">
-                              متصل
-                            </Badge>
+                            <div className="flex items-center space-x-1 space-x-reverse bg-green-100 px-2 py-1 rounded-full ml-2">
+                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                              <span className="text-xs text-green-800 font-medium">متصل</span>
+                            </div>
                           )}
                         </div>
                         <p className="text-gray-600 text-xs sm:text-sm truncate mt-0.5">
