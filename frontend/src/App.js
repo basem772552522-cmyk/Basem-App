@@ -40,7 +40,124 @@ function App() {
     }
   }, [token]);
 
-  const login = async () => {
+  // تزامن جهات الاتصال
+  const syncContacts = async () => {
+    try {
+      // محاولة استخدام Contacts API إذا كان متاحاً
+      if ('contacts' in navigator && 'ContactsManager' in window) {
+        const contactPermission = await navigator.permissions.query({name: 'contacts'});
+        setContactPermission(contactPermission.state);
+        
+        if (contactPermission.state === 'granted') {
+          const props = ['name', 'email'];
+          const opts = {multiple: true};
+          
+          const contactList = await navigator.contacts.select(props, opts);
+          const contactMap = {};
+          
+          contactList.forEach(contact => {
+            if (contact.email && contact.email.length > 0) {
+              contact.email.forEach(email => {
+                contactMap[email.toLowerCase()] = contact.name && contact.name.length > 0 ? contact.name[0] : null;
+              });
+            }
+          });
+          
+          setContacts(contactMap);
+          localStorage.setItem('contacts', JSON.stringify(contactMap));
+          console.log('تم تزامن جهات الاتصال:', contactMap);
+          return true;
+        }
+      }
+      
+      // إذا لم يكن Contacts API متاحاً، استخدم طريقة بديلة
+      console.log('Contacts API غير متاح، استخدم الرفع اليدوي');
+      return false;
+    } catch (error) {
+      console.error('خطأ في تزامن جهات الاتصال:', error);
+      return false;
+    }
+  };
+
+  // رفع ملف جهات الاتصال CSV
+  const uploadContactsFile = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const contactMap = {};
+        
+        // تخطي العنوان إذا وجد
+        const startIndex = lines[0].toLowerCase().includes('name') || lines[0].toLowerCase().includes('email') ? 1 : 0;
+        
+        for (let i = startIndex; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (line) {
+            // توقع تنسيق: Name,Email أو Email,Name
+            const parts = line.split(',').map(part => part.trim().replace(/"/g, ''));
+            
+            if (parts.length >= 2) {
+              let name = '';
+              let email = '';
+              
+              // تحديد أيهما الاسم وأيهما الإيميل
+              if (parts[0].includes('@')) {
+                email = parts[0];
+                name = parts[1];
+              } else if (parts[1].includes('@')) {
+                name = parts[0];
+                email = parts[1];
+              }
+              
+              if (email && name) {
+                contactMap[email.toLowerCase()] = name;
+              }
+            }
+          }
+        }
+        
+        setContacts({...contacts, ...contactMap});
+        localStorage.setItem('contacts', JSON.stringify({...contacts, ...contactMap}));
+        console.log('تم رفع جهات الاتصال:', contactMap);
+        alert(`تم رفع ${Object.keys(contactMap).length} جهة اتصال بنجاح!`);
+      } catch (error) {
+        console.error('خطأ في قراءة ملف جهات الاتصال:', error);
+        alert('خطأ في قراءة الملف. تأكد من أن الملف بتنسيق CSV صحيح.');
+      }
+    };
+    
+    reader.readAsText(file);
+  };
+
+  // الحصول على الاسم المعروض (من جهات الاتصال أو اسم المستخدم)
+  const getDisplayName = (user) => {
+    if (!user) return '';
+    
+    // البحث في جهات الاتصال أولاً
+    const contactName = contacts[user.email?.toLowerCase()];
+    if (contactName) {
+      return contactName;
+    }
+    
+    // إذا لم يجد في جهات الاتصال، استخدم اسم المستخدم
+    return user.username || user.email;
+  };
+
+  // تحميل جهات الاتصال المحفوظة عند بدء التطبيق
+  useEffect(() => {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts) {
+      try {
+        setContacts(JSON.parse(savedContacts));
+      } catch (error) {
+        console.error('خطأ في تحميل جهات الاتصال المحفوظة:', error);
+      }
+    }
+  }, []);
     try {
       const response = await axios.post(`${API}/auth/login`, { email, password });
       setToken(response.data.access_token);
