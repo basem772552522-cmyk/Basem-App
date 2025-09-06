@@ -393,12 +393,29 @@ function App() {
     }
   };
 
-  const loadMessages = async (chatId) => {
+  const loadMessages = async (chatId, useCache = true) => {
+    // التحقق من الـ cache أولاً
+    if (useCache && messageCache[chatId]) {
+      setMessages(messageCache[chatId]);
+      return;
+    }
+
+    setIsLoadingMessages(true);
     try {
       const response = await axios.get(`${API}/chats/${chatId}/messages`);
-      setMessages(response.data);
+      const messagesData = response.data;
+      
+      // حفظ في الـ cache  
+      setMessageCache(prev => ({
+        ...prev,
+        [chatId]: messagesData
+      }));
+      
+      setMessages(messagesData);
     } catch (error) {
       console.error('Failed to load messages:', error);
+    } finally {
+      setIsLoadingMessages(false);
     }
   };
 
