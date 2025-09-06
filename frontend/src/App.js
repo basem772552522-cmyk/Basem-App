@@ -687,13 +687,11 @@ function App() {
       
       if (newChat) {
         console.log('تم العثور على المحادثة:', newChat);
-        setSelectedChat(newChat);
-        await loadMessages(newChat.id);
+        openChat(newChat); // استخدام الوظيفة الجديدة
         setChats(updatedChats.data);
       } else {
         console.log('لم يتم العثور على المحادثة، استخدام البيانات المُرجعة');
-        setSelectedChat(response.data);
-        await loadMessages(response.data.id);
+        openChat(response.data); // استخدام الوظيفة الجديدة
       }
       
       // مسح البحث
