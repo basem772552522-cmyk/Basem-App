@@ -871,7 +871,7 @@ function App() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 space-x-reverse">
                   <h2 className="font-bold text-base sm:text-lg text-gray-900 truncate">
-                    {selectedChat.other_user?.username}
+                    {getDisplayName(selectedChat.other_user)}
                   </h2>
                   {selectedChat.other_user?.is_online && (
                     <div className="flex items-center">
