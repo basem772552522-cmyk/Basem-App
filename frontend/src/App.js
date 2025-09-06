@@ -514,8 +514,16 @@ function App() {
       [selectedChat.id]: updatedMessages
     }));
 
-    const messageContent = newMessage.trim();
+    const messageContent = cleanMessage;
     setNewMessage('');
+
+    // مسح المسودة
+    if (selectedChat) {
+      setMessageDrafts(prev => ({
+        ...prev,
+        [selectedChat.id]: ''
+      }));
+    }
 
     try {
       const response = await axios.post(`${API}/messages`, {
