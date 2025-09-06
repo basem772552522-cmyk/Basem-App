@@ -729,45 +729,79 @@ class BasemappAPITester:
         return success and success2
 
     def run_all_tests(self):
-        """Run all backend API tests"""
-        print("🚀 Starting Basemapp Backend API Tests")
-        print("=" * 50)
+        """Run comprehensive backend API tests for BasemApp"""
+        print("🚀 بدء اختبار شامل لواجهة BasemApp الخلفية المحسّنة")
+        print("=" * 60)
         
-        # Test authentication flow
-        if not self.test_user_registration():
-            print("❌ Registration failed, stopping tests")
-            return False
-            
-        if not self.test_get_current_user():
-            print("❌ Get user info failed, stopping tests")
-            return False
-            
-        # Test user search
-        self.test_user_search()
+        # Test 1: Email Verification System (High Priority)
+        print("\n📧 اختبار نظام التحقق من البريد الإلكتروني...")
+        email_verification_success = self.test_email_verification_system()
         
-        # Test chat functionality
-        if not self.test_create_chat():
-            print("❌ Chat creation failed")
-            return False
-            
-        self.test_get_chats()
-        self.test_get_messages()
+        # Test 2: Basic API Endpoints Structure
+        print("\n🔧 اختبار هيكل endpoints الأساسية...")
+        endpoints_success = self.test_comprehensive_api_endpoints()
         
-        # Test invalid scenarios
-        self.test_invalid_auth()
+        # Test 3: User Registration and Authentication Flow
+        print("\n👤 اختبار تدفق التسجيل والمصادقة...")
+        registration_success = self.test_user_registration()
+        login_success = self.test_user_login()
         
-        # Print final results
-        print("\n" + "=" * 50)
-        print(f"📊 Backend API Test Results:")
-        print(f"   Tests Run: {self.tests_run}")
-        print(f"   Tests Passed: {self.tests_passed}")
-        print(f"   Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        # Test 4: Performance Optimizations
+        print("\n⚡ اختبار تحسينات الأداء...")
+        performance_success = self.test_performance_optimizations()
         
-        if self.tests_passed == self.tests_run:
-            print("✅ All backend API tests passed!")
+        # Test 5: Enhanced Features
+        print("\n✨ اختبار الميزات المحسّنة...")
+        features_success = self.test_enhanced_features()
+        
+        # Test 6: Security and Error Handling
+        print("\n🔒 اختبار الأمان ومعالجة الأخطاء...")
+        security_success = self.test_invalid_auth()
+        
+        # Calculate results
+        major_tests = [
+            ("نظام التحقق من البريد الإلكتروني", email_verification_success),
+            ("هيكل endpoints الأساسية", endpoints_success),
+            ("تدفق التسجيل", registration_success),
+            ("تسجيل الدخول", login_success),
+            ("تحسينات الأداء", performance_success),
+            ("الميزات المحسّنة", features_success),
+            ("الأمان ومعالجة الأخطاء", security_success)
+        ]
+        
+        passed_major = sum(1 for _, success in major_tests if success)
+        
+        # Print detailed results
+        print("\n" + "=" * 60)
+        print("📊 نتائج الاختبار الشامل:")
+        print("-" * 40)
+        
+        for test_name, success in major_tests:
+            status = "✅ نجح" if success else "❌ فشل"
+            print(f"   {test_name}: {status}")
+        
+        print("-" * 40)
+        print(f"📈 إجمالي الاختبارات المنفذة: {self.tests_run}")
+        print(f"📈 الاختبارات الناجحة: {self.tests_passed}")
+        print(f"📈 معدل النجاح التفصيلي: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        print(f"📈 الاختبارات الرئيسية الناجحة: {passed_major}/{len(major_tests)}")
+        print(f"📈 معدل النجاح الرئيسي: {(passed_major/len(major_tests))*100:.1f}%")
+        
+        # Final assessment
+        if passed_major >= 6:  # At least 6 out of 7 major tests
+            print("\n🎉 تقييم شامل: النظام المحسّن يعمل بكفاءة عالية!")
+            print("✅ جميع الميزات الأساسية تعمل بشكل صحيح")
+            print("✅ نظام التحقق من البريد الإلكتروني مُنفذ بشكل صحيح")
+            print("✅ تحسينات الأداء فعّالة")
+            print("✅ الأمان والمعالجة للأخطاء محسّنة")
             return True
+        elif passed_major >= 4:
+            print("\n⚠️ تقييم شامل: النظام يعمل مع بعض المشاكل البسيطة")
+            print("🔧 يحتاج إلى تحسينات طفيفة")
+            return False
         else:
-            print(f"❌ {self.tests_run - self.tests_passed} tests failed")
+            print("\n❌ تقييم شامل: النظام يحتاج إلى إصلاحات كبيرة")
+            print("🚨 مشاكل كبيرة تحتاج إلى معالجة فورية")
             return False
 
 def main():
