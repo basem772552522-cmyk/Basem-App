@@ -5,7 +5,8 @@ import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { Avatar, AvatarFallback } from './components/ui/avatar';
-import { Search, MessageCircle, Send, MoreVertical, User, LogOut, X } from 'lucide-react';
+import { Search, MessageCircle, Send, MoreVertical, User, LogOut, X, Users, Upload, Download } from 'lucide-react';
+import ContactsSync from './ContactsSync';
 
 const API = `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'}/api`;
 
