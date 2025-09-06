@@ -769,12 +769,16 @@ function App() {
     if (diffInDays < 7) return `منذ ${diffInDays} يوم`;
     
     // عرض التاريخ الميلادي للتواريخ الأقدم
-    return lastSeenDate.toLocaleDateString('ar-EG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      calendar: 'gregory' // التقويم الميلادي
-    });
+    const months = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    
+    const day = lastSeenDate.getDate();
+    const month = months[lastSeenDate.getMonth()];
+    const year = lastSeenDate.getFullYear();
+    
+    return `${day} ${month} ${year}`;
   };
 
   // حفظ المسودة عند تغيير النص
