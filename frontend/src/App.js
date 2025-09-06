@@ -1722,8 +1722,8 @@ function App() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Message Input - Fixed at bottom */}
-          <div className="p-3 sm:p-4 bg-white border-t border-gray-200 message-input-area">
+          {/* Message Input - ثابت في الأسفل */}
+          <div className="p-3 sm:p-4 bg-white border-t border-gray-200 message-input-area message-input-sticky">
             <div className="flex space-x-2 space-x-reverse">
               <Input
                 type="text"
