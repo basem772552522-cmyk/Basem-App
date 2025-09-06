@@ -1325,213 +1325,190 @@ function App() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Chat Area */}
-      <div className="chat-area">
-        {selectedChat ? (
-          <>
-            {/* Chat Header */}
-            <div className="p-3 sm:p-4 bg-white border-b border-gray-200 flex items-center chat-header shadow-sm">
-              <div className="relative mr-3 sm:mr-4 avatar-enhanced">
-                <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-gray-200 avatar-gradient">
-                  <AvatarFallback className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-                    {selectedChat.other_user?.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {/* مؤشر الحالة */}
-                {selectedChat.other_user?.is_online && (
-                  <div className="status-indicator online-indicator"></div>
+        </div>
+      ) : (
+        // شاشة الدردشة - ملء الشاشة
+        <div className="w-full h-screen bg-white flex flex-col">
+          {/* Chat Header مع زر العودة */}
+          <div className="p-3 sm:p-4 bg-white border-b border-gray-200 flex items-center chat-header shadow-sm">
+            {/* زر العودة */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={backToChats}
+              className="text-gray-600 hover:bg-gray-100 p-2 mr-2 touch-target"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </Button>
+            
+            <div className="relative mr-3 sm:mr-4 avatar-enhanced">
+              <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-gray-200 avatar-gradient">
+                <AvatarFallback className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+                  {selectedChat?.other_user?.username?.[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {selectedChat?.other_user?.is_online && (
+                <div className="status-indicator online-indicator"></div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <h2 className="font-bold text-base sm:text-lg text-gray-900 truncate">
+                  {getDisplayName(selectedChat?.other_user)}
+                </h2>
+                {selectedChat?.other_user?.is_online && (
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1 online-indicator-pulse"></div>
+                    <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-2 py-0.5">
+                      متصل
+                    </Badge>
+                  </div>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-2 space-x-reverse">
-                  <h2 className="font-bold text-base sm:text-lg text-gray-900 truncate">
-                    {getDisplayName(selectedChat.other_user)}
-                  </h2>
-                  {selectedChat.other_user?.is_online && (
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-1 online-indicator"></div>
-                      <span className="text-xs text-green-600 font-medium">نشط الآن</span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500 mt-0.5 truncate">
-                  {selectedChat.other_user?.is_online ? 
-                    'متصل الآن' : 
-                    `آخر ظهور: ${formatLastSeen(selectedChat.other_user?.last_seen)}`
-                  }
-                </p>
-              </div>
-              
-              {/* معلومات إضافية */}
-              <div className="flex items-center space-x-1 space-x-reverse ml-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
-                  title="البحث في المحادثة"
-                >
-                  <Search className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-colors"
-                  title="المزيد من الخيارات"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+                {selectedChat?.other_user?.is_online 
+                  ? 'متصل الآن' 
+                  : `آخر ظهور: ${formatLastSeen(selectedChat?.other_user?.last_seen)}`
+                }
+              </p>
             </div>
+          </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 messages-container">
-              {isLoadingMessages ? (
-                <div className="flex items-center justify-center h-32">
-                  <div className="flex items-center space-x-2 space-x-reverse text-gray-500">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-500"></div>
-                    <span className="text-sm">جاري تحميل الرسائل...</span>
-                  </div>
+          {/* Messages - Full Screen */}
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 messages-container">
+            {isLoadingMessages ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="flex items-center space-x-2 space-x-reverse text-gray-500">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-500"></div>
+                  <span className="text-sm">جاري تحميل الرسائل...</span>
                 </div>
-              ) : messages.length === 0 ? (
-                <div className="flex items-center justify-center h-32 text-gray-500">
-                  <div className="text-center">
-                    <MessageCircle className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-                    <p className="text-sm">لا توجد رسائل بعد</p>
-                    <p className="text-xs text-gray-400">ابدأ المحادثة بإرسال رسالة</p>
-                  </div>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="flex items-center justify-center h-32 text-gray-500">
+                <div className="text-center">
+                  <MessageCircle className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                  <p className="text-sm">لا توجد رسائل بعد</p>
+                  <p className="text-xs text-gray-400">ابدأ المحادثة بإرسال رسالة</p>
                 </div>
-              ) : (
-                messages.map((message) => (
+              </div>
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    message.sender_id === user.id ? 'justify-start' : 'justify-end'
+                  }`}
+                >
                   <div
-                    key={message.id}
-                    className={`flex ${
-                      message.sender_id === user.id ? 'justify-start' : 'justify-end'
+                    className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 py-2 sm:px-4 sm:py-2 rounded-lg message-bubble relative ${
+                      message.sender_id === user.id
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-white border border-gray-200'
+                    } ${
+                      message.status === 'sending' ? 'opacity-70' : ''
                     }`}
                   >
-                    <div
-                      className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 py-2 sm:px-4 sm:py-2 rounded-lg message-bubble relative ${
-                        message.sender_id === user.id
-                          ? 'bg-emerald-500 text-white'
-                          : 'bg-white border border-gray-200'
-                      } ${
-                        message.status === 'sending' ? 'opacity-70' : ''
-                      }`}
-                    >
-                      <p className="text-sm sm:text-base">{message.content}</p>
-                      <div className="flex items-center justify-between mt-1">
-                        <p
-                          className={`text-xs ${
-                            message.sender_id === user.id
-                              ? 'text-emerald-100'
-                              : 'text-gray-500'
-                          }`}
-                        >
-                          {message.status === 'sending' ? 'جاري الإرسال...' : formatTime(message.timestamp)}
-                        </p>
-                        {message.sender_id === user.id && message.status !== 'sending' && (
-                          <div className="flex items-center space-x-1">
-                            {message.status === 'sent' && (
+                    <p className="text-sm sm:text-base">{message.content}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p
+                        className={`text-xs ${
+                          message.sender_id === user.id
+                            ? 'text-emerald-100'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        {message.status === 'sending' ? 'جاري الإرسال...' : formatTime(message.timestamp)}
+                      </p>
+                      {message.sender_id === user.id && message.status !== 'sending' && (
+                        <div className="flex items-center space-x-1">
+                          {message.status === 'sent' && (
+                            <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                          {message.status === 'delivered' && (
+                            <div className="flex">
                               <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
-                            )}
-                            {message.status === 'delivered' && (
-                              <div className="flex">
-                                <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                                <svg className="w-3 h-3 text-gray-300 -ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                            {message.status === 'read' && (
-                              <div className="flex">
-                                <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                                <svg className="w-3 h-3 text-blue-400 -ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-              
-              {/* Typing Indicator */}
-              {typingUsers[selectedChat?.id] && (
-                <div className="flex justify-end px-3 pb-2">
-                  <div className="max-w-xs px-3 py-2 bg-gray-100 rounded-lg">
-                    <div className="flex items-center space-x-1 space-x-reverse">
-                      <span className="text-sm text-gray-600">يكتب...</span>
-                      <div className="flex space-x-1">
-                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                      </div>
+                              <svg className="w-3 h-3 text-gray-300 -ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                          {message.status === 'read' && (
+                            <div className="flex">
+                              <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                              <svg className="w-3 h-3 text-blue-400 -ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              )}
-              
-              <div ref={messagesEndRef} />
-            </div>
+              ))
+            )}
+            
+            {/* Typing Indicator */}
+            {typingUsers[selectedChat?.id] && (
+              <div className="flex justify-end px-3 pb-2">
+                <div className="max-w-xs px-3 py-2 bg-gray-100 rounded-lg">
+                  <div className="flex items-center space-x-1 space-x-reverse">
+                    <span className="text-sm text-gray-600">يكتب...</span>
+                    <div className="flex space-x-1">
+                      <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
 
-            {/* Message Input */}
-            <div className="p-3 sm:p-4 bg-white border-t border-gray-200 message-input-area">
-              <div className="flex space-x-2 space-x-reverse">
-                <Input
-                  type="text"
-                  placeholder="اكتب رسالة..."
-                  value={newMessage}
-                  onChange={(e) => handleMessageChange(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="flex-1 text-right message-input h-9 sm:h-10 text-sm sm:text-base"
-                />
-                <Button 
-                  onClick={sendMessage} 
-                  disabled={!newMessage.trim()}
-                  className={`transition-all h-9 sm:h-10 px-3 sm:px-4 ${
-                    newMessage.trim() 
-                      ? 'bg-emerald-600 hover:bg-emerald-700' 
-                      : 'bg-gray-300 cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  <Send className="w-3 h-3 sm:w-4 sm:h-4" />
-                </Button>
-              </div>
-              
-              {/* Made with Emergent */}
-              <div className="text-center mt-4 mb-1">
-                <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
-              </div>
+          {/* Message Input - Fixed at bottom */}
+          <div className="p-3 sm:p-4 bg-white border-t border-gray-200 message-input-area">
+            <div className="flex space-x-2 space-x-reverse">
+              <Input
+                type="text"
+                placeholder="اكتب رسالة..."
+                value={newMessage}
+                onChange={(e) => handleMessageChange(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="flex-1 text-right message-input h-9 sm:h-10 text-sm sm:text-base"
+              />
+              <Button 
+                onClick={sendMessage} 
+                disabled={!newMessage.trim()}
+                className={`transition-all h-9 sm:h-10 px-3 sm:px-4 ${
+                  newMessage.trim() 
+                    ? 'bg-emerald-600 hover:bg-emerald-700' 
+                    : 'bg-gray-300 cursor-not-allowed opacity-50'
+                }`}
+              >
+                <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+              </Button>
             </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center p-4">
-            <div className="text-center">
-              <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">
-                مرحباً بك في BasemApp
-              </h2>
-              <p className="text-sm sm:text-base text-gray-500">
-                اختر مستخدم لبدء الدردشة
-              </p>
-              {/* Made with Emergent */}
-              <div className="text-center mt-4">
-                <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
-              </div>
+            
+            {/* Made with Emergent */}
+            <div className="text-center mt-4 mb-1">
+              <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
       {/* Contacts Sync Modal */}
       {showContactsSync && (
