@@ -226,12 +226,24 @@ class BasemappFocusedTester:
         )
         
         # Test 2: Invalid HTTP method
-        success2, _ = self.run_test(
-            "طريقة HTTP خاطئة",
-            "PUT",
-            "auth/register",
-            [405, 422]  # Method not allowed or Unprocessable Entity
-        )
+        url = f"{self.api_url}/auth/register"
+        headers = {'Content-Type': 'application/json'}
+        
+        self.tests_run += 1
+        print(f"\n🔍 Testing طريقة HTTP خاطئة...")
+        
+        try:
+            response = requests.put(url, json={}, headers=headers)
+            if response.status_code in [405, 422]:
+                self.tests_passed += 1
+                print(f"✅ Passed - Status: {response.status_code}")
+                success2 = True
+            else:
+                print(f"❌ Failed - Expected 405/422, got {response.status_code}")
+                success2 = False
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            success2 = False
         
         # Test 3: Invalid JSON data
         success3 = True
