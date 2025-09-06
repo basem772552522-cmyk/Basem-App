@@ -1093,7 +1093,7 @@ function App() {
     <div className="min-h-screen bg-gray-100" dir="rtl">
       {currentView === 'chats' ? (
         // شاشة قائمة المحادثات
-        <div className="w-full h-screen bg-white flex flex-col">
+        <div className="w-full h-screen bg-white flex flex-col view-transition">
           
           {/* Connection Status */}
           {!isOnline && (
