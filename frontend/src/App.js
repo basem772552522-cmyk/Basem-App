@@ -1266,11 +1266,16 @@ function App() {
               )}
             </div>
           ) : chats.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 sm:h-64 text-gray-500 p-4 sm:p-8">
+            <div className="flex flex-col items-center justify-center h-full text-gray-500 p-4 sm:p-8">
               <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 text-gray-300" />
               <h3 className="text-base sm:text-lg font-medium mb-2">لا توجد محادثات</h3>
               <p className="text-xs sm:text-sm text-center">ابحث عن مستخدم لبدء محادثة جديدة</p>
               <p className="text-xs text-gray-400 mt-2">اكتب أكثر من حرفين للبحث</p>
+              
+              {/* Made with Emergent في الشاشة الفارغة */}
+              <div className="text-center mt-8">
+                <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
+              </div>
             </div>
           ) : (
             <div>
