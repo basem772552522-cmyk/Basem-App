@@ -299,25 +299,131 @@ class BasemappAPITester:
         
         return success and success2
 
-    def test_user_search(self):
-        """Test user search functionality"""
-        if not self.token1:
-            print("❌ No token available for user search test")
-            return False
-            
-        success, response = self.run_test(
-            "Search Users",
+    def test_performance_optimizations(self):
+        """Test performance improvements and response times"""
+        print("\n🚀 Testing Performance Optimizations...")
+        
+        # Test 1: Response time for user search
+        start_time = time.time()
+        success1, response1 = self.run_test(
+            "اختبار سرعة البحث عن المستخدمين",
             "GET",
             "users/search",
             200,
-            token=self.token1,
-            params={"q": "testuser2"}
+            token=self.token1 if self.token1 else None,
+            params={"q": "محمد"}
+        )
+        search_time = time.time() - start_time
+        
+        if success1:
+            print(f"   ⏱️ Search response time: {search_time:.3f}s")
+            if search_time < 2.0:
+                print("   ✅ Search performance: Excellent (< 2s)")
+            elif search_time < 5.0:
+                print("   ⚠️ Search performance: Acceptable (< 5s)")
+            else:
+                print("   ❌ Search performance: Slow (> 5s)")
+        
+        # Test 2: Chat listing performance
+        start_time = time.time()
+        success2, response2 = self.run_test(
+            "اختبار سرعة جلب المحادثات",
+            "GET",
+            "chats",
+            200,
+            token=self.token1 if self.token1 else None
+        )
+        chat_time = time.time() - start_time
+        
+        if success2:
+            print(f"   ⏱️ Chat listing response time: {chat_time:.3f}s")
+            if chat_time < 1.0:
+                print("   ✅ Chat performance: Excellent (< 1s)")
+            elif chat_time < 3.0:
+                print("   ⚠️ Chat performance: Acceptable (< 3s)")
+            else:
+                print("   ❌ Chat performance: Slow (> 3s)")
+        
+        # Test 3: Error handling
+        success3, _ = self.run_test(
+            "اختبار معالجة الأخطاء - endpoint غير موجود",
+            "GET",
+            "nonexistent/endpoint",
+            404
         )
         
-        if success:
-            print(f"   Found {len(response)} users")
+        # Test 4: Security - unauthorized access
+        success4, _ = self.run_test(
+            "اختبار الأمان - وصول غير مصرح",
+            "GET",
+            "auth/me",
+            401,
+            token="invalid_token"
+        )
+        
+        return success1 and success2 and success3 and success4
+
+    def test_enhanced_features(self):
+        """Test enhanced features and new functionality"""
+        print("\n✨ Testing Enhanced Features...")
+        
+        # Test 1: User status management
+        if self.token1:
+            status_data = {"is_online": True}
+            success1, response1 = self.run_test(
+                "تحديث حالة المستخدم (متصل)",
+                "POST",
+                "users/update-status",
+                200,
+                data=status_data,
+                token=self.token1
+            )
             
-        return success
+            if success1:
+                print(f"   ✅ User status updated: {response1.get('is_online', 'unknown')}")
+        else:
+            success1 = True  # Skip if no token
+            print("   ⏭️ Skipping user status test (no token)")
+        
+        # Test 2: Message status tracking endpoints
+        success2 = True
+        if self.token1 and hasattr(self, 'message_id') and self.message_id:
+            success2, _ = self.run_test(
+                "تتبع حالة الرسائل",
+                "PUT",
+                f"messages/{self.message_id}/read",
+                200,
+                token=self.token1
+            )
+        else:
+            print("   ⏭️ Skipping message status test (no message ID)")
+        
+        # Test 3: Enhanced user search with Arabic
+        success3, response3 = self.run_test(
+            "البحث المحسن بالعربية",
+            "GET",
+            "users/search",
+            200,
+            token=self.token1 if self.token1 else None,
+            params={"q": "أحمد"}
+        )
+        
+        if success3:
+            print(f"   🔍 Arabic search returned {len(response3)} results")
+        
+        # Test 4: All users endpoint
+        success4, response4 = self.run_test(
+            "جلب جميع المستخدمين",
+            "GET",
+            "users",
+            200,
+            token=self.token1 if self.token1 else None
+        )
+        
+        if success4:
+            print(f"   👥 Found {len(response4)} total users")
+        
+        return success1 and success2 and success3 and success4
 
     def test_create_chat(self):
         """Test creating a chat between two users"""
