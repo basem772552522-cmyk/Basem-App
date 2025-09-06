@@ -706,6 +706,300 @@ class BasemappAPITester:
         
         return success1 and success2 and success3
 
+    def test_avatar_upload_functionality(self):
+        """Test comprehensive avatar upload functionality"""
+        print("\n🖼️ اختبار ميزة رفع الصورة الشخصية...")
+        
+        if not self.token1:
+            print("❌ No token available for avatar tests")
+            return False
+        
+        # Test 1: Upload valid base64 avatar
+        valid_avatar_base64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A"
+        
+        avatar_data = {
+            "avatar_url": valid_avatar_base64
+        }
+        
+        success1, response1 = self.run_test(
+            "رفع صورة شخصية صحيحة (base64)",
+            "PUT",
+            "users/profile",
+            200,
+            data=avatar_data,
+            token=self.token1
+        )
+        
+        if success1:
+            print(f"   ✅ Avatar uploaded successfully")
+            if 'avatar_url' in response1:
+                print(f"   ✅ Avatar URL returned in response")
+            else:
+                print(f"   ❌ Avatar URL missing from response")
+                success1 = False
+        
+        # Test 2: Verify avatar appears in user profile
+        success2, response2 = self.run_test(
+            "التحقق من ظهور الصورة في الملف الشخصي",
+            "GET",
+            "auth/me",
+            200,
+            token=self.token1
+        )
+        
+        if success2:
+            if response2.get('avatar_url'):
+                print(f"   ✅ Avatar URL found in user profile: {response2['avatar_url'][:50]}...")
+            else:
+                print(f"   ❌ Avatar URL not found in user profile")
+                success2 = False
+        
+        # Test 3: Test oversized image rejection (simulate large base64)
+        large_avatar = "data:image/jpeg;base64," + "A" * (3 * 1024 * 1024)  # ~3MB base64
+        
+        large_avatar_data = {
+            "avatar_url": large_avatar
+        }
+        
+        success3, response3 = self.run_test(
+            "رفض الصور الكبيرة (أكثر من 2MB)",
+            "PUT",
+            "users/profile",
+            400,  # Should be rejected
+            data=large_avatar_data,
+            token=self.token1
+        )
+        
+        if success3:
+            print(f"   ✅ Large image properly rejected")
+        
+        # Test 4: Test unsupported format rejection
+        invalid_format = "data:image/bmp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+        
+        invalid_format_data = {
+            "avatar_url": invalid_format
+        }
+        
+        success4, response4 = self.run_test(
+            "رفض تنسيقات الصور غير المدعومة",
+            "PUT",
+            "users/profile",
+            400,  # Should be rejected
+            data=invalid_format_data,
+            token=self.token1
+        )
+        
+        if success4:
+            print(f"   ✅ Unsupported format properly rejected")
+        
+        # Test 5: Test invalid base64 format
+        invalid_base64 = "invalid_base64_string"
+        
+        invalid_base64_data = {
+            "avatar_url": invalid_base64
+        }
+        
+        success5, response5 = self.run_test(
+            "رفض تنسيق base64 غير صحيح",
+            "PUT",
+            "users/profile",
+            400,  # Should be rejected
+            data=invalid_base64_data,
+            token=self.token1
+        )
+        
+        if success5:
+            print(f"   ✅ Invalid base64 format properly rejected")
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_avatar_removal_functionality(self):
+        """Test avatar removal functionality"""
+        print("\n🗑️ اختبار ميزة حذف الصورة الشخصية...")
+        
+        if not self.token1:
+            print("❌ No token available for avatar removal tests")
+            return False
+        
+        # Test 1: Remove avatar
+        remove_data = {
+            "remove_avatar": True
+        }
+        
+        success1, response1 = self.run_test(
+            "حذف الصورة الشخصية",
+            "PUT",
+            "users/profile",
+            200,
+            data=remove_data,
+            token=self.token1
+        )
+        
+        if success1:
+            if response1.get('avatar_url') is None:
+                print(f"   ✅ Avatar successfully removed (avatar_url is null)")
+            else:
+                print(f"   ❌ Avatar not properly removed, still has value: {response1.get('avatar_url')}")
+                success1 = False
+        
+        # Test 2: Verify avatar is null in user profile
+        success2, response2 = self.run_test(
+            "التحقق من حذف الصورة من الملف الشخصي",
+            "GET",
+            "auth/me",
+            200,
+            token=self.token1
+        )
+        
+        if success2:
+            if response2.get('avatar_url') is None:
+                print(f"   ✅ Avatar confirmed as null in user profile")
+            else:
+                print(f"   ❌ Avatar still exists in profile: {response2.get('avatar_url')}")
+                success2 = False
+        
+        return success1 and success2
+
+    def test_avatar_display_in_endpoints(self):
+        """Test avatar display in various endpoints"""
+        print("\n👁️ اختبار عرض الصورة الشخصية في endpoints مختلفة...")
+        
+        if not self.token1 or not self.token2:
+            print("❌ Missing tokens for avatar display tests")
+            return False
+        
+        # First, set an avatar for user1
+        avatar_data = {
+            "avatar_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+        }
+        
+        setup_success, _ = self.run_test(
+            "إعداد صورة شخصية للاختبار",
+            "PUT",
+            "users/profile",
+            200,
+            data=avatar_data,
+            token=self.token1
+        )
+        
+        if not setup_success:
+            print("❌ Failed to set up avatar for testing")
+            return False
+        
+        # Test 1: Avatar in GET /api/auth/me
+        success1, response1 = self.run_test(
+            "عرض الصورة في /api/auth/me",
+            "GET",
+            "auth/me",
+            200,
+            token=self.token1
+        )
+        
+        if success1:
+            if response1.get('avatar_url'):
+                print(f"   ✅ Avatar URL found in /api/auth/me")
+            else:
+                print(f"   ❌ Avatar URL missing from /api/auth/me")
+                success1 = False
+        
+        # Test 2: Avatar in GET /api/users/search
+        success2, response2 = self.run_test(
+            "عرض الصورة في /api/users/search",
+            "GET",
+            "users/search",
+            200,
+            token=self.token2,
+            params={"q": "فاطمة"}  # Search for user1
+        )
+        
+        if success2:
+            avatar_found = False
+            for user in response2:
+                if user.get('avatar_url'):
+                    avatar_found = True
+                    print(f"   ✅ Avatar URL found in search results")
+                    break
+            
+            if not avatar_found:
+                print(f"   ❌ Avatar URL missing from search results")
+                success2 = False
+        
+        # Test 3: Avatar in GET /api/chats (if chat exists)
+        success3, response3 = self.run_test(
+            "عرض الصورة في /api/chats",
+            "GET",
+            "chats",
+            200,
+            token=self.token2
+        )
+        
+        if success3:
+            avatar_found = False
+            for chat in response3:
+                other_user = chat.get('other_user', {})
+                if other_user.get('avatar_url'):
+                    avatar_found = True
+                    print(f"   ✅ Avatar URL found in chat listing")
+                    break
+            
+            if not avatar_found:
+                print(f"   ⚠️ Avatar URL not found in chat listing (may be normal if no chats exist)")
+                # Don't fail this test as it depends on chat existence
+        
+        return success1 and success2 and success3
+
+    def test_avatar_security_and_authentication(self):
+        """Test avatar security and authentication requirements"""
+        print("\n🔒 اختبار أمان الصورة الشخصية والمصادقة...")
+        
+        # Test 1: Try to update avatar without authentication
+        avatar_data = {
+            "avatar_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+        }
+        
+        success1, response1 = self.run_test(
+            "محاولة تحديث الصورة بدون مصادقة",
+            "PUT",
+            "users/profile",
+            401,  # Should be unauthorized
+            data=avatar_data
+        )
+        
+        if success1:
+            print(f"   ✅ Unauthorized access properly rejected")
+        
+        # Test 2: Try with invalid token
+        success2, response2 = self.run_test(
+            "محاولة تحديث الصورة بـ token غير صحيح",
+            "PUT",
+            "users/profile",
+            401,  # Should be unauthorized
+            data=avatar_data,
+            token="invalid_token_123"
+        )
+        
+        if success2:
+            print(f"   ✅ Invalid token properly rejected")
+        
+        # Test 3: Verify user can only update their own avatar
+        if self.token1:
+            success3, response3 = self.run_test(
+                "التحقق من أن المستخدم يمكنه تحديث صورته فقط",
+                "PUT",
+                "users/profile",
+                200,  # Should succeed with valid token
+                data=avatar_data,
+                token=self.token1
+            )
+            
+            if success3:
+                print(f"   ✅ User can update their own avatar")
+        else:
+            success3 = True  # Skip if no token
+            print(f"   ⏭️ Skipping own avatar test (no token)")
+        
+        return success1 and success2 and success3
+
     def test_invalid_auth(self):
         """Test invalid authentication scenarios"""
         # Test with invalid token
