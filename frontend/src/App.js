@@ -17,6 +17,9 @@ function App() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isLogin, setIsLogin] = useState(true);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [pendingEmail, setPendingEmail] = useState('');
   
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
