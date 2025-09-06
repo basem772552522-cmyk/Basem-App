@@ -472,8 +472,29 @@ function App() {
     }
   };
 
+  // تنظيف وحماية النص من XSS
+  const sanitizeMessage = (text) => {
+    return text
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // إزالة script tags
+      .replace(/<[^>]*>?/gm, '') // إزالة HTML tags
+      .trim();
+  };
+
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
+
+    // تنظيف الرسالة من المحتوى الضار
+    const cleanMessage = sanitizeMessage(newMessage.trim());
+    if (!cleanMessage) {
+      alert('الرسالة تحتوي على محتوى غير مسموح');
+      return;
+    }
+
+    // التحقق من طول الرسالة
+    if (cleanMessage.length > 1000) {
+      alert('الرسالة طويلة جداً. الحد الأقصى 1000 حرف');
+      return;
+    }
 
     const tempMessage = {
       id: 'temp-' + Date.now(),
