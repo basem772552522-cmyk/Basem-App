@@ -247,6 +247,18 @@ frontend:
           agent: "main"
           comment: "Improved notification system with better memory management, auto-close after 4 seconds, click-to-focus functionality, and optimized polling logic."
 
+  - task: "Gregorian calendar date formatting"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Updated date formatting to use Gregorian calendar instead of Hijri. Modified formatLastSeen() and formatTime() functions to display dates in Arabic with Gregorian months (يناير، فبراير، مارس...) and Arabic weekdays (الأحد، الإثنين...). Format: day month year."
+
 backend:
   - task: "User authentication endpoints"
     implemented: true
