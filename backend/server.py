@@ -120,6 +120,10 @@ class UserResponse(BaseModel):
     is_online: bool = False
     last_seen: datetime
 
+class ProfileUpdateRequest(BaseModel):
+    avatar_url: Optional[str] = None
+    remove_avatar: bool = False
+
 class Chat(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     participants: List[str]  # user IDs
