@@ -739,10 +739,12 @@ function App() {
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return `منذ ${diffInDays} يوم`;
     
-    return lastSeenDate.toLocaleDateString('ar-SA', {
+    // عرض التاريخ الميلادي للتواريخ الأقدم
+    return lastSeenDate.toLocaleDateString('ar-EG', {
       year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      month: 'long',
+      day: 'numeric',
+      calendar: 'gregory' // التقويم الميلادي
     });
   };
 
