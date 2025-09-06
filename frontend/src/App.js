@@ -1829,11 +1829,72 @@ function App() {
             
             <div className="space-y-4">
               <div className="flex flex-col items-center">
-                <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mb-4">
-                  <AvatarFallback className="text-xl sm:text-2xl">
-                    {user?.username?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mb-4">
+                    {user?.avatar_url ? (
+                      <img 
+                        src={user.avatar_url} 
+                        alt="الصورة الشخصية" 
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <AvatarFallback className="text-xl sm:text-2xl">
+                        {user?.username?.[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  
+                  {/* أزرار تحديث الصورة */}
+                  <div className="flex justify-center space-x-2 space-x-reverse mt-2">
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={uploadProfileImage}
+                        className="hidden"
+                        id="profile-image-upload"
+                        disabled={isUploadingImage}
+                      />
+                      <label
+                        htmlFor="profile-image-upload"
+                        className={`cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-xs inline-flex items-center space-x-1 space-x-reverse ${
+                          isUploadingImage ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        {isUploadingImage ? (
+                          <>
+                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                            <span>جاري الرفع...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3 h-3" />
+                            <span>تغيير الصورة</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                    
+                    {user?.avatar_url && (
+                      <Button
+                        onClick={removeProfileImage}
+                        disabled={isUploadingImage}
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-300 hover:bg-red-50 px-2 py-1 text-xs"
+                      >
+                        <X className="w-3 h-3 mr-1" />
+                        حذف الصورة
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="text-center mt-2">
+                    <p className="text-xs text-gray-500">
+                      حد أقصى: 5 ميجابايت • JPEG, PNG, GIF, WebP
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-3">
