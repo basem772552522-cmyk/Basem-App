@@ -1469,9 +1469,17 @@ function App() {
             
             <div className="relative mr-3 sm:mr-4 avatar-enhanced">
               <Avatar className="w-12 h-12 sm:w-14 sm:h-14 border-2 border-gray-200 avatar-gradient">
-                <AvatarFallback className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
-                  {selectedChat?.other_user?.username?.[0]?.toUpperCase()}
-                </AvatarFallback>
+                {selectedChat?.other_user?.avatar_url ? (
+                  <img 
+                    src={selectedChat.other_user.avatar_url} 
+                    alt={getDisplayName(selectedChat.other_user)} 
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <AvatarFallback className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-emerald-400 to-emerald-600 text-white">
+                    {selectedChat?.other_user?.username?.[0]?.toUpperCase()}
+                  </AvatarFallback>
+                )}
               </Avatar>
               {selectedChat?.other_user?.is_online && (
                 <div className="status-indicator online-indicator"></div>
