@@ -961,12 +961,12 @@ class BasemappAPITester:
             "محاولة تحديث الصورة بدون مصادقة",
             "PUT",
             "users/profile",
-            401,  # Should be unauthorized
+            403,  # FastAPI returns 403 for missing auth, not 401
             data=avatar_data
         )
         
         if success1:
-            print(f"   ✅ Unauthorized access properly rejected")
+            print(f"   ✅ Unauthorized access properly rejected (403 Not authenticated)")
         
         # Test 2: Try with invalid token
         success2, response2 = self.run_test(
@@ -998,7 +998,19 @@ class BasemappAPITester:
             success3 = True  # Skip if no token
             print(f"   ⏭️ Skipping own avatar test (no token)")
         
-        return success1 and success2 and success3
+        # Test 4: Test endpoint exists and responds correctly
+        success4, response4 = self.run_test(
+            "التحقق من وجود endpoint الصورة الشخصية",
+            "PUT",
+            "users/profile",
+            403,  # Should require auth but endpoint should exist
+            data={"remove_avatar": True}
+        )
+        
+        if success4:
+            print(f"   ✅ Profile update endpoint exists and requires authentication")
+        
+        return success1 and success2 and success3 and success4
 
     def test_invalid_auth(self):
         """Test invalid authentication scenarios"""
