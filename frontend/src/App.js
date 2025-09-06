@@ -1333,7 +1333,7 @@ function App() {
                   type="text"
                   placeholder="اكتب رسالة..."
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+                  onChange={(e) => handleMessageChange(e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="flex-1 text-right message-input h-9 sm:h-10 text-sm sm:text-base"
                 />
