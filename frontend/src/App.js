@@ -774,12 +774,29 @@ function App() {
   };
 
   // التنقل بين الشاشات
-  const openChat = (chat) => {
+  const openChat = async (chat) => {
     setSelectedChat(chat);
-    loadMessages(chat.id);
+    await loadMessages(chat.id);
     setCurrentView('chat');
     setSearchQuery('');
     setSearchResults([]);
+    
+    // تحديث حالة الرسائل إلى مقروءة
+    try {
+      const response = await axios.get(`${API}/chats/${chat.id}/messages`);
+      const unreadMessages = response.data.filter(msg => 
+        msg.sender_id !== user.id && msg.status !== 'read'
+      );
+      
+      if (unreadMessages.length > 0) {
+        const messageIds = unreadMessages.map(msg => msg.id);
+        await updateMessageStatus(messageIds, 'read');
+        // إعادة تحميل الرسائل للحصول على الحالات المحدثة
+        loadMessages(chat.id, false);
+      }
+    } catch (error) {
+      console.error('خطأ في تحديث حالة القراءة:', error);
+    }
   };
 
   const backToChats = () => {
