@@ -713,8 +713,7 @@ function App() {
         
         if (existingChat) {
           console.log('تم العثور على محادثة موجودة:', existingChat);
-          setSelectedChat(existingChat);
-          await loadMessages(existingChat.id);
+          openChat(existingChat); // استخدام الوظيفة الجديدة
           setChats(chatsResponse.data);
           setSearchQuery('');
           setSearchResults([]);
