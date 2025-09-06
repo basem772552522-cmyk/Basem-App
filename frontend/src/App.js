@@ -1278,15 +1278,8 @@ function App() {
               {chats.map((chat) => (
                 <div
                   key={chat.id}
-                  onClick={() => {
-                    setSelectedChat(chat);
-                    loadMessages(chat.id);
-                    setSearchQuery('');
-                    setSearchResults([]);
-                  }}
-                  className={`p-3 sm:p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors chat-item ${
-                    selectedChat?.id === chat.id ? 'bg-gray-100' : ''
-                  }`}
+                  onClick={() => openChat(chat)}
+                  className="p-3 sm:p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors chat-item"
                 >
                   <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
                     <div className="relative">
