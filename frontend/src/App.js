@@ -1220,17 +1220,34 @@ function App() {
 
                 {Object.keys(contacts).length > 0 && (
                   <div className="border rounded-lg p-3">
-                    <h4 className="font-medium mb-2 text-sm">جهات الاتصال المُزامنة:</h4>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium text-sm">جهات الاتصال المُزامنة:</h4>
+                      <div className="relative flex-1 max-w-xs mr-3">
+                        <Search className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
+                        <Input
+                          type="text"
+                          placeholder="البحث في جهات الاتصال..."
+                          value={contactSearchQuery}
+                          onChange={(e) => setContactSearchQuery(e.target.value)}
+                          className="pr-8 text-right h-7 text-xs bg-gray-50 border-gray-200"
+                        />
+                      </div>
+                    </div>
                     <div className="max-h-32 overflow-y-auto space-y-1">
-                      {Object.entries(contacts).slice(0, 5).map(([email, name]) => (
-                        <div key={email} className="flex justify-between text-xs">
-                          <span className="font-medium">{name}</span>
-                          <span className="text-gray-500">{email}</span>
+                      {filteredContacts.slice(0, 8).map(([email, name]) => (
+                        <div key={email} className="flex justify-between text-xs py-1 px-2 bg-gray-50 rounded">
+                          <span className="font-medium text-gray-800">{name}</span>
+                          <span className="text-gray-500 truncate mr-2">{email}</span>
                         </div>
                       ))}
-                      {Object.keys(contacts).length > 5 && (
+                      {filteredContacts.length > 8 && (
                         <p className="text-xs text-gray-500 text-center pt-1">
-                          و {Object.keys(contacts).length - 5} جهة اتصال أخرى...
+                          و {filteredContacts.length - 8} جهة اتصال أخرى...
+                        </p>
+                      )}
+                      {filteredContacts.length === 0 && contactSearchQuery.trim() && (
+                        <p className="text-xs text-gray-500 text-center py-2">
+                          لا توجد نتائج للبحث "{contactSearchQuery}"
                         </p>
                       )}
                     </div>
