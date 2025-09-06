@@ -163,6 +163,14 @@ function App() {
     }
   };
 
+  // فلترة جهات الاتصال حسب البحث
+  const filteredContacts = contactSearchQuery.trim() 
+    ? Object.entries(contacts).filter(([email, name]) => 
+        name.toLowerCase().includes(contactSearchQuery.toLowerCase()) ||
+        email.toLowerCase().includes(contactSearchQuery.toLowerCase())
+      )
+    : Object.entries(contacts);
+
   // رفع ملف جهات الاتصال
   const handleContactsUpload = (event) => {
     const file = event.target.files[0];
