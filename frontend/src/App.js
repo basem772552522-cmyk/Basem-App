@@ -1239,6 +1239,7 @@ function App() {
       window.removeEventListener('beforeunload', cleanup);
       window.removeEventListener('unload', cleanup);
       window.removeEventListener('blur', cleanup);
+      window.removeEventListener('focus', cleanup);
       cleanup();
     };
   }, [user]);
