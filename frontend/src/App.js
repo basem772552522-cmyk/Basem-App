@@ -1292,7 +1292,16 @@ function App() {
           {/* Header with Search */}
           <div className="bg-gray-50 p-3 sm:p-4 border-b border-gray-200 app-header">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-800 app-title">BasemApp</h1>
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-800 app-title">BasemApp</h1>
+                {/* مؤشر حالة المستخدم الحالي */}
+                {user && (
+                  <div className="flex items-center space-x-1 space-x-reverse bg-green-100 px-2 py-1 rounded-full">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-800 font-medium">متصل</span>
+                  </div>
+                )}
+              </div>
               <div className="relative">
                 <Button
                   variant="ghost"
