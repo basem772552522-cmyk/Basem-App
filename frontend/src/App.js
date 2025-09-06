@@ -516,7 +516,7 @@ function App() {
     }
   };
 
-  // بحث فوري أثناء الكتابة
+  // بحث فوري أثناء الكتابة مع تحسين الأداء
   const handleSearchChange = (value) => {
     setSearchQuery(value);
     
@@ -536,10 +536,10 @@ function App() {
       clearTimeout(window.searchTimeout);
     }
     
-    // بحث بعد 300ms من توقف الكتابة
+    // بحث بعد 500ms من توقف الكتابة (محسّن من 300ms لتقليل الطلبات)
     window.searchTimeout = setTimeout(() => {
       searchUsers(value);
-    }, 300);
+    }, 500);
   };
 
   const startChat = async (userId) => {
