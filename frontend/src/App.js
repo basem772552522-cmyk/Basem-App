@@ -1101,8 +1101,7 @@ function App() {
       
       // تحديث حالة المستخدم إلى offline
       if (user) {
-        axios.post(`${API}/users/update-status`, { is_online: false })
-          .catch(err => console.log('خطأ في تحديث الحالة:', err));
+        updateUserStatus(false);
       }
     };
 
