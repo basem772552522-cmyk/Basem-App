@@ -549,6 +549,8 @@ function App() {
       setIsUploadingImage(false);
     }
   };
+
+  const resendVerificationCode = async () => {
     try {
       await axios.post(`${API}/auth/resend-verification`, {
         email: pendingEmail
