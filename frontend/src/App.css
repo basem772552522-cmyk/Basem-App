@@ -125,6 +125,59 @@ input::placeholder {
 
 /* Responsive design */
 
+/* Mobile-first responsive chat interface */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+/* Full screen chat layouts */
+.h-screen {
+  height: 100vh;
+  height: 100dvh; /* Better mobile support */
+}
+
+/* Back button styling */
+.back-button {
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .chat-item {
+    padding: 16px 12px;
+  }
+  
+  .message-bubble {
+    max-width: 85%;
+  }
+}
+
+/* Animation for view transitions */
+.view-transition {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Base responsive layout */
 .main-layout {
   @apply flex h-screen;
