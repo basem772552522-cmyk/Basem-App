@@ -568,13 +568,19 @@ function App() {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // تحديث حالة المستخدم إلى غير متصل قبل تسجيل الخروج
+    if (user) {
+      await updateUserStatus(false);
+    }
+    
+    localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    setSelectedChat(null);
-    setMessages([]);
     setChats([]);
-    localStorage.removeItem('token');
+    setMessages([]);
+    setSelectedChat(null);
+    setCurrentView('chats');
   };
 
   const loadUser = async () => {
