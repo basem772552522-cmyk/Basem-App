@@ -247,6 +247,18 @@ frontend:
           agent: "main"
           comment: "Improved notification system with better memory management, auto-close after 4 seconds, click-to-focus functionality, and optimized polling logic."
 
+  - task: "Real-time user status and WhatsApp-style read receipts"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Complete real-time status system implemented. Backend: Added UserStatusUpdate and MessageStatusUpdate models, POST /api/users/update-status endpoint for online/offline status, POST /api/messages/update-status for message read receipts, proper authentication and validation. Frontend: Auto-updates user status on app open/close, network connection changes, logout. WhatsApp-style read receipts: ✓ gray (sent), ✓✓ gray (delivered), ✓✓ blue (read). Auto-marks messages as read when opening chat, updates delivered status when receiving messages. Fixed duplicate endpoint issue in backend."
+
   - task: "Profile picture upload and management system"
     implemented: true
     working: true
