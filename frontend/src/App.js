@@ -189,18 +189,66 @@ function App() {
 
   const startChat = async (userId) => {
     try {
+      console.log('محاولة بدء محادثة مع المستخدم:', userId);
+      
       const response = await axios.post(`${API}/chats`, {
         user_id: userId
       });
       
+      console.log('استجابة إنشاء المحادثة:', response.data);
+      
+      // إعادة تحميل قائمة المحادثات
       await loadChats();
-      const newChat = chats.find(chat => chat.id === response.data.id) || response.data;
-      setSelectedChat(newChat);
-      loadMessages(response.data.id);
+      
+      // البحث عن المحادثة في القائمة المحدثة
+      const updatedChats = await axios.get(`${API}/chats`);
+      const newChat = updatedChats.data.find(chat => 
+        chat.id === response.data.id || 
+        (chat.other_user && chat.other_user.id === userId)
+      );
+      
+      if (newChat) {
+        console.log('تم العثور على المحادثة:', newChat);
+        setSelectedChat(newChat);
+        await loadMessages(newChat.id);
+        setChats(updatedChats.data);
+      } else {
+        console.log('لم يتم العثور على المحادثة، استخدام البيانات المُرجعة');
+        setSelectedChat(response.data);
+        await loadMessages(response.data.id);
+      }
+      
+      // مسح البحث
       setSearchQuery('');
       setSearchResults([]);
+      
+      console.log('تم فتح المحادثة بنجاح');
+      
     } catch (error) {
-      console.error('Failed to start chat:', error);
+      console.error('فشل في بدء المحادثة:', error);
+      console.error('تفاصيل الخطأ:', error.response?.data);
+      
+      // محاولة بديلة - البحث عن محادثة موجودة
+      try {
+        const chatsResponse = await axios.get(`${API}/chats`);
+        const existingChat = chatsResponse.data.find(chat => 
+          chat.other_user && chat.other_user.id === userId
+        );
+        
+        if (existingChat) {
+          console.log('تم العثور على محادثة موجودة:', existingChat);
+          setSelectedChat(existingChat);
+          await loadMessages(existingChat.id);
+          setChats(chatsResponse.data);
+          setSearchQuery('');
+          setSearchResults([]);
+        } else {
+          alert('فشل في فتح المحادثة. يرجى المحاولة مرة أخرى.');
+        }
+      } catch (fallbackError) {
+        console.error('فشل في المحاولة البديلة:', fallbackError);
+        alert('فشل في فتح المحادثة. يرجى المحاولة مرة أخرى.');
+      }
     }
   };
 
