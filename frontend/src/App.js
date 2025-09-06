@@ -58,6 +58,51 @@ function App() {
     return contactName || user.username || user.email || 'مستخدم';
   };
 
+  // رفع ملف جهات الاتصال
+  const handleContactsUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const contactMap = {};
+        
+        for (let i = 1; i < lines.length; i++) { // تخطي العنوان
+          const line = lines[i].trim();
+          if (line) {
+            const parts = line.split(',').map(part => part.trim().replace(/['"]/g, ''));
+            
+            if (parts.length >= 2) {
+              let name = '';
+              let email = '';
+              
+              if (parts[0].includes('@')) {
+                email = parts[0];
+                name = parts[1];
+              } else if (parts[1].includes('@')) {
+                name = parts[0];
+                email = parts[1];
+              }
+              
+              if (email && name) {
+                contactMap[email.toLowerCase()] = name;
+              }
+            }
+          }
+        }
+        
+        saveContacts(contactMap);
+        alert(`تم رفع ${Object.keys(contactMap).length} جهة اتصال بنجاح!`);
+      } catch (error) {
+        alert('خطأ في قراءة الملف. تأكد من التنسيق الصحيح.');
+      }
+    };
+    reader.readAsText(file);
+  };
+
 
 
   // Set axios default headers
