@@ -779,7 +779,7 @@ function App() {
     }, 500);
   };
 
-  // التنقل بين الشاشات
+  // التنقل بين الشاشات مع تحديث فوري للعلامات الزرقاء
   const openChat = async (chat) => {
     setSelectedChat(chat);
     await loadMessages(chat.id);
@@ -787,7 +787,7 @@ function App() {
     setSearchQuery('');
     setSearchResults([]);
     
-    // تحديث حالة الرسائل إلى مقروءة
+    // تحديث حالة الرسائل إلى مقروءة فوراً (العلامات الزرقاء)
     try {
       const response = await axios.get(`${API}/chats/${chat.id}/messages`);
       const unreadMessages = response.data.filter(msg => 
@@ -796,9 +796,27 @@ function App() {
       
       if (unreadMessages.length > 0) {
         const messageIds = unreadMessages.map(msg => msg.id);
+        
+        // تحديث العلامات في الواجهة فوراً قبل إرسال الطلب
+        const updatedMessages = response.data.map(msg => {
+          if (msg.sender_id !== user.id && msg.status !== 'read') {
+            return { ...msg, status: 'read' };
+          }
+          return msg;
+        });
+        setMessages(updatedMessages);
+        
+        // تحديث العلامات في قاعدة البيانات
         await updateMessageStatus(messageIds, 'read');
-        // إعادة تحميل الرسائل للحصول على الحالات المحدثة
-        loadMessages(chat.id, false);
+        
+        // تحديث cache
+        setMessageCache(prev => ({
+          ...prev,
+          [chat.id]: updatedMessages
+        }));
+        
+        // إعادة تحميل المحادثات لتحديث آخر رسالة
+        loadChats();
       }
     } catch (error) {
       console.error('خطأ في تحديث حالة القراءة:', error);
