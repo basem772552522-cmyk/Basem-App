@@ -1097,29 +1097,36 @@ function App() {
       {/* Contacts Sync Modal */}
       {showContactsSync && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg sm:text-xl font-semibold">تزامن جهات الاتصال</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowContactsSync(false)}
-                className="text-gray-500 touch-target"
-              >
-                <X className="w-4 h-4" />
-              </Button>
+          <div className="bg-white rounded-lg p-0 w-full max-w-md mx-4 overflow-hidden">
+            {/* Header with Exit Button */}
+            <div className="bg-emerald-600 text-white p-4 flex items-center justify-between">
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <Users className="w-5 h-5" />
+                <h3 className="text-lg font-semibold">تزامن جهات الاتصال</h3>
+              </div>
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowContactsSync(false)}
+                  className="text-white hover:bg-emerald-700 p-2 rounded-full"
+                  title="إغلاق"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
             
-            <div className="space-y-4">
+            {/* Content */}
+            <div className="p-4 space-y-4">
               <div className="text-center">
-                <Users className="w-12 h-12 mx-auto mb-3 text-emerald-500" />
                 <p className="text-sm text-gray-600 mb-4">
                   قم بتزامن جهات اتصالك لعرض الأسماء الحقيقية بدلاً من أسماء المستخدمين
                 </p>
                 
                 <div className="bg-emerald-50 p-3 rounded-lg mb-4">
                   <p className="text-xs text-emerald-800">
-                    📊 عدد جهات الاتصال المحفوظة: {Object.keys(contacts).length}
+                    📊 عدد جهات الاتصال المحفوظة: <span className="font-bold">{Object.keys(contacts).length}</span>
                   </p>
                 </div>
               </div>
@@ -1135,14 +1142,26 @@ function App() {
                     </p>
                     <Button
                       onClick={async () => {
-                        const result = await syncBrowserContacts();
-                        if (result.success) {
-                          alert(result.message);
-                        } else {
-                          alert(`فشل التزامن: ${result.message}`);
+                        const btn = event.target;
+                        const originalText = btn.textContent;
+                        btn.textContent = 'جاري التزامن...';
+                        btn.disabled = true;
+                        
+                        try {
+                          const result = await syncBrowserContacts();
+                          if (result.success) {
+                            alert(result.message);
+                          } else {
+                            alert(`تعذر التزامن: ${result.message}\n\nأسباب محتملة:\n• المتصفح لا يدعم هذه الميزة\n• تم رفض الإذن\n• لا توجد جهات اتصال تحتوي على بريد إلكتروني`);
+                          }
+                        } catch (error) {
+                          alert(`خطأ في التزامن: ${error.message}`);
+                        } finally {
+                          btn.textContent = originalText;
+                          btn.disabled = false;
                         }
                       }}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm rounded"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm rounded disabled:opacity-50"
                     >
                       بدء التزامن المباشر
                     </Button>
@@ -1162,7 +1181,7 @@ function App() {
                   />
                   <label
                     htmlFor="contacts-upload"
-                    className="cursor-pointer bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm"
+                    className="cursor-pointer bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm inline-block"
                   >
                     اختر ملف CSV
                   </label>
@@ -1213,9 +1232,9 @@ function App() {
               <div className="flex space-x-3 space-x-reverse pt-4">
                 <Button
                   onClick={() => setShowContactsSync(false)}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-12"
+                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white h-10"
                 >
-                  تم
+                  إغلاق
                 </Button>
                 {Object.keys(contacts).length > 0 && (
                   <Button
@@ -1227,7 +1246,7 @@ function App() {
                       }
                     }}
                     variant="outline"
-                    className="text-red-600 border-red-300 hover:bg-red-50"
+                    className="text-red-600 border-red-300 hover:bg-red-50 px-3"
                   >
                     مسح الكل
                   </Button>
