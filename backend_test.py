@@ -15,6 +15,8 @@ class BasemappAPITester:
         self.chat_id = None
         self.tests_run = 0
         self.tests_passed = 0
+        self.verification_code = None
+        self.pending_email = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, token=None, params=None):
         """Run a single API test"""
