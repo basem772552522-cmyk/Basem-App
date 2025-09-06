@@ -67,8 +67,10 @@ function App() {
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      // إعادة تحميل البيانات عند العودة للاتصال
+      // تحديث حالة المستخدم إلى متصل
       if (user) {
+        updateUserStatus(true);
+        // إعادة تحميل البيانات عند العودة للاتصال
         loadChats();
         if (selectedChat) {
           loadMessages(selectedChat.id, false); // force reload
@@ -78,6 +80,10 @@ function App() {
 
     const handleOffline = () => {
       setIsOnline(false);
+      // تحديث حالة المستخدم إلى غير متصل
+      if (user) {
+        updateUserStatus(false);
+      }
     };
 
     window.addEventListener('online', handleOnline);
