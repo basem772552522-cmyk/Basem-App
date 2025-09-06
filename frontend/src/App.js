@@ -569,9 +569,9 @@ function App() {
   };
 
   const logout = async () => {
-    // تحديث حالة المستخدم إلى غير متصل قبل تسجيل الخروج
+    // تحديث "آخر ظهور" بدقة قبل تسجيل الخروج
     if (user) {
-      await updateUserStatus(false);
+      await updateLastSeenAccurately();
     }
     
     localStorage.removeItem('token');
