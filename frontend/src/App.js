@@ -531,7 +531,6 @@ function App() {
                 searchResults.map((user) => (
                   <div
                     key={user.id}
-                    onClick={() => startChat(user.id)}
                     className="p-3 sm:p-4 border border-gray-100 rounded-lg mb-2 hover:bg-emerald-50 hover:border-emerald-200 cursor-pointer transition-all duration-200 user-item"
                   >
                     <div className="flex items-center space-x-2 sm:space-x-3 space-x-reverse">
@@ -545,7 +544,10 @@ function App() {
                           <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div 
+                        className="flex-1 min-w-0 cursor-pointer"
+                        onClick={() => startChat(user.id)}
+                      >
                         <div className="flex items-center space-x-2 space-x-reverse">
                           <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
                             {user.username}
@@ -568,6 +570,10 @@ function App() {
                       <div className="flex items-center">
                         <Button
                           size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startChat(user.id);
+                          }}
                           className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 text-xs"
                         >
                           محادثة
