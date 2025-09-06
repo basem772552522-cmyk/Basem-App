@@ -1091,9 +1091,8 @@ function App() {
   // Main WhatsApp-style interface
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
-      {currentView === 'chats' ? (
-        // شاشة قائمة المحادثات
-        <div className="w-full h-screen bg-white flex flex-col">
+      {/* WhatsApp-Style Sidebar */}
+      <div className="sidebar w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px]">
         
         {/* Connection Status */}
         {!isOnline && (
