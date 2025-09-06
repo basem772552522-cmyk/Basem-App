@@ -1332,7 +1332,7 @@ function App() {
         </div>
       ) : (
         // شاشة الدردشة - ملء الشاشة
-        <div className="w-full h-screen bg-white flex flex-col">
+        <div className="w-full h-screen bg-white flex flex-col view-transition">
           {/* Chat Header مع زر العودة */}
           <div className="p-3 sm:p-4 bg-white border-b border-gray-200 flex items-center chat-header shadow-sm">
             {/* زر العودة */}
