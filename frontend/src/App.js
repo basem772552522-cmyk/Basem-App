@@ -1125,7 +1125,7 @@ function App() {
             // تحديث الرسائل والـ cache مع تحديث فوري للعلامات الزرقاء
             const updatedMessages = newMessages.map(msg => {
               // إذا كانت الرسالة من مستخدم آخر والمحادثة مفتوحة، اجعلها مقروءة فوراً
-              if (msg.sender_id !== user.id && selectedChat && selectedChat.id === currentChatId) {
+              if (msg.sender_id !== user.id && selectedChat) {
                 return { ...msg, status: 'read' };
               }
               return msg;
