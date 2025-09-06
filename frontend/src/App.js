@@ -645,8 +645,8 @@ function App() {
         }
       };
 
-      // بدء polling كل 3 ثوان
-      intervalId = setInterval(checkForNewMessages, 3000);
+      // بدء polling كل 5 ثوان (محسّن من 3 ثوان للأداء)
+      intervalId = setInterval(checkForNewMessages, 5000);
     }
 
     return () => {
