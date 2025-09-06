@@ -105,6 +105,13 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+class EmailVerification(BaseModel):
+    email: str
+    code: str
+
+class ResendVerificationCode(BaseModel):
+    email: str
+
 class UserResponse(BaseModel):
     id: str
     username: str
