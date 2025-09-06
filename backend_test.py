@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 
 class BasemappAPITester:
-    def __init__(self, base_url="https://75fa55c5-4e13-48b1-b9ce-875df16baaa7.preview.emergentagent.com"):
+    def __init__(self, base_url="https://chat-sync-1.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token1 = None
