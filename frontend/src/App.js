@@ -1028,6 +1028,16 @@ function App() {
           if (newMessages.length > lastMessageCount) {
             const latestMessage = newMessages[newMessages.length - 1];
             
+            // تحديث حالة الرسائل الجديدة إلى delivered إذا لم تكن من المستخدم الحالي
+            const newUndeliveredMessages = newMessages.filter(msg => 
+              msg.sender_id !== user.id && msg.status === 'sent'
+            );
+            
+            if (newUndeliveredMessages.length > 0) {
+              const messageIds = newUndeliveredMessages.map(msg => msg.id);
+              updateMessageStatus(messageIds, 'delivered');
+            }
+            
             // تشغيل الصوت فقط إذا كانت الرسالة من مستخدم آخر
             if (latestMessage.sender_id !== user.id) {
               // تشغيل صوت الإشعار
