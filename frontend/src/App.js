@@ -667,6 +667,21 @@ function App() {
     setMessages([]);
   };
 
+  // التنقل بين الشاشات
+  const openChat = (chat) => {
+    setSelectedChat(chat);
+    loadMessages(chat.id);
+    setCurrentView('chat');
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const backToChats = () => {
+    setCurrentView('chats');
+    setSelectedChat(null);
+    setMessages([]);
+  };
+
   const startChat = async (userId) => {
     try {
       console.log('محاولة بدء محادثة مع المستخدم:', userId);
