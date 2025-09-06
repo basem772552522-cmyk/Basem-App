@@ -1272,7 +1272,6 @@ function App() {
               <p className="text-xs sm:text-sm text-center">ابحث عن مستخدم لبدء محادثة جديدة</p>
               <p className="text-xs text-gray-400 mt-2">اكتب أكثر من حرفين للبحث</p>
               
-              {/* Made with Emergent في الشاشة الفارغة */}
               <div className="text-center mt-8">
                 <p className="text-[10px] text-gray-300 opacity-75">Made with Emergent</p>
               </div>
