@@ -1144,25 +1144,33 @@ function App() {
 
   // تنظيف الذاكرة عند إغلاق التطبيق
   useEffect(() => {
-    const cleanup = () => {
+    const cleanup = async () => {
       // إيقاف كل timers
       if (window.searchTimeout) {
         clearTimeout(window.searchTimeout);
       }
       
-      // تحديث حالة المستخدم إلى offline
+      // تحديث "آخر ظهور" بدقة عند إغلاق التطبيق
       if (user) {
-        updateUserStatus(false);
+        await updateLastSeenAccurately();
       }
     };
 
     // استمع لإغلاق النافذة
     window.addEventListener('beforeunload', cleanup);
     window.addEventListener('unload', cleanup);
+    
+    // استمع لفقدان التركيز (عند التبديل للتطبيقات الأخرى)
+    window.addEventListener('blur', async () => {
+      if (user) {
+        await updateLastSeenAccurately();
+      }
+    });
 
     return () => {
       window.removeEventListener('beforeunload', cleanup);
       window.removeEventListener('unload', cleanup);
+      window.removeEventListener('blur', cleanup);
       cleanup();
     };
   }, [user]);
