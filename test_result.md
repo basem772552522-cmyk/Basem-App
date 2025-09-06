@@ -247,6 +247,18 @@ frontend:
           agent: "main"
           comment: "Improved notification system with better memory management, auto-close after 4 seconds, click-to-focus functionality, and optimized polling logic."
 
+  - task: "Profile picture upload and management system"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Complete profile picture system implemented. Backend: Added ProfileUpdateRequest model with avatar_url and remove_avatar fields, PUT /api/users/profile endpoint with base64 validation (max 2MB), format validation (JPEG/PNG/GIF/WebP), and proper error handling in Arabic. Frontend: Added image compression to 400x400px, upload with progress indicator, delete functionality, Avatar components updated throughout app (chat list, search results, chat headers, profile modal) with fallback to initials. System includes security validation and proper authentication requirements."
+
   - task: "WhatsApp-style mobile navigation interface"
     implemented: true
     working: true
