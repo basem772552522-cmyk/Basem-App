@@ -559,11 +559,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All features completed and tested successfully"
+    - "Real-time user status update API (POST /api/users/update-status) - CRITICAL DUPLICATE ENDPOINT ISSUE"
+    - "Message status update API (POST /api/messages/update-status) - WORKING"
+    - "Real-time status integration testing - WORKING"
   stuck_tasks: 
     - "WebSocket real-time messaging (infrastructure limitation, not code issue)"
-  test_all: true
-  test_priority: "production_ready"
+    - "Real-time user status update API - DUPLICATE ENDPOINT ISSUE (lines 313 & 618)"
+  test_all: false
+  test_priority: "critical_fix_required"
 
 backend:
   - task: "Real-time user status update API (POST /api/users/update-status)"
