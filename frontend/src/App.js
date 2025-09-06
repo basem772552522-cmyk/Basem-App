@@ -35,6 +35,8 @@ function App() {
   const [messageCache, setMessageCache] = useState({});
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [messageDrafts, setMessageDrafts] = useState({}); // حفظ المسودات
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState({}); // {chatId: {userId: timestamp}}
   
   const messagesEndRef = useRef(null);
   const contactsSync = useRef(null);
