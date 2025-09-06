@@ -1582,11 +1582,9 @@ function App() {
                   {getDisplayName(selectedChat?.other_user)}
                 </h2>
                 {selectedChat?.other_user?.is_online && (
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-1 online-indicator-pulse"></div>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-2 py-0.5">
-                      متصل
-                    </Badge>
+                  <div className="flex items-center space-x-1 space-x-reverse bg-green-100 px-2 py-1 rounded-full">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-800 font-medium">متصل</span>
                   </div>
                 )}
               </div>
