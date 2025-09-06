@@ -1083,33 +1083,83 @@ function App() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 messages-container">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${
-                    message.sender_id === user.id ? 'justify-start' : 'justify-end'
-                  }`}
-                >
-                  <div
-                    className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 py-2 sm:px-4 sm:py-2 rounded-lg message-bubble ${
-                      message.sender_id === user.id
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-white border border-gray-200'
-                    }`}
-                  >
-                    <p className="text-sm sm:text-base">{message.content}</p>
-                    <p
-                      className={`text-xs mt-1 ${
-                        message.sender_id === user.id
-                          ? 'text-emerald-100'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      {formatTime(message.timestamp)}
-                    </p>
+              {isLoadingMessages ? (
+                <div className="flex items-center justify-center h-32">
+                  <div className="flex items-center space-x-2 space-x-reverse text-gray-500">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-500"></div>
+                    <span className="text-sm">جاري تحميل الرسائل...</span>
                   </div>
                 </div>
-              ))}
+              ) : messages.length === 0 ? (
+                <div className="flex items-center justify-center h-32 text-gray-500">
+                  <div className="text-center">
+                    <MessageCircle className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                    <p className="text-sm">لا توجد رسائل بعد</p>
+                    <p className="text-xs text-gray-400">ابدأ المحادثة بإرسال رسالة</p>
+                  </div>
+                </div>
+              ) : (
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.sender_id === user.id ? 'justify-start' : 'justify-end'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 py-2 sm:px-4 sm:py-2 rounded-lg message-bubble relative ${
+                        message.sender_id === user.id
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-white border border-gray-200'
+                      } ${
+                        message.status === 'sending' ? 'opacity-70' : ''
+                      }`}
+                    >
+                      <p className="text-sm sm:text-base">{message.content}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <p
+                          className={`text-xs ${
+                            message.sender_id === user.id
+                              ? 'text-emerald-100'
+                              : 'text-gray-500'
+                          }`}
+                        >
+                          {message.status === 'sending' ? 'جاري الإرسال...' : formatTime(message.timestamp)}
+                        </p>
+                        {message.sender_id === user.id && message.status !== 'sending' && (
+                          <div className="flex items-center space-x-1">
+                            {message.status === 'sent' && (
+                              <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                            {message.status === 'delivered' && (
+                              <div className="flex">
+                                <svg className="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                                <svg className="w-3 h-3 text-gray-300 -ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                            )}
+                            {message.status === 'read' && (
+                              <div className="flex">
+                                <svg className="w-3 h-3 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                                <svg className="w-3 h-3 text-blue-400 -ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
 
