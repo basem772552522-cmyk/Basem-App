@@ -1091,100 +1091,99 @@ function App() {
   // Main WhatsApp-style interface
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
-      {/* WhatsApp-Style Sidebar */}
-      <div className="sidebar w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px]">
-        
-        {/* Connection Status */}
-        {!isOnline && (
-          <div className="bg-yellow-100 border-b border-yellow-200 px-3 py-2 text-center">
-            <div className="flex items-center justify-center space-x-2 space-x-reverse">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-              <span className="text-xs text-yellow-800">لا يوجد اتصال بالإنترنت</span>
+      {currentView === 'chats' ? (
+        // شاشة قائمة المحادثات
+        <div className="w-full h-screen bg-white flex flex-col">
+          
+          {/* Connection Status */}
+          {!isOnline && (
+            <div className="bg-yellow-100 border-b border-yellow-200 px-3 py-2 text-center">
+              <div className="flex items-center justify-center space-x-2 space-x-reverse">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <span className="text-xs text-yellow-800">لا يوجد اتصال بالإنترنت</span>
+              </div>
             </div>
-          </div>
-        )}
-        
-        {/* Header with Search */}
-        <div className="bg-gray-50 p-3 sm:p-4 border-b border-gray-200 app-header">
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h1 className="text-lg sm:text-xl font-semibold text-gray-800 app-title">BasemApp</h1>
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowSettings(!showSettings)}
-                className="text-gray-600 hover:bg-gray-100 p-2 touch-target"
-              >
-                <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
-              </Button>
-              
-              {showSettings && (
-                <div className="absolute left-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 settings-menu">
-                  <div className="py-2">
-                    <button
-                      onClick={() => {
-                        setShowProfileEdit(true);
-                        setShowSettings(false);
-                      }}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-gray-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse settings-item"
-                    >
-                      <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
-                      <span className="text-sm sm:text-base">الملف الشخصي</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowContactsSync(true);
-                        setShowSettings(false);
-                      }}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-gray-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse settings-item"
-                    >
-                      <Users className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
-                      <span className="text-sm sm:text-base">تزامن جهات الاتصال</span>
-                    </button>
-                    <hr className="my-1" />
-                    <button
-                      onClick={() => {
-                        setShowSettings(false);
-                        logout();
-                      }}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-red-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse text-red-600 settings-item"
-                    >
-                      <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="text-sm sm:text-base">تسجيل الخروج</span>
-                    </button>
+          )}
+          
+          {/* Header with Search */}
+          <div className="bg-gray-50 p-3 sm:p-4 border-b border-gray-200 app-header">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-800 app-title">BasemApp</h1>
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="text-gray-600 hover:bg-gray-100 p-2 touch-target"
+                >
+                  <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+                
+                {showSettings && (
+                  <div className="absolute left-0 top-full mt-2 w-44 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 settings-menu">
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          setShowProfileEdit(true);
+                          setShowSettings(false);
+                        }}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-gray-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse settings-item"
+                      >
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <span className="text-sm sm:text-base">الملف الشخصي</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowContactsSync(true);
+                          setShowSettings(false);
+                        }}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-gray-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse settings-item"
+                      >
+                        <Users className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+                        <span className="text-sm sm:text-base">تزامن جهات الاتصال</span>
+                      </button>
+                      <hr className="my-1" />
+                      <button
+                        onClick={() => {
+                          setShowSettings(false);
+                          logout();
+                        }}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 text-right hover:bg-red-50 flex items-center space-x-2 sm:space-x-3 space-x-reverse text-red-600 settings-item"
+                      >
+                        <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="text-sm sm:text-base">تسجيل الخروج</span>
+                      </button>
+                    </div>
                   </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
+              <Input
+                type="text"
+                placeholder="ابحث عن مستخدم بالاسم أو البريد..."
+                className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-8 sm:h-9 text-xs sm:text-sm"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onFocus={() => {
+                  if (searchQuery.trim().length >= 2) {
+                    searchUsers();
+                  }
+                }}
+              />
+              {searchQuery.length >= 2 && searchResults.length === 0 && (
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-500"></div>
                 </div>
               )}
             </div>
           </div>
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
-            <Input
-              type="text"
-              placeholder="ابحث عن مستخدم بالاسم أو البريد..."
-              className="pr-8 sm:pr-10 bg-gray-100 border-0 rounded-lg text-right search-input h-8 sm:h-9 text-xs sm:text-sm"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onFocus={() => {
-                // إظهار النتائج عند التركيز إذا كان هناك نص
-                if (searchQuery.trim().length >= 2) {
-                  searchUsers();
-                }
-              }}
-            />
-            {/* مؤشر التحميل */}
-            {searchQuery.length >= 2 && searchResults.length === 0 && (
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-500"></div>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto">
+          {/* Chat List - Full Screen */}
+          <div className="flex-1 overflow-y-auto">
           {searchQuery && searchQuery.length >= 2 ? (
             <div className="p-2">
               <div className="flex items-center justify-between p-2 mb-2">
