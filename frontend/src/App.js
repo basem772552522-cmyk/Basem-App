@@ -741,8 +741,9 @@ function App() {
                       >
                         <div className="flex items-center space-x-2 space-x-reverse">
                           <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                            {user.username}
+                            {getDisplayName(user)}
                           </h3>
+                          <span className="text-xs text-gray-500">(@{user.username})</span>
                           {user.is_online && (
                             <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs px-1.5 py-0.5">
                               متصل
