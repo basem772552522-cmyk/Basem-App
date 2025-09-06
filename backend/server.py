@@ -357,7 +357,7 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
         if other_participants:
             other_user = await db.users.find_one({"id": other_participants[0]})
             if other_user:
-                # Format last seen time
+                # Format last seen time with Gregorian calendar
                 last_seen_text = "منذ فترة"
                 if other_user.get("is_online"):
                     last_seen_text = "متصل"
@@ -374,7 +374,10 @@ async def get_chats(current_user: UserResponse = Depends(get_current_user)):
                         now = datetime.utcnow()
                         diff = now - last_seen
                         
-                        if diff.days > 7:
+                        if diff.days > 30:
+                            # Use Gregorian date format for older dates
+                            last_seen_text = f"آخر ظهور في {last_seen.strftime('%d %B %Y')}"
+                        elif diff.days > 7:
                             last_seen_text = f"منذ {diff.days} يوم"
                         elif diff.days > 0:
                             last_seen_text = f"منذ {diff.days} يوم"
