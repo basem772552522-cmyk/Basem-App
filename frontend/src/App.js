@@ -20,6 +20,8 @@ function App() {
   const [showVerification, setShowVerification] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [pendingEmail, setPendingEmail] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
