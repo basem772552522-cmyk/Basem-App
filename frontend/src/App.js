@@ -1122,12 +1122,31 @@ function App() {
               }
             }
             
-            // تحديث الرسائل والـ cache
-            setMessages(newMessages);
+            // تحديث الرسائل والـ cache مع تحديث فوري للعلامات الزرقاء
+            const updatedMessages = newMessages.map(msg => {
+              // إذا كانت الرسالة من مستخدم آخر والمحادثة مفتوحة، اجعلها مقروءة فوراً
+              if (msg.sender_id !== user.id && selectedChat && selectedChat.id === currentChatId) {
+                return { ...msg, status: 'read' };
+              }
+              return msg;
+            });
+            
+            setMessages(updatedMessages);
             setMessageCache(prev => ({
               ...prev,
-              [selectedChat.id]: newMessages
+              [selectedChat.id]: updatedMessages
             }));
+            
+            // تحديث قاعدة البيانات للرسائل المقروءة فوراً
+            const instantReadMessages = updatedMessages.filter(msg => 
+              msg.sender_id !== user.id && msg.status === 'read' && 
+              newMessages.find(newMsg => newMsg.id === msg.id && newMsg.status !== 'read')
+            );
+            
+            if (instantReadMessages.length > 0) {
+              const messageIds = instantReadMessages.map(msg => msg.id);
+              updateMessageStatus(messageIds, 'read');
+            }
             
             lastMessageCount = newMessages.length;
           }
