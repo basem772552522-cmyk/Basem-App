@@ -1142,9 +1142,101 @@ class BasemappAPITester:
             print("🚨 مشاكل كبيرة تحتاج إلى معالجة فورية")
             return False
 
+    def run_avatar_specific_tests(self):
+        """Run specific avatar tests as requested in Arabic review"""
+        print("🖼️ اختبار شامل لميزة الصورة الشخصية الجديدة في BasemApp")
+        print("=" * 70)
+        print("📋 المطلوب اختباره:")
+        print("   1. API رفع الصورة الشخصية (PUT /api/users/profile)")
+        print("   2. API حذف الصورة الشخصية (remove_avatar: true)")
+        print("   3. عرض الصورة في endpoints مختلفة")
+        print("   4. التحقق من validation والأمان")
+        print("=" * 70)
+        
+        # Create test user for avatar testing
+        timestamp = datetime.now().strftime('%H%M%S')
+        
+        # Test user registration first
+        user_data = {
+            "username": f"اختبار_الصورة_{timestamp}",
+            "email": f"avatar.test.{timestamp}@basemapp.com",
+            "password": "كلمة_مرور_قوية123!"
+        }
+        
+        reg_success, reg_response = self.run_test(
+            "تسجيل مستخدم لاختبار الصورة الشخصية",
+            "POST",
+            "auth/register",
+            200,
+            data=user_data
+        )
+        
+        if not reg_success:
+            print("❌ فشل في تسجيل المستخدم - لا يمكن متابعة اختبار الصورة الشخصية")
+            return False
+        
+        # Run comprehensive avatar tests
+        avatar_tests = []
+        
+        print("\n🔍 1. اختبار API رفع الصورة الشخصية...")
+        avatar_upload_success = self.test_avatar_upload_functionality()
+        avatar_tests.append(("رفع الصورة الشخصية", avatar_upload_success))
+        
+        print("\n🗑️ 2. اختبار API حذف الصورة الشخصية...")
+        avatar_removal_success = self.test_avatar_removal_functionality()
+        avatar_tests.append(("حذف الصورة الشخصية", avatar_removal_success))
+        
+        print("\n👁️ 3. اختبار عرض الصورة في endpoints مختلفة...")
+        avatar_display_success = self.test_avatar_display_in_endpoints()
+        avatar_tests.append(("عرض الصورة في endpoints", avatar_display_success))
+        
+        print("\n🔒 4. اختبار الأمان والمصادقة...")
+        avatar_security_success = self.test_avatar_security_and_authentication()
+        avatar_tests.append(("أمان الصورة الشخصية", avatar_security_success))
+        
+        # Calculate results
+        passed_avatar_tests = sum(1 for _, success in avatar_tests if success)
+        
+        # Print detailed results
+        print("\n" + "=" * 70)
+        print("📊 نتائج اختبار ميزة الصورة الشخصية:")
+        print("-" * 50)
+        
+        for test_name, success in avatar_tests:
+            status = "✅ نجح" if success else "❌ فشل"
+            print(f"   {test_name}: {status}")
+        
+        print("-" * 50)
+        print(f"📈 اختبارات الصورة الشخصية الناجحة: {passed_avatar_tests}/{len(avatar_tests)}")
+        print(f"📈 معدل نجاح ميزة الصورة الشخصية: {(passed_avatar_tests/len(avatar_tests))*100:.1f}%")
+        
+        # Final assessment for avatar feature
+        if passed_avatar_tests == len(avatar_tests):
+            print("\n🎉 تقييم ميزة الصورة الشخصية: ممتاز!")
+            print("✅ جميع وظائف الصورة الشخصية تعمل بشكل صحيح")
+            print("✅ رفع الصور يعمل مع التحقق من الحجم والتنسيق")
+            print("✅ حذف الصور يعمل بشكل صحيح")
+            print("✅ عرض الصور في جميع endpoints يعمل")
+            print("✅ الأمان والمصادقة محكمة")
+            return True
+        elif passed_avatar_tests >= 3:
+            print("\n⚠️ تقييم ميزة الصورة الشخصية: جيد مع مشاكل بسيطة")
+            print("🔧 معظم الوظائف تعمل، يحتاج تحسينات طفيفة")
+            return False
+        else:
+            print("\n❌ تقييم ميزة الصورة الشخصية: يحتاج إصلاحات")
+            print("🚨 مشاكل كبيرة في ميزة الصورة الشخصية")
+            return False
+
 def main():
     tester = BasemappAPITester()
-    success = tester.run_all_tests()
+    
+    # Check if we want to run avatar-specific tests only
+    if len(sys.argv) > 1 and sys.argv[1] == "--avatar-only":
+        success = tester.run_avatar_specific_tests()
+    else:
+        success = tester.run_all_tests()
+    
     return 0 if success else 1
 
 if __name__ == "__main__":
