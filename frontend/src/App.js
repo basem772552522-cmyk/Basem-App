@@ -422,17 +422,57 @@ function App() {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
 
+    const tempMessage = {
+      id: 'temp-' + Date.now(),
+      content: newMessage.trim(),
+      sender_id: user.id,
+      timestamp: new Date().toISOString(),
+      status: 'sending'
+    };
+
+    // إضافة مؤقتة للرسالة في الواجهة
+    const updatedMessages = [...messages, tempMessage];
+    setMessages(updatedMessages);
+    
+    // تحديث الـ cache
+    setMessageCache(prev => ({
+      ...prev,
+      [selectedChat.id]: updatedMessages
+    }));
+
+    const messageContent = newMessage.trim();
+    setNewMessage('');
+
     try {
-      await axios.post(`${API}/messages`, {
+      const response = await axios.post(`${API}/messages`, {
         chat_id: selectedChat.id,
-        content: newMessage.trim()
+        content: messageContent
       });
       
-      setNewMessage('');
-      loadMessages(selectedChat.id);
-      loadChats();
+      // استبدال الرسالة المؤقتة بالرسالة الحقيقية
+      const finalMessages = updatedMessages.map(msg => 
+        msg.id === tempMessage.id ? response.data : msg
+      );
+      
+      setMessages(finalMessages);
+      
+      // تحديث الـ cache
+      setMessageCache(prev => ({
+        ...prev,
+        [selectedChat.id]: finalMessages
+      }));
+      
+      loadChats(); // تحديث قائمة المحادثات
     } catch (error) {
       console.error('Failed to send message:', error);
+      // إزالة الرسالة المؤقتة في حالة الخطأ
+      setMessages(messages);
+      setMessageCache(prev => ({
+        ...prev,
+        [selectedChat.id]: messages
+      }));
+      setNewMessage(messageContent); // إرجاع النص
+      alert('فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.');
     }
   };
 
